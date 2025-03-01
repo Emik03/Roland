@@ -1,0 +1,20 @@
+{
+    "priority": 0,
+    "id": "Roland",
+    "name": "Roland",
+    "prefix": "Roland",
+    "author": ["Emik"],
+    "version": "0.0.1",
+    "badge_colour": "8BE9FD",
+    "main_file": "src/main.lua",
+    "badge_text_colour": "44475A",
+    "display_name": "Roland (Emik)",
+    "description": "Adds the most important joker, as well as a handful of challenges.",
+    "provides": [],
+    "conflicts": [],
+    "dependencies": [
+        "Steamodded (>=1.*)",
+        "Lovely (>=0.6)",
+        "Bakery (>=0.1.26)"
+	]
+}
