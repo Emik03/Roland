@@ -15,6 +15,6 @@
     "dependencies": [
         "Steamodded (>=1.*)",
         "Lovely (>=0.6)",
-        "Bakery (>=0.1.26)"
+        "Bakery (>=0.1.26~*)"
 	]
 }

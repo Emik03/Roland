@@ -49,8 +49,8 @@ SMODS.Joker {
             scared[2] or ""
         }}
     end,
-    Bakery_can_use = function(_, _)
-        return #G.GAME.tags ~= 0 or F.any(G.consumeables.cards, destructible)
+    Bakery_can_use = function(_, card)
+        return not card.debuff and (#G.GAME.tags ~= 0 or F.any(G.consumeables.cards, destructible))
     end,
     Bakery_use_joker = function(_, card)
         local hand, destroyed = common_hand(), 0
