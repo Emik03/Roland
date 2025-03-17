@@ -4,7 +4,7 @@
     "name": "Roland",
     "prefix": "Roland",
     "author": ["Emik"],
-    "version": "0.0.1",
+    "version": "0.1.0",
     "badge_colour": "8BE9FD",
     "main_file": "src/main.lua",
     "badge_text_colour": "44475A",

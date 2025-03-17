@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-parameter
 local function common_hand()
     return (G.GAME or {}).current_round and F.reduce(
         G.GAME.hands,
@@ -12,6 +13,14 @@ end
 
 local function destructible(card)
     return not card.highlighted and not (card.ability or {}).eternal
+end
+
+local function is_mergeable_with(it)
+    return function (card)
+        return it.rank ~= card.rank and
+            card.label == 'j_Roland_Escapey' and not
+            (card.ability or {}).eternal
+    end
 end
 
 SMODS.Atlas {
@@ -35,25 +44,55 @@ SMODS.Joker {
     eternal_compat = true,
     perishable_compat = true,
     blueprint_compat = false,
-    loc_vars = function(_, _, center)
-        local quotes = G.localization.descriptions.Joker.j_Roland_Escapey.quotes
-        local normal = (Jen or {}).sinister and {} or quotes.normal[math.random(#quotes.normal)]
-        local scared = (Jen or {}).sinister and quotes.scared[math.random(#quotes.scared)] or {}
+    loc_vars = function(_, _, card)
+        local loc_self = G.localization.descriptions.Joker.j_Roland_Escapey
+        local quotes = loc_self.quotes
+        local merge = G.jokers and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 1 and loc_self.merge or {}
+        local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or quotes.normal[math.random(#quotes.normal)]
+        local scared = (merge[1] or not (Jen or Jane or {}).sinister) and {} or quotes.normal[math.random(#quotes.normal)]
 
         return {vars = {
-            center.ability.extra.level_up_by,
+            card.ability.extra.level_up_by,
             localize(common_hand(), "poker_hands"),
+            merge[1] or "",
             normal[1] or "",
             scared[1] or "",
+            merge[2] or "",
+            merge[3] and loc_self.name or "",
+            merge[3] or "",
             normal[2] or "",
-            scared[2] or ""
+            scared[2] or "",
         }}
     end,
     Bakery_can_use = function(_, card)
-        return not card.debuff and (#G.GAME.tags ~= 0 or F.any(G.consumeables.cards, destructible))
+        return not card.debuff and (
+            #G.GAME.tags ~= 0 or
+            F.any(G.consumeables.cards, destructible) or
+            F.any(F.filter(G.jokers.cards, is_mergeable_with(card)))
+        )
+    end,
+    Bakery_use_button_text = function(_, card)
+        return card.debuff and "DEBUFFED" or
+            ((#G.GAME.tags == 0 and not
+                F.any(G.consumeables.cards, destructible) and
+                F.any(F.filter(G.jokers.cards, is_mergeable_with(card)))) and "MERGE" or "ESCAPE")
     end,
     Bakery_use_joker = function(_, card)
-        local hand, destroyed = common_hand(), 0
+        local hand, object_count = common_hand(), F.count(F.filter(G.consumeables.cards, destructible)) + #G.GAME.tags
+
+        if object_count == 0 then
+            local sum = 0
+
+            F.foreach(
+                F.filter(G.jokers.cards, is_mergeable_with(card)),
+                function (v)
+                    sum = sum + v.ability.extra.level_up_by
+                    v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+                end
+            )
+
+            card.ability.extra.level_up_by = card.ability.extra.level_up_by + sum
+        end
 
         local function update(name, chip, mul, lv, notif, snd, vol, pit, de)
             update_hand_text({
@@ -105,7 +144,6 @@ SMODS.Joker {
             F.filter(G.consumeables.cards, destructible),
             function (v)
                 v:start_dissolve({HEX("57ecab")}, nil, 1.6)
-                destroyed = destroyed + 1
             end
         )
 
@@ -113,18 +151,16 @@ SMODS.Joker {
             G.GAME.tags,
             function (v)
                 G.E_MANAGER:add_event(Event({trigger = "immediate", func = fast_nope(v)}))
-                destroyed = destroyed + 1
             end
         )
 
-        level_up_hand(card, hand, nil, destroyed * card.ability.extra.level_up_by)
+        level_up_hand(card, hand, nil, object_count * card.ability.extra.level_up_by)
 
         update_hand_text(
             {sound = "button", volume = 0.7, pitch = 1.1, delay = 0},
             {mult = 0, chips = 0, handname = "", level = ""}
         )
     end,
-    Bakery_use_button_text = function(_, _) return "ESCAPE" end
 }
 
 Bakery_API.usable_jokers.j_Roland_Escapey = true
