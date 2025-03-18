@@ -162,5 +162,3 @@ SMODS.Joker {
         )
     end,
 }
-
-Bakery_API.usable_jokers.j_Roland_Escapey = true
