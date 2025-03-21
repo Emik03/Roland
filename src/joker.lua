@@ -51,7 +51,7 @@ SMODS.Joker {
     perishable_compat = true,
     blueprint_compat = false,
     loc_vars = function(_, _, card)
-        local loc_self = G.localization.descriptions.Joker.j_Roland_Escapey
+        local loc_self = G.localization.descriptions.Joker.j_Roland_escapey
         local quotes = loc_self.quotes
         local merge = G.jokers and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 1 and loc_self.merge or {}
         local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or quotes.normal[math.random(#quotes.normal)]
