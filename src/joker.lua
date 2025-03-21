@@ -1,4 +1,12 @@
----@diagnostic disable: missing-parameter
+local function can_use()
+    return not ((G.play and #G.play.cards > 0 or
+        G.CONTROLLER.locked or
+        (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
+        G.STATE ~= G.STATES.HAND_PLAYED and
+        G.STATE ~= G.STATES.DRAW_TO_HAND and
+        G.STATE ~= G.STATES.PLAY_TAROT)
+end
+
 local function common_hand()
     return (G.GAME or {}).current_round and F.reduce(
         G.GAME.hands,
@@ -24,23 +32,21 @@ local function is_mergeable_with(it)
 end
 
 SMODS.Atlas {
-    key = "Escapey",
-    path = "Escapey.png",
     px = 71,
-    py = 95
+    py = 95,
+    key = "escapey",
+    path = "escapey.png",
 }
 
 SMODS.Joker {
-    key = "Escapey",
-    atlas = "Escapey",
+    key = "escapey",
+    atlas = "escapey",
     pos = {x = 0, y = 0},
     sinis = {x = 2, y = 0},
     soul_pos = {x = 1, y = 0},
     config = {extra = {level_up_by = 1}},
     cost = 8,
     rarity = 3,
-    unlocked = true,
-    discovered = true,
     eternal_compat = true,
     perishable_compat = true,
     blueprint_compat = false,
@@ -65,7 +71,7 @@ SMODS.Joker {
         }}
     end,
     Bakery_can_use = function(_, card)
-        return not card.debuff and (
+        return not card.debuff and can_use() and (
             #G.GAME.tags ~= 0 or
             F.any(G.consumeables.cards, destructible) or
             F.any(F.filter(G.jokers.cards, is_mergeable_with(card)))
@@ -129,14 +135,13 @@ SMODS.Joker {
         end
 
         if hand == "all" or hand == "allhands" or hand == "all_hands" then
-            update(localize("k_all_hands"), "...", "...", "", notify)
+            update(localize("k_all_hands"), "...", "...", "")
         elseif G.GAME.hands[hand or "NO_HAND_SPECIFIED"] then
             update(
                 localize(hand, "poker_hands"),
                 G.GAME.hands[hand].chips,
                 G.GAME.hands[hand].mult,
-                G.GAME.hands[hand].level,
-                notify
+                G.GAME.hands[hand].level
             )
         end
 

@@ -1,7 +1,7 @@
 return {
     descriptions = {
         Joker = {
-            j_Roland_Escapey = {
+            j_Roland_escapey = {
                 name = "Escapey",
                 text = {
                     "Destroy {C:attention}tags{} and {C:attention}non-selected",
@@ -33,6 +33,15 @@ return {
                 },
             }
         },
+        Spectral = {
+            c_Roland_void = {
+                name = "Void",
+                text = {
+                    "{C:red}Destroys {C:attention}all {}owned",
+                    "{C:attention}playing cards",
+                }
+            }
+        }
     },
     misc = {
         challenge_names = {

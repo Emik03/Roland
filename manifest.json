@@ -1,15 +1,15 @@
 {
-    "priority": 0,
+    "priority": -2,
     "id": "Roland",
     "name": "Roland",
     "prefix": "Roland",
     "author": ["Emik"],
-    "version": "0.1.1",
+    "version": "1.0.0",
     "badge_colour": "8BE9FD",
     "main_file": "src/main.lua",
     "badge_text_colour": "44475A",
     "display_name": "Roland (Emik)",
-    "description": "Adds the most important joker, as well as a handful of challenges.",
+    "description": "Adds the most important joker, a wild spectral, and a small handful of challenges.",
     "provides": [],
     "conflicts": [],
     "dependencies": [

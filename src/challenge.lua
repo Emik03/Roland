@@ -7,20 +7,23 @@ SMODS.Challenge {
     restrictions = jokerful
 }
 
-if Jen then
+if Jen or Jane then
+    local deck = Jen and "b_jen_nitro" or "b_jane_nitro"
+    local card = Jen and "j_jen_saint" or "b_jane_nitro"
+
     SMODS.Challenge {
         key = "Ascension",
-        deck = {type = "b_jen_nitro"},
+        deck = {type = deck},
         rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
-        jokers = {{id = "j_jen_saint", eternal = true}},
+        jokers = {{id = card, eternal = true}},
     }
 
     SMODS.Challenge {
         key = "Soaring",
-        deck = {type = "b_jen_nitro"},
+        deck = {type = deck},
         sleeve = "sleeve_cry_equilibrium_sleeve",
         rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
-        jokers = {{id = "j_jen_saint", eternal = true}},
+        jokers = {{id = card, eternal = true}},
     }
 
     SMODS.Challenge {
