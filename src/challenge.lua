@@ -7,35 +7,38 @@ SMODS.Challenge {
     restrictions = jokerful
 }
 
-if Jen or Jane then
-    local deck = Jen and "b_jen_nitro" or "b_jane_nitro"
-    local card = Jen and "j_jen_saint" or "b_jane_nitro"
+local deck = {}
+local card = {eternal = true, cry_absolute = true}
 
-    SMODS.Challenge {
-        key = "Ascension",
-        deck = {type = deck},
-        rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
-        jokers = {{id = card, eternal = true}},
-    }
+SMODS.Challenge {
+    key = "Ascension",
+    deck = {type = deck},
+    rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
+    jokers = {card},
+}
 
-    SMODS.Challenge {
-        key = "Soaring",
-        deck = {type = deck},
-        sleeve = "sleeve_cry_equilibrium_sleeve",
-        rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
-        jokers = {{id = card, eternal = true}},
-    }
+SMODS.Challenge {
+    key = "Soaring",
+    deck = {type = deck},
+    sleeve = "sleeve_cry_equilibrium_sleeve",
+    rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
+    jokers = {card},
+}
 
-    SMODS.Challenge {
-        key = "Balanced_Jokers",
-        rules = {custom = {{id = "Roland_Balanced_Jokers"}}},
-        restrictions = balanced_jokers
-    }
-end
+SMODS.Challenge {
+    key = "Balanced_Jokers",
+    rules = {custom = {{id = "Roland_Balanced_Jokers"}}},
+    restrictions = balanced_jokers
+}
 
 G.E_MANAGER:add_event(Event {
     trigger = "immediate",
     func = function()
+        if Jen or Jane then
+            deck.type = Jen and "b_jen_nitro" or "b_jane_nitro"
+            card.id = Jen and "j_jen_saint" or "j_jane_saint"
+        end
+
         jokerful.banned_cards = F.map(
             F.filter(
                 G.P_CENTERS,
