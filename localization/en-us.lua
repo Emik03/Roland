@@ -37,7 +37,7 @@ return {
             c_Roland_void = {
                 name = "Void",
                 text = {
-                    "{C:red}Destroys {C:attention}all {}owned",
+                    "{C:red}Destroys {X:red,C:white}all{} owned",
                     "{C:attention}playing cards",
                 }
             }
