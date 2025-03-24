@@ -26,8 +26,8 @@ SMODS.Consumable {
 		return #G.playing_cards > 1 and can_use()
 	end,
 	use = function(_, _, _, _)
-        local function calculate_joker(v)
-            v:calculate_joker({remove_playing_cards = true, removed = G.playing_cards})
+        local function destructible(v)
+            return not v.ability or not (v.ability.eternal or v.ability.cry_absolute)
         end
 
         local function destroy(v)
@@ -46,7 +46,13 @@ SMODS.Consumable {
             timer = 'REAL',
             trigger = 'after',
             func = function()
-                F.foreach(G.playing_cards, destroy)
+                local cards = F.filter(G.playing_cards, destructible)
+
+                local function calculate_joker(v)
+                    v:calculate_joker({remove_playing_cards = true, removed = cards})
+                end
+
+                F.foreach(cards, destroy)
                 F.foreach(G.jokers.cards, calculate_joker)
                 return true
             end
