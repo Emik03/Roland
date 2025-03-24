@@ -115,16 +115,16 @@ SMODS.Joker {
             })
         end
 
-        local function fast_nope(v)
+        local function fast_delete(v)
             return function ()
                 attention_text({
-                    text = "NOPE",
-                    colour = G.C.WHITE,
                     scale = 0.7,
-                    hold = 0.3 / G.SETTINGS.GAMESPEED,
-                    cover = v.HUD_tag,
-                    cover_colour = G.C.BLACK,
                     align = "cm",
+                    text = "ESC",
+                    cover = v.HUD_tag,
+                    colour = G.C.WHITE,
+                    cover_colour = G.C.BLACK,
+                    hold = 0.3 / G.SETTINGS.GAMESPEED,
                 })
 
                 play_sound("cancel", 1.66, 0.5)
@@ -155,7 +155,7 @@ SMODS.Joker {
         F.foreach(
             G.GAME.tags,
             function (v)
-                G.E_MANAGER:add_event(Event({trigger = "immediate", func = fast_nope(v)}))
+                G.E_MANAGER:add_event(Event({trigger = "immediate", func = fast_delete(v)}))
             end
         )
 
