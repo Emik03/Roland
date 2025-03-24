@@ -92,7 +92,7 @@ SMODS.Joker {
             F.foreach(
                 F.filter(G.jokers.cards, is_mergeable_with(card)),
                 function (v)
-                    sum = sum + v.ability.extra.level_up_by
+                    sum = sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
                     v:start_dissolve({HEX("57ecab")}, nil, 1.6)
                 end
             )
