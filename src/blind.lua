@@ -55,7 +55,7 @@ end
 
 SMODS.Blind {
     key = "improbable",
-    boss = {min = 1, max = 10},
+    boss = {min = 2, max = 10},
     boss_colour = HEX("009966"),
     atlas = "blind",
     pos = {x = 0, y = 0},
