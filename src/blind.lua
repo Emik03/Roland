@@ -9,7 +9,7 @@ SMODS.Atlas {
 
 SMODS.Blind	{
     key = "nimble",
-    boss = {min = 1, max = 10, no_orb = true, hardcore = true},
+    boss = {min = 1, max = 10},
     boss_colour = HEX("0291fb"),
     atlas = "blind",
     pos = {x = 0, y = 0},
@@ -46,5 +46,51 @@ SMODS.Blind	{
     end,
     set_blind = function(self)
         self.disabled = false
+    end,
+}
+
+local function disable()
+    local orig = (getmetatable(G.GAME.probabilities) or {}).orig
+
+    if orig then
+        G.GAME.probabilities = orig
+    end
+end
+
+local orig_pseudorandom = pseudorandom
+
+---@diagnostic disable-next-line: lowercase-global
+function pseudorandom(seed, min, max)
+    return getmetatable(G.GAME.probabilities) and 0 / 0 or orig_pseudorandom(seed, min, max)
+end
+
+SMODS.Blind {
+    key = "improbable",
+    boss = {min = 1, max = 10},
+    boss_colour = HEX("aaaaaa"),
+    atlas = "blind",
+    pos = {x = 0, y = 0},
+    mult = 2,
+    dollars = 5,
+    defeat = disable,
+    disable = disable,
+    set_blind = function(_)
+        local orig = G.GAME.probabilities
+
+        local mt = {
+            orig = orig,
+            __index = function (_, k)
+                return k == "normal" and 0 or orig[k]
+            end,
+            __newindex = function (_, k, v)
+                if k ~= "normal" or v ~= 0 then
+                    orig[k] = v
+                end
+            end,
+        }
+
+        local proxy = {}
+        setmetatable(proxy, mt)
+        G.GAME.probabilities = proxy
     end,
 }

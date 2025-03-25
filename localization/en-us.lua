@@ -1,12 +1,13 @@
 return {
     descriptions = {
 		Blind = {
+			bl_Roland_improbable = {
+				name = "The Improbable",
+				text = {"{C:attention}All probabilities", "cannot happen"}
+			},
 			bl_Roland_nimble = {
 				name = "The Nimble",
-				text = {
-					 "The first {C:attention}5 cards",
-                     "drawn are {C:attention}played",
-				 }
+				text = {"The first {C:attention}5 cards", "drawn are {C:attention}played"}
 			},
         },
         Joker = {
