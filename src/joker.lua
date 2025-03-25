@@ -54,8 +54,8 @@ SMODS.Joker {
         local loc_self = G.localization.descriptions.Joker.j_Roland_escapey
         local quotes = loc_self.quotes
         local merge = G.jokers and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 1 and loc_self.merge or {}
-        local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or quotes.normal[math.random(#quotes.normal)]
-        local scared = (merge[1] or not (Jen or Jane or {}).sinister) and {} or quotes.scared[math.random(#quotes.scared)]
+        local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or pseudorandom_element(quotes.normal, pseudoseed("EscapeyQuotes"))
+        local scared = (merge[1] or not (Jen or Jane or {}).sinister) and {} or pseudorandom_element(quotes.scared, pseudoseed("EscapeyQuotes"))
 
         return {vars = {
             card.ability.extra.level_up_by,
