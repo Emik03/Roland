@@ -1,5 +1,14 @@
 return {
     descriptions = {
+		Blind = {
+			bl_Roland_nimble = {
+				name = "The Nimble",
+				text = {
+					 "The first {C:attention}5 cards",
+                     "drawn are {C:attention}played",
+				 }
+			},
+        },
         Joker = {
             j_Roland_escapey = {
                 name = "Escapey",
