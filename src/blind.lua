@@ -10,7 +10,7 @@ SMODS.Atlas {
 SMODS.Blind	{
     key = "nimble",
     boss = {min = 1, max = 10, no_orb = true, hardcore = true},
-    boss_colour = HEX("8be9fd"),
+    boss_colour = HEX("0291fb"),
     atlas = "blind",
     pos = {x = 0, y = 0},
     mult = 2,
