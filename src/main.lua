@@ -10,3 +10,5 @@ SMODS.Atlas {
     key = "modicon",
     path = "icon.png",
 }
+
+SMODS.Joker:take_ownership("joker", {cost = 1}, true)
