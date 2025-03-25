@@ -12,23 +12,23 @@ local card = {eternal = true, cry_absolute = true}
 
 SMODS.Challenge {
     key = "Ascension",
-    deck = {type = deck},
-    rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
+    deck = deck,
     jokers = {card},
+    rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
 }
 
 SMODS.Challenge {
     key = "Soaring",
-    deck = {type = deck},
+    deck = deck,
+    jokers = {card},
     sleeve = "sleeve_cry_equilibrium_sleeve",
     rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
-    jokers = {card},
 }
 
 SMODS.Challenge {
     key = "Balanced_Jokers",
+    restrictions = balanced_jokers,
     rules = {custom = {{id = "Roland_Balanced_Jokers"}}},
-    restrictions = balanced_jokers
 }
 
 G.E_MANAGER:add_event(Event {
@@ -39,17 +39,20 @@ G.E_MANAGER:add_event(Event {
             card.id = Jen and "j_jen_saint" or "j_jane_saint"
         end
 
-        jokerful.banned_cards = F.map(
+        F.foreach(
             F.filter(
                 G.P_CENTERS,
                 function (v) return v.set == "Joker" end
             ),
-            function (v) return { id = v.key } end
+            function (v) table.insert(jokerful.banned_cards, {id = v.key}) end
         )
 
-        balanced_jokers.banned_cards = F.filter(
-            jokerful.banned_cards,
-            function (v) return v.id:sub(1, 6) == "j_cry_" or v.id:sub(1, 6) == "j_jen_" end
+        F.foreach(
+            F.filter(
+                jokerful.banned_cards,
+                function (v) return v.id:sub(1, 6) == "j_cry_" or v.id:sub(1, 6) == "j_jen_" end
+            ),
+            function (v) table.insert(balanced_jokers.banned_cards, {id = v.key}) end
         )
 
         return true
