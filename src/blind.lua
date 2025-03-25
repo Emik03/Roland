@@ -15,6 +15,9 @@ SMODS.Blind	{
     pos = {x = 0, y = 0},
     mult = 2,
     dollars = 5,
+    defeat = function(self)
+        self.disabled = false
+    end,
     disable = function(self)
         self.disabled = true
     end,
@@ -34,7 +37,14 @@ SMODS.Blind	{
 
         if not self.disabled then
             self.disabled = true
-            G.E_MANAGER:add_event(Event({func = force_hand}))
+            G.E_MANAGER:add_event(Event({
+                delay = 0.1,
+                trigger = "after",
+                func = force_hand,
+            }))
         end
+    end,
+    set_blind = function(self)
+        self.disabled = false
     end,
 }
