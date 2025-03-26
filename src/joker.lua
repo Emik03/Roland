@@ -70,6 +70,11 @@ SMODS.Joker {
             scared[2] or "",
         }}
     end,
+    calculate = function (_, _, context)
+        if type(G.escapey_debugger) == "function" then
+            G.escapey_debugger(F.reduce(context, "", function (acc, _, next) return acc .. ", " .. next end, pairs):sub(2))
+        end
+    end,
     Bakery_can_use = function(_, card)
         return not card.debuff and can_use() and (
             #G.GAME.tags ~= 0 or
