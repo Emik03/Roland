@@ -22,10 +22,14 @@ SMODS.Consumable {
     pos = {x = 0, y = 0},
     cost = 6,
     atlas = "void",
+    config = {extra = {amount = 2}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.amount}}
+    end,
     can_use = function(_, _)
         return #G.playing_cards > 1 and can_use()
     end,
-    use = function(_, _, _, _)
+    use = function(_, card, _, _)
         local function destructible(v)
             return not v.ability or not (v.ability.eternal or v.ability.cry_absolute)
         end
@@ -48,6 +52,24 @@ SMODS.Consumable {
 
             F.foreach(cards, destroy)
             F.foreach(G.jokers.cards, calculate_joker)
+
+            for _ = 1, card.ability.extra.amount do
+                local cryptid = create_card(
+                    nil,
+                    G.consumeables,
+                    nil,
+                    nil,
+                    nil,
+                    nil,
+                    "c_cryptid",
+                    "void"
+                )
+
+                cryptid:set_edition({negative = true}, true)
+                cryptid:add_to_deck()
+                G.consumeables:emplace(cryptid)
+            end
+
             return true
         end
 

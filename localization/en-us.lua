@@ -1,14 +1,14 @@
 return {
     descriptions = {
-		Blind = {
-			bl_Roland_improbable = {
-				name = "The Improbable",
-				text = {"{C:attention}All probabilities", "cannot happen"}
-			},
-			bl_Roland_nimble = {
-				name = "The Nimble",
-				text = {"The first {C:attention}5 cards", "drawn are {C:attention}played"}
-			},
+        Blind = {
+            bl_Roland_improbable = {
+                name = "The Improbable",
+                text = {"{C:attention}All probabilities", "cannot happen"}
+            },
+            bl_Roland_nimble = {
+                name = "The Nimble",
+                text = {"The first {C:attention}5 cards", "drawn are {C:attention}played"}
+            },
         },
         Joker = {
             j_Roland_escapey = {
@@ -48,7 +48,8 @@ return {
                 name = "Void",
                 text = {
                     "{C:red}Destroys {X:red,C:white}all{} owned",
-                    "{C:attention}playing cards",
+                    "playing cards {}for",
+                    "{C:attention}#1# {C:dark_edition}Negative {C:spectral}Cryptids",
                 }
             }
         }
