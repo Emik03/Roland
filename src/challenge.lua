@@ -17,13 +17,15 @@ SMODS.Challenge {
     rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
 }
 
-SMODS.Challenge {
-    key = "Soaring",
-    deck = deck,
-    jokers = {card},
-    sleeve = "sleeve_cry_equilibrium_sleeve",
-    rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
-}
+if Cryptid then
+    SMODS.Challenge {
+        key = "Soaring",
+        deck = deck,
+        jokers = {card},
+        sleeve = "sleeve_cry_equilibrium_sleeve",
+        rules = {custom = {{id = "Roland_Saint"}, {id = "Roland_Accelerated"}}},
+    }
+end
 
 SMODS.Challenge {
     key = "Balanced_Jokers",
