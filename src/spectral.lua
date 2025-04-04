@@ -2,8 +2,8 @@ SMODS.Sound({key = "void", path = "void.ogg"})
 
 local function can_use()
     return not ((G.play and #G.play.cards > 0 or
-        G.CONTROLLER.locked or
-        (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
+            G.CONTROLLER.locked or
+            (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
         G.STATE ~= G.STATES.HAND_PLAYED and
         G.STATE ~= G.STATES.DRAW_TO_HAND and
         G.STATE ~= G.STATES.PLAY_TAROT)
@@ -13,7 +13,7 @@ SMODS.Atlas {
     px = 71,
     py = 95,
     key = "void",
-    path = "void.png"
+    path = "void.png",
 }
 
 SMODS.Consumable {
@@ -79,7 +79,7 @@ SMODS.Consumable {
             delay = 0.27,
             timer = "REAL",
             trigger = "after",
-            func = void
+            func = void,
         }))
-    end
+    end,
 }

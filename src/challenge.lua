@@ -4,7 +4,7 @@ local balanced_jokers = {banned_cards = {}}
 SMODS.Challenge {
     key = "Jokerful",
     rules = {custom = {{id = "Roland_Jokerful"}}},
-    restrictions = jokerful
+    restrictions = jokerful,
 }
 
 local deck = {}
@@ -44,19 +44,19 @@ G.E_MANAGER:add_event(Event {
         F.foreach(
             F.filter(
                 G.P_CENTERS,
-                function (v) return v.set == "Joker" end
+                function(v) return v.set == "Joker" end
             ),
-            function (v) table.insert(jokerful.banned_cards, {id = v.key}) end
+            function(v) table.insert(jokerful.banned_cards, {id = v.key}) end
         )
 
         F.foreach(
             F.filter(
                 jokerful.banned_cards,
-                function (v) return v.id:sub(1, 6) == "j_cry_" or v.id:sub(1, 6) == "j_jen_" end
+                function(v) return v.id:sub(1, 6) == "j_cry_" or v.id:sub(1, 6) == "j_jen_" end
             ),
-            function (v) table.insert(balanced_jokers.banned_cards, {id = v.key}) end
+            function(v) table.insert(balanced_jokers.banned_cards, {id = v.key}) end
         )
 
         return true
-    end
+    end,
 })

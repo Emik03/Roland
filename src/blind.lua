@@ -32,16 +32,16 @@ function Game:update(dt)
     orig_update(self, dt)
     local orig = G.GAME.probabilities
 
-    if not G.GAME.improbable or not getmetatable(orig) then
+    if not G.GAME.improbable or getmetatable(orig) then
         return
     end
 
     local mt = {
         orig = orig,
-        __index = function (_, k)
+        __index = function(_, k)
             return k == "normal" and 0 or orig[k]
         end,
-        __newindex = function (_, k, v)
+        __newindex = function(_, k, v)
             if k ~= "normal" or v ~= 0 then
                 orig[k] = v
             end
@@ -68,7 +68,7 @@ SMODS.Blind {
     end,
 }
 
-SMODS.Blind	{
+SMODS.Blind {
     key = "nimble",
     boss = {min = 1, max = 10},
     boss_colour = HEX("0291fb"),

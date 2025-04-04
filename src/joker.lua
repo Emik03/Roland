@@ -1,7 +1,7 @@
 local function can_use()
     return not ((G.play and #G.play.cards > 0 or
-        G.CONTROLLER.locked or
-        (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
+            G.CONTROLLER.locked or
+            (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
         G.STATE ~= G.STATES.HAND_PLAYED and
         G.STATE ~= G.STATES.DRAW_TO_HAND and
         G.STATE ~= G.STATES.PLAY_TAROT)
@@ -11,7 +11,7 @@ local function common_hand()
     return (G.GAME or {}).current_round and F.reduce(
         G.GAME.hands,
         {name = "High Card", order = -1 / 0, played = 0},
-        function (a, v, k)
+        function(a, v, k)
             return (a.played < v.played or (a.played == v.played) and (a.order > v.order)) and
                 {name = k, order = v.order, played = v.played} or a
         end,
@@ -24,9 +24,9 @@ local function destructible(card)
 end
 
 local function is_mergeable_with(it)
-    return function (card)
+    return function(card)
         return it.rank ~= card.rank and
-            card.label == 'j_Roland_Escapey' and not
+            card.key == "j_Roland_Escapey" and not
             (card.ability or {}).eternal
     end
 end
@@ -53,26 +53,35 @@ SMODS.Joker {
     loc_vars = function(_, _, card)
         local loc_self = G.localization.descriptions.Joker.j_Roland_escapey
         local quotes = loc_self.quotes
-        local merge = G.jokers and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 1 and loc_self.merge or {}
-        local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or pseudorandom_element(quotes.normal, pseudoseed("EscapeyQuotes")) or {}
-        local scared = (merge[1] or not (Jen or Jane or {}).sinister) and {} or pseudorandom_element(quotes.scared, pseudoseed("EscapeyQuotes")) or {}
 
-        return {vars = {
-            card.ability.extra.level_up_by,
-            localize(common_hand(), "poker_hands"),
-            merge[1] or "",
-            normal[1] or "",
-            scared[1] or "",
-            merge[2] or "",
-            merge[3] and loc_self.name or "",
-            merge[3] or "",
-            normal[2] or "",
-            scared[2] or "",
-        }}
+        local merge = G.jokers
+            and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 1
+            and loc_self.merge or {}
+
+        local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or
+            pseudorandom_element(quotes.normal, pseudoseed("EscapeyQuotes")) or {}
+
+        local scared = (merge[1] or not (Jen or Jane or {}).sinister) and {} or
+            pseudorandom_element(quotes.scared, pseudoseed("EscapeyQuotes")) or {}
+
+        return {
+            vars = {
+                card.ability.extra.level_up_by,
+                localize(common_hand(), "poker_hands"),
+                merge[1] or "",
+                normal[1] or "",
+                scared[1] or "",
+                merge[2] or "",
+                merge[3] and loc_self.name or "",
+                merge[3] or "",
+                normal[2] or "",
+                scared[2] or "",
+            },
+        }
     end,
-    calculate = function (_, _, context)
+    calculate = function(_, _, context)
         if type(G.escapey_debugger) == "function" then
-            G.escapey_debugger(F.reduce(context, "", function (acc, _, next) return acc .. ", " .. next end, pairs):sub(2))
+            G.escapey_debugger(F.reduce(context, "", function(acc, _, next) return acc .. ", " .. next end, pairs):sub(2))
         end
     end,
     Bakery_can_use = function(_, card)
@@ -96,7 +105,7 @@ SMODS.Joker {
 
             F.foreach(
                 F.filter(G.jokers.cards, is_mergeable_with(card)),
-                function (v)
+                function(v)
                     sum = sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
                     v:start_dissolve({HEX("57ecab")}, nil, 1.6)
                 end
@@ -110,18 +119,18 @@ SMODS.Joker {
                 sound = type(snd) == "string" and snd or type(snd) == "nil" and "button",
                 volume = vol or 0.7,
                 pitch = pit or 0.8,
-                delay = de or 0.3
+                delay = de or 0.3,
             }, {
                 handname = name or "????",
                 chips = chip or "?",
                 level = lv or "?",
                 mult = mul or "?",
-                StatusText = notif
+                StatusText = notif,
             })
         end
 
         local function fast_delete(v)
-            return function ()
+            return function()
                 attention_text({
                     scale = 0.7,
                     align = "cm",
@@ -152,14 +161,14 @@ SMODS.Joker {
 
         F.foreach(
             F.filter(G.consumeables.cards, destructible),
-            function (v)
+            function(v)
                 v:start_dissolve({HEX("57ecab")}, nil, 1.6)
             end
         )
 
         F.foreach(
             G.GAME.tags,
-            function (v)
+            function(v)
                 G.E_MANAGER:add_event(Event({trigger = "immediate", func = fast_delete(v)}))
             end
         )
