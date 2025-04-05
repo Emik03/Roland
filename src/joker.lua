@@ -26,7 +26,7 @@ end
 local function is_mergeable_with(it)
     return function(card)
         return it.rank ~= card.rank and
-            card.key == "j_Roland_Escapey" and not
+            card.label == "j_Roland_escapey" and not
             (card.ability or {}).eternal
     end
 end
@@ -55,7 +55,7 @@ SMODS.Joker {
         local quotes = loc_self.quotes
 
         local merge = G.jokers
-            and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 1
+            and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 0
             and loc_self.merge or {}
 
         local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or
