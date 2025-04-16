@@ -54,4 +54,12 @@ return {
             },
         },
     },
+    misc = {
+        challenge_names = {
+            c_Roland_Jokerful = "Jokerful",
+        },
+        v_text = {
+            ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
+        },
+    },
 }
