@@ -3,11 +3,11 @@ return {
         Blind = {
             bl_Roland_improbable = {
                 name = "The Improbable",
-                text = {"{C:attention}All probabilities", "cannot happen"}
+                text = {"{C:attention}All probabilities", "cannot happen"},
             },
             bl_Roland_nimble = {
                 name = "The Nimble",
-                text = {"The first {C:attention}5 cards", "drawn are {C:attention}played"}
+                text = {"The first {C:attention}5 cards", "drawn are {C:attention}played"},
             },
         },
         Joker = {
@@ -27,21 +27,21 @@ return {
                 quotes = {
                     marble = {{"there is no escape..."}},
                     normal = {
-                        {"I can't wait to", "work with you!"},
-                        {"Did you need something", "from me?"},
-                        {"Oh! I'm just so", "happy to see you!"},
+                        {"I can't wait to",                        "work with you!"},
+                        {"Did you need something",                 "from me?"},
+                        {"Oh! I'm just so",                        "happy to see you!"},
                         {"Can I talk about something irrelevant?", "I promise it won't be long."},
-                        {"Can you introduce me to your friends?", "Assuming you have friends of course!"},
+                        {"Can you introduce me to your friends?",  "Assuming you have friends of course!"},
                     },
                     scared = {
-                        {"What am I", "going to do?!"},
-                        {"I'm not scared,", "you are!"},
-                        {"Tell me when", "this is over..."},
-                        {"I can't keep", "looking at this!"},
+                        {"What am I",         "going to do?!"},
+                        {"I'm not scared,",   "you are!"},
+                        {"Tell me when",      "this is over..."},
+                        {"I can't keep",      "looking at this!"},
                         {"Let me go hide in", "this corner... Okay?"},
                     },
                 },
-            }
+            },
         },
         Spectral = {
             c_Roland_void = {
@@ -50,22 +50,8 @@ return {
                     "{C:red}Destroys {X:red,C:white}all{} owned",
                     "playing cards {}for",
                     "{C:attention}#1# {C:dark_edition}Negative {C:spectral}Cryptids",
-                }
-            }
-        }
-    },
-    misc = {
-        challenge_names = {
-            c_Roland_Soaring = "Soaring",
-            c_Roland_Jokerful = "Jokerful",
-            c_Roland_Ascension = "Ascension",
-            c_Roland_Balanced_Jokers = "Balanced Jokers",
+                },
+            },
         },
-        v_text = {
-            ch_c_Roland_Accelerated = {"Start with {C:blue}Accelerated Deck"},
-            ch_c_Roland_Saint = {"Start with an {C:attention}Eternal {C:legendary}Saint"},
-            ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
-            ch_c_Roland_Balanced_Jokers = {"All Cryptid and Jen's jokers {C:attention}cannot appear"},
-        }
-    }
+    },
 }
