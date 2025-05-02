@@ -44,6 +44,14 @@ return {
             },
         },
         Spectral = {
+            c_Roland_afterimage = {
+                name = "Afterimage",
+                text = {
+                    "Add {C:dark_edition}Negative {}to {C:attention}#1#",
+                    "selected card in hand",
+                    "{C:red}#2#{} hand size",
+                },
+            },
             c_Roland_void = {
                 name = "Void",
                 text = {

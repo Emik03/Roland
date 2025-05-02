@@ -1,5 +1,3 @@
-SMODS.Sound({key = "void", path = "void.ogg"})
-
 local function can_use()
     return not ((G.play and #G.play.cards > 0 or
             G.CONTROLLER.locked or
@@ -9,11 +7,56 @@ local function can_use()
         G.STATE ~= G.STATES.PLAY_TAROT)
 end
 
+SMODS.Sound({key = "void", path = "void.ogg"})
+
+SMODS.Atlas {
+    px = 71,
+    py = 95,
+    key = "afterimage",
+    path = "afterimage.png",
+}
+
 SMODS.Atlas {
     px = 71,
     py = 95,
     key = "void",
     path = "void.png",
+}
+
+SMODS.Consumable {
+    key = "afterimage",
+    set = "Spectral",
+    pos = {x = 0, y = 0},
+    cost = 6,
+    atlas = "afterimage",
+    config = {extra = {amount = 1, hand = -1}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.amount, card.ability.extra.hand}}
+    end,
+    can_use = function(_, card)
+        return can_use() and card.ability.extra.amount == #Bakery_API.get_highlighted()
+    end,
+    use = function(_, card, _, _)
+        for _, v in ipairs(Bakery_API.get_highlighted()) do
+            G.E_MANAGER:add_event(Event {
+                delay = 0.1,
+                func = function()
+                    v:set_edition({negative = true})
+                    v:juice_up(0.5, 0.5)
+                    return true
+                end,
+            })
+        end
+
+        G.E_MANAGER:add_event(Event {
+            delay = 0.1,
+            func = function()
+                G.hand:change_size(card.ability.extra.hand)
+                Bakery_API.unhighlight_all()
+                return true
+            end,
+        })
+    end,
 }
 
 SMODS.Consumable {
