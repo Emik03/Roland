@@ -52,6 +52,8 @@ SMODS.Joker {
     blueprint_compat = false,
     loc_vars = function(_, _, card)
         local loc_self = G.localization.descriptions.Joker.j_Roland_escapey
+
+        ---@diagnostic disable-next-line: undefined-global
         local sinister = (Jen or {}).sinister or G.escapey_sinister
         local quotes = loc_self.quotes
 
