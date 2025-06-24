@@ -52,16 +52,17 @@ SMODS.Joker {
     blueprint_compat = false,
     loc_vars = function(_, _, card)
         local loc_self = G.localization.descriptions.Joker.j_Roland_escapey
+        local sinister = (Jen or {}).sinister or G.escapey_sinister
         local quotes = loc_self.quotes
 
         local merge = G.jokers
             and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 0
             and loc_self.merge or {}
 
-        local normal = (merge[1] or (Jen or Jane or {}).sinister) and {} or
+        local normal = (merge[1] or sinister) and {} or
             pseudorandom_element(quotes.normal, pseudoseed("EscapeyQuotes")) or {}
 
-        local scared = (merge[1] or not (Jen or Jane or {}).sinister) and {} or
+        local scared = (merge[1] or not sinister) and {} or
             pseudorandom_element(quotes.scared, pseudoseed("EscapeyQuotes")) or {}
 
         return {
