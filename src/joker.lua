@@ -10,10 +10,10 @@ end
 local function common_hand()
     return (G.GAME or {}).current_round and F.reduce(
         G.GAME.hands,
-        {name = "High Card", order = -1 / 0, played = 0},
+        { name = "High Card", order = -1 / 0, played = 0 },
         function(a, v, k)
             return (a.played < v.played or (a.played == v.played) and (a.order > v.order)) and
-                {name = k, order = v.order, played = v.played} or a
+                { name = k, order = v.order, played = v.played } or a
         end,
         pairs
     ).name or "High Card"
@@ -41,10 +41,10 @@ SMODS.Atlas {
 SMODS.Joker {
     key = "escapey",
     atlas = "escapey",
-    pos = {x = 0, y = 0},
-    sinis = {x = 2, y = 0},
-    soul_pos = {x = 1, y = 0},
-    config = {extra = {level_up_by = 1}},
+    pos = { x = 0, y = 0 },
+    sinis = { x = 2, y = 0 },
+    soul_pos = { x = 1, y = 0 },
+    config = { extra = { level_up_by = 1 } },
     cost = 8,
     rarity = 3,
     eternal_compat = true,
@@ -110,7 +110,7 @@ SMODS.Joker {
                 F.filter(G.jokers.cards, is_mergeable_with(card)),
                 function(v)
                     sum = sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
-                    v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+                    v:start_dissolve({ HEX("57ecab") }, nil, 1.6)
                 end
             )
 
@@ -165,22 +165,25 @@ SMODS.Joker {
         F.foreach(
             F.filter(G.consumeables.cards, destructible),
             function(v)
-                v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+                v:start_dissolve({ HEX("57ecab") }, nil, 1.6)
             end
         )
+
+        local trigger = #G.GAME.tags >= 30 and "immediate" or "before"
+        local delay = #G.GAME.tags >= 30 and 0 or 1 / #G.GAME.tags
 
         F.foreach(
             G.GAME.tags,
             function(v)
-                G.E_MANAGER:add_event(Event({trigger = "immediate", func = fast_delete(v)}))
+                G.E_MANAGER:add_event(Event { trigger = trigger, blocking = #G.GAME.tags < 30, delay = delay, func = fast_delete(v) })
             end
         )
 
         level_up_hand(card, hand, nil, object_count * card.ability.extra.level_up_by)
 
         update_hand_text(
-            {sound = "button", volume = 0.7, pitch = 1.1, delay = 0},
-            {mult = 0, chips = 0, handname = "", level = ""}
+            { sound = "button", volume = 0.7, pitch = 1.1, delay = 0 },
+            { mult = 0, chips = 0, handname = "", level = "" }
         )
     end,
 }
