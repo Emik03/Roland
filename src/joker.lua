@@ -10,10 +10,10 @@ end
 local function common_hand()
     return (G.GAME or {}).current_round and F.reduce(
         G.GAME.hands,
-        { name = "High Card", order = -1 / 0, played = 0 },
+        {name = "High Card", order = -1 / 0, played = 0},
         function(a, v, k)
             return (a.played < v.played or (a.played == v.played) and (a.order > v.order)) and
-                { name = k, order = v.order, played = v.played } or a
+                {name = k, order = v.order, played = v.played} or a
         end,
         pairs
     ).name or "High Card"
@@ -41,10 +41,10 @@ SMODS.Atlas {
 SMODS.Joker {
     key = "escapey",
     atlas = "escapey",
-    pos = { x = 0, y = 0 },
-    sinis = { x = 2, y = 0 },
-    soul_pos = { x = 1, y = 0 },
-    config = { extra = { level_up_by = 1 } },
+    pos = {x = 0, y = 0},
+    sinis = {x = 2, y = 0},
+    soul_pos = {x = 1, y = 0},
+    config = {extra = {level_up_by = 1}},
     cost = 8,
     rarity = 3,
     eternal_compat = true,
@@ -87,6 +87,7 @@ SMODS.Joker {
             G.escapey_debugger(F.reduce(context, "", function(acc, _, next) return acc .. ", " .. next end, pairs):sub(2))
         end
     end,
+    ---@param card Card
     Bakery_can_use = function(_, card)
         return not card.debuff and can_use() and (
             #G.GAME.tags ~= 0 or
@@ -94,27 +95,40 @@ SMODS.Joker {
             F.any(F.filter(G.jokers.cards, is_mergeable_with(card)))
         )
     end,
+    ---@param card Card
     Bakery_use_button_text = function(_, card)
-        return card.debuff and "DEBUFFED" or
-            ((#G.GAME.tags == 0 and not
-                F.any(G.consumeables.cards, destructible) and
-                F.any(F.filter(G.jokers.cards, is_mergeable_with(card)))) and "MERGE" or "ESCAPE")
+        if card.debuff then
+            return "DEBUFFED"
+        end
+
+        return #G.GAME.tags == 0 and F.count(G.consumeables.cards, destructible) == 0 and
+            F.any(F.filter(G.jokers.cards, is_mergeable_with(card))) and "FUSE" or "ESCAPE"
     end,
+    ---@param card Card
     Bakery_use_joker = function(_, card)
-        local hand, object_count = common_hand(), F.count(F.filter(G.consumeables.cards, destructible)) + #G.GAME.tags
+        if card.debuff then
+            return
+        end
+
+        local consumables = F.filter(G.consumeables.cards, destructible)
+        local consumable_count = F.count(consumables)
+        local object_count = consumable_count + #G.GAME.tags
 
         if object_count == 0 then
-            local sum = 0
+            local level_sum, sell_sum = 0, 0
 
             F.foreach(
                 F.filter(G.jokers.cards, is_mergeable_with(card)),
                 function(v)
-                    sum = sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
-                    v:start_dissolve({ HEX("57ecab") }, nil, 1.6)
+                    level_sum = level_sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
+                    sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
+                    v:start_dissolve({HEX("57ecab")}, nil, 1.6)
                 end
             )
 
-            card.ability.extra.level_up_by = card.ability.extra.level_up_by + sum
+            card.ability.extra.level_up_by = card.ability.extra.level_up_by + level_sum
+            card.sell_cost = card.sell_cost + sell_sum
+            return
         end
 
         local function update(name, chip, mul, lv, notif, snd, vol, pit, de)
@@ -151,6 +165,8 @@ SMODS.Joker {
             end
         end
 
+        local hand = common_hand()
+
         if hand == "all" or hand == "allhands" or hand == "all_hands" then
             update(localize("k_all_hands"), "...", "...", "")
         elseif G.GAME.hands[hand or "NO_HAND_SPECIFIED"] then
@@ -162,28 +178,30 @@ SMODS.Joker {
             )
         end
 
-        F.foreach(
-            F.filter(G.consumeables.cards, destructible),
-            function(v)
-                v:start_dissolve({ HEX("57ecab") }, nil, 1.6)
-            end
-        )
+        if consumable_count == 0 then
+            local trigger = #G.GAME.tags >= 30 and "immediate" or "before"
+            local delay = #G.GAME.tags >= 30 and 0 or 1 / #G.GAME.tags
 
-        local trigger = #G.GAME.tags >= 30 and "immediate" or "before"
-        local delay = #G.GAME.tags >= 30 and 0 or 1 / #G.GAME.tags
-
-        F.foreach(
-            G.GAME.tags,
-            function(v)
-                G.E_MANAGER:add_event(Event { trigger = trigger, blocking = #G.GAME.tags < 30, delay = delay, func = fast_delete(v) })
-            end
-        )
+            F.foreach(
+                G.GAME.tags,
+                function(v)
+                    G.E_MANAGER:add_event(Event {trigger = trigger, blocking = #G.GAME.tags < 30, delay = delay, func = fast_delete(v)})
+                end
+            )
+        else
+            F.foreach(
+                consumables,
+                function(v)
+                    v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+                end
+            )
+        end
 
         level_up_hand(card, hand, nil, object_count * card.ability.extra.level_up_by)
 
         update_hand_text(
-            { sound = "button", volume = 0.7, pitch = 1.1, delay = 0 },
-            { mult = 0, chips = 0, handname = "", level = "" }
+            {sound = "button", volume = 0.7, pitch = 1.1, delay = 0},
+            {mult = 0, chips = 0, handname = "", level = ""}
         )
     end,
 }

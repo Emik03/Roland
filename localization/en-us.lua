@@ -14,7 +14,7 @@ return {
             j_Roland_escapey = {
                 name = "Escapey",
                 text = {
-                    "Destroy {C:attention}tags{} and {C:attention}non-selected",
+                    "Destroy {C:attention}tags{} or {C:attention}non-selected",
                     "{C:attention}consumables{} on use. Level up",
                     "the {C:planet}most played hand{} by {C:planet}#1#{}",
                     "for each destroyed object",
@@ -23,7 +23,7 @@ return {
                     "#3#{C:inactive,s:0.75,E:1}#4#{C:red,s:1.5,E:1}#5#",
                     "#6#{C:blue,E:1}#7#{}#8#{C:inactive,s:0.75,E:1}#9#{C:red,s:1.5,E:1}#10#",
                 },
-                merge = {"Since no objects apply, merge", "with other ", " jokers"},
+                merge = {"Since no objects apply, fuse", "with other ", " jokers"},
                 quotes = {
                     marble = {{"there is no escape..."}},
                     normal = {
