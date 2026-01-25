@@ -64,7 +64,10 @@ SMODS.Consumable {
     set = "Spectral",
     pos = {x = 0, y = 0},
     cost = 6,
+    hidden = true,
     atlas = "void",
+    soul_rate = 0.003,
+    soul_set = "Spectral",
     config = {extra = {amount = 2}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount}}
