@@ -4,6 +4,7 @@ SMODS.Challenge {
     key = "Jokerful",
     rules = {custom = {{id = "Roland_Jokerful"}}},
     restrictions = jokerful,
+    pronouns = "he_him",
 }
 
 G.E_MANAGER:add_event(Event {

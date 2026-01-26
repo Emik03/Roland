@@ -59,6 +59,7 @@ SMODS.Blind {
     boss_colour = HEX("009966"),
     atlas = "blind",
     pos = {x = 0, y = 0},
+    pronouns = "any_all",
     mult = 2,
     dollars = 5,
     defeat = disable_improbable,
@@ -74,6 +75,7 @@ SMODS.Blind {
     boss_colour = HEX("0291fb"),
     atlas = "blind",
     pos = {x = 0, y = 1},
+    pronouns = "she_her",
     mult = 2,
     dollars = 5,
     defeat = function(self)

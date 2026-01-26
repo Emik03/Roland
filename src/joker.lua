@@ -41,6 +41,7 @@ SMODS.Atlas {
 SMODS.Joker {
     key = "escapey",
     atlas = "escapey",
+    pronouns = "they_them",
     pos = {x = 0, y = 0},
     sinis = {x = 2, y = 0},
     soul_pos = {x = 1, y = 0},

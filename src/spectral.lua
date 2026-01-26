@@ -29,6 +29,7 @@ SMODS.Consumable {
     pos = {x = 0, y = 0},
     cost = 6,
     atlas = "afterimage",
+    pronouns = "he_they",
     config = {extra = {amount = 1, hand = -1}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount, card.ability.extra.hand}}
@@ -68,6 +69,7 @@ SMODS.Consumable {
     atlas = "void",
     soul_rate = 0.003,
     soul_set = "Spectral",
+    pronouns = "she_they",
     config = {extra = {amount = 2}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount}}
