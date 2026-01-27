@@ -6,11 +6,11 @@
     "author": [
         "Emik"
     ],
-    "version": "1.4.7",
+    "version": "1.5.0",
     "badge_colour": "8BE9FD",
     "main_file": "src/main.lua",
     "badge_text_colour": "44475A",
-    "display_name": "Roland (Emik)",
+    "display_name": "Roland",
     "description": "Adds several disconnected funny ideas I had in my head that I couldn't resist implementing in the game.",
     "provides": [],
     "conflicts": [],

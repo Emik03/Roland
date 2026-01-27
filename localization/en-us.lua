@@ -42,6 +42,19 @@ return {
                     },
                 },
             },
+            j_Roland_martingale = {
+                name = "Martingale",
+                text = {
+                    "{C:green}#1# in #2#{} chance to give {X:mult,C:white}X#2#{} Mult",
+                    "{s:0.9}Otherwise {C:green,s:0.9}#1# in #2#{s:0.9} chance to give {X:mult,C:white,s:0.9}X#3#{s:0.9} Mult",
+                    "{s:0.81}Otherwise {C:green,s:0.81}#1# in #2#{s:0.81} chance to give {X:mult,C:white,s:0.81}X#4#{s:0.81} Mult",
+                    "{s:0.6561}Otherwise {C:green,s:0.6561}#1# in #2#{s:0.6561} chance to give {X:mult,C:white,s:0.6561}X#5#{s:0.6561} Mult",
+                    "{s:0.43046721}Otherwise {C:green,s:0.43046721}#1# in #2#{s:0.43046721} chance to give {X:mult,C:white,s:0.43046721}X#6#{s:0.43046721} Mult",
+                    "{s:0.1853020188851841}Otherwise {C:green,s:0.1853020188851841}#1# in #2#{s:0.1853020188851841} chance to give {X:mult,C:white,s:0.1853020188851841}X#7#{s:0.1853020188851841} Mult",
+                    "{s:0.0343368382029250877861747139}Otherwise {C:green,s:0.0343368382029250877861747139}#1# in #2#{s:0.0343368382029250877861747139} chance to give {X:mult,C:white,s:0.0343368382029250877861747139}X#8#{s:0.0343368382029250877861747139} Mult",
+                    "{s:0}Otherwise {C:green,s:0}#1# in #2#{s:0} chance to give {X:mult,C:white,s:0}X#9#{s:0} Mult",
+                },
+            },
         },
         Spectral = {
             c_Roland_afterimage = {
@@ -65,9 +78,11 @@ return {
     misc = {
         challenge_names = {
             c_Roland_Jokerful = "Jokerful",
+            c_Roland_Pastries = "Sweet Pastries",
         },
         v_text = {
             ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
+            ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},
         },
     },
 }

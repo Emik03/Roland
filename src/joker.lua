@@ -23,6 +23,10 @@ local function destructible(card)
     return not card.highlighted and not (card.ability or {}).eternal
 end
 
+local function is_carbon(card)
+    return card.edition and card.edition.key == "e_Bakery_Carbon"
+end
+
 local function is_mergeable_with(it)
     return function(card)
         return it.rank ~= card.rank and
@@ -36,6 +40,13 @@ SMODS.Atlas {
     py = 95,
     key = "escapey",
     path = "escapey.png",
+}
+
+SMODS.Atlas {
+    px = 71,
+    py = 95,
+    key = "martingale",
+    path = "martingale.png",
 }
 
 SMODS.Joker {
@@ -59,7 +70,7 @@ SMODS.Joker {
         local quotes = loc_self.quotes
 
         local merge = G.jokers
-            and F.count(F.filter(G.jokers.cards, is_mergeable_with(card))) > 0
+            and #F.filter(G.jokers.cards, is_mergeable_with(card)) > 0
             and loc_self.merge or {}
 
         local normal = (merge[1] or sinister) and {} or
@@ -102,7 +113,7 @@ SMODS.Joker {
             return "DEBUFFED"
         end
 
-        return #G.GAME.tags == 0 and F.count(G.consumeables.cards, destructible) == 0 and
+        return #G.GAME.tags == 0 and #F.filter(G.consumeables.cards, destructible) == 0 and
             F.any(F.filter(G.jokers.cards, is_mergeable_with(card))) and "FUSE" or "ESCAPE"
     end,
     ---@param card Card
@@ -112,22 +123,27 @@ SMODS.Joker {
         end
 
         local consumables = F.filter(G.consumeables.cards, destructible)
-        local consumable_count = F.count(consumables)
-        local object_count = consumable_count + #G.GAME.tags
+        local consumable_count = #consumables
+        local tag_count = #G.GAME.tags
 
-        if object_count == 0 then
+        if consumable_count == 0 and tag_count == 0 then
             local level_sum, sell_sum = 0, 0
+            local any_carbon = is_carbon(card)
 
             F.foreach(
                 F.filter(G.jokers.cards, is_mergeable_with(card)),
                 function(v)
+                    any_carbon = any_carbon or is_carbon(v)
                     level_sum = level_sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
                     sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
                     v:start_dissolve({HEX("57ecab")}, nil, 1.6)
                 end
             )
 
-            card.ability.extra.level_up_by = card.ability.extra.level_up_by + level_sum
+            if not any_carbon then
+                card.ability.extra.level_up_by = card.ability.extra.level_up_by + level_sum
+            end
+
             card.sell_cost = card.sell_cost + sell_sum
             return
         end
@@ -179,6 +195,8 @@ SMODS.Joker {
             )
         end
 
+        local destroyed = 0
+
         if consumable_count == 0 then
             local trigger = #G.GAME.tags >= 30 and "immediate" or "before"
             local delay = #G.GAME.tags >= 30 and 0 or 1 / #G.GAME.tags
@@ -186,23 +204,74 @@ SMODS.Joker {
             F.foreach(
                 G.GAME.tags,
                 function(v)
-                    G.E_MANAGER:add_event(Event {trigger = trigger, blocking = #G.GAME.tags < 30, delay = delay, func = fast_delete(v)})
+                    destroyed = destroyed + 1
+
+                    G.E_MANAGER:add_event(Event {
+                        trigger = trigger,
+                        blocking = #G.GAME.tags < 30,
+                        delay = delay,
+                        func = fast_delete(v),
+                    })
                 end
             )
         else
             F.foreach(
                 consumables,
                 function(v)
+                    destroyed = destroyed + 1
                     v:start_dissolve({HEX("57ecab")}, nil, 1.6)
                 end
             )
         end
 
-        level_up_hand(card, hand, nil, object_count * card.ability.extra.level_up_by)
+        level_up_hand(card, hand, nil, destroyed * card.ability.extra.level_up_by)
 
         update_hand_text(
             {sound = "button", volume = 0.7, pitch = 1.1, delay = 0},
             {mult = 0, chips = 0, handname = "", level = ""}
         )
+    end,
+}
+
+SMODS.Joker {
+    key = "martingale",
+    atlas = "martingale",
+    pronouns = "he_him",
+    pos = {x = 0, y = 0},
+    config = {extra = {odds = 2, times = 0, martingale = true}},
+    cost = 7,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local normal = G.GAME.probabilities.normal
+        local odds   = card.ability.extra.odds
+        local vars   = {normal}
+
+        for i = #vars, 9 do
+            vars[i + 1] = math.pow(odds, i)
+        end
+
+        return {vars = vars}
+    end,
+    calculate = function(_, card, context)
+        if not context.joker_main then
+            return
+        end
+
+        local extra = card.ability.extra
+        local xmult = extra.odds
+
+        for _ = 1, 31 do
+            if SMODS.pseudorandom_probability(card, "j_Roland_martingale", 1, extra.odds, "Martingale") then
+                break
+            end
+
+            SMODS.calculate_effect({card = card, repetitions = 1, message = "1/" .. number_format(xmult)}, card)
+            xmult = xmult * extra.odds
+        end
+
+        SMODS.calculate_effect({card = card, xmult = xmult}, card)
     end,
 }
