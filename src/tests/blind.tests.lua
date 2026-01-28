@@ -53,6 +53,7 @@ Balatest.TestPlay {
         end)
 
         Balatest.wait_for_input()
+        Balatest.wait()
     end,
     assert = function()
         Balatest.assert_chips(2720)

@@ -86,6 +86,10 @@ SMODS.Blind {
     end,
     drawn_to_hand = function(self)
         local function force_hand()
+            if G.STATE ~= G.STATES.SELECTING_HAND or G.CONTROLLER.locked or (G.GAME.STOP_USE and G.GAME.STOP_USE > 0) then
+                return false
+            end
+
             for i, v in ipairs(G.hand.cards) do
                 if i > 5 then
                     break
@@ -100,11 +104,7 @@ SMODS.Blind {
 
         if not self.disabled then
             self.disabled = true
-            G.E_MANAGER:add_event(Event({
-                delay = 1,
-                trigger = "after",
-                func = force_hand,
-            }))
+            G.E_MANAGER:add_event(Event({func = force_hand, blocking = false}))
         end
     end,
     set_blind = function(self)
