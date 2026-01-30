@@ -1,13 +1,4 @@
-local f, q = unpack(... or require "src.functional")
-
-local function can_use()
-    return not ((G.play and #G.play.cards > 0 or
-            G.CONTROLLER.locked or
-            (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
-        G.STATE ~= G.STATES.HAND_PLAYED and
-        G.STATE ~= G.STATES.DRAW_TO_HAND and
-        G.STATE ~= G.STATES.PLAY_TAROT)
-end
+local f, q, u = unpack(... or require "src.functional")
 
 SMODS.Sound({key = "void", path = "void.ogg"})
 
@@ -37,10 +28,10 @@ SMODS.Consumable {
         return {vars = {card.ability.extra.amount, card.ability.extra.hand}}
     end,
     can_use = function(_, card)
-        return can_use() and card.ability.extra.amount == #Bakery_API.get_highlighted()
+        return u() and card.ability.extra.amount == #Bakery_API.get_highlighted()
     end,
     use = function(_, card, _, _)
-        for _, v in ipairs(Bakery_API.get_highlighted()) do
+        f(Bakery_API.get_highlighted()):foreach(function(v)
             q {
                 delay = 0.1,
                 func = function()
@@ -48,7 +39,7 @@ SMODS.Consumable {
                     v:juice_up(0.5, 0.5)
                 end,
             }
-        end
+        end)
 
         q {
             delay = 0.1,
@@ -75,7 +66,7 @@ SMODS.Consumable {
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function(_, _)
-        return #G.playing_cards > 1 and can_use()
+        return #G.playing_cards > 1 and u()
     end,
     use = function(_, card, _, _)
         local function destructible(v)
@@ -102,17 +93,7 @@ SMODS.Consumable {
             f(G.jokers.cards):foreach(calculate_joker)
 
             for _ = 1, card.ability.extra.amount do
-                local cryptid = create_card(
-                    nil,
-                    G.consumeables,
-                    nil,
-                    nil,
-                    nil,
-                    nil,
-                    "c_cryptid",
-                    "void"
-                )
-
+                local cryptid = create_card(nil, G.consumeables, nil, nil, nil, nil, "c_cryptid", "void")
                 cryptid:set_edition({negative = true}, true)
                 cryptid:add_to_deck()
                 G.consumeables:emplace(cryptid)

@@ -18,3 +18,7 @@ SMODS.Atlas {
     key = "modicon",
     path = "icon.png",
 }
+
+SMODS.current_mod.optional_features = function()
+    return {cardareas = {deck = true}}
+end

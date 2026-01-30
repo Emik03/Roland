@@ -23,7 +23,7 @@ local function protect_ev(fun)
     return fun
 end
 
-local luaf = assert(SMODS.load_file("src/LuaFunctional/functional.lua"))()
+local luaf = assert(SMODS.load_file("src/LuaFunctional/functional.lua"))() or require "src.LuaFunctional.functional"
 
 if false then
     ---Returns the elements from the given `list`. This function is equivalent to
@@ -54,9 +54,10 @@ if false then
     function unpack(list, i, j)
         error({list, i, j})
     end
-
-    luaf = require "src.LuaFunctional.functional"
 end
+
+---@class Query<K, V>: metatable
+local _ = luaf._proto
 
 --- Creates a non-numerically-indexed query from the given table.
 ---@param obj table
@@ -64,7 +65,7 @@ end
 ---@param numeric boolean?
 ---@return Query
 local function f(obj, f_pairs, numeric)
-    return f_pairs and luaf.from(obj, f_pairs, numeric ~= false) or luaf.pairs(obj)
+    return f_pairs and luaf.from(obj, f_pairs, numeric ~= false) or (obj[1] and luaf.ipairs(obj) or luaf.pairs(obj))
 end
 
 --- Queues an event to be run.
@@ -75,7 +76,15 @@ local function q(fun, front)
     G.E_MANAGER:add_event(protect_ev(fun), nil, front)
 end
 
----@class Query<K, V>: metatable
-local _ = luaf._proto
+--- Determines if a center is allowed to be usable.
+---@return boolean
+local function u()
+    return not ((G.play and #G.play.cards > 0 or
+            G.CONTROLLER.locked or
+            (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
+        G.STATE ~= G.STATES.HAND_PLAYED and
+        G.STATE ~= G.STATES.DRAW_TO_HAND and
+        G.STATE ~= G.STATES.PLAY_TAROT)
+end
 
-return {f, q}
+return {f, q, u}

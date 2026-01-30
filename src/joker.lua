@@ -1,13 +1,4 @@
-local f, q = unpack(... or require "src.functional")
-
-local function can_use()
-    return not ((G.play and #G.play.cards > 0 or
-            G.CONTROLLER.locked or
-            (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
-        G.STATE ~= G.STATES.HAND_PLAYED and
-        G.STATE ~= G.STATES.DRAW_TO_HAND and
-        G.STATE ~= G.STATES.PLAY_TAROT)
-end
+local f, q, u = unpack(... or require "src.functional")
 
 local function common_hand()
     return (G.GAME or {}).current_round and f(G.GAME.hands):reduce(
@@ -103,7 +94,7 @@ SMODS.Joker {
     end,
     ---@param card Card
     Bakery_can_use = function(_, card)
-        return not card.debuff and can_use() and (
+        return not card.debuff and u() and (
             #G.GAME.tags ~= 0 or
             f(G.consumeables.cards):filter(destructible):any() or
             f(G.jokers.cards):filter(is_mergeable_with(card)):any()

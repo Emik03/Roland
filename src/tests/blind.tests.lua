@@ -1,3 +1,5 @@
+local f = unpack(... or require "src.functional")
+
 if not Balatest then
     return
 end
@@ -139,13 +141,13 @@ Balatest.TestPlay {
         Balatest.wait_for_input()
     end,
     assert = function()
-        for k, v in pairs(G.hand.cards) do
+        f(G.hand.cards):foreach(function(v, k)
             local message = v.debuff and
                 "Card " .. k .. " should not be debuffed" or
                 "Card " .. k .. " should be debuffed"
 
             Balatest.assert(v.debuff == (v.base.value == "Ace"), message)
-        end
+        end)
     end,
 }
 
@@ -164,13 +166,13 @@ Balatest.TestPlay {
         Balatest.play_hand {"2S"}
     end,
     assert = function()
-        for k, v in pairs(G.hand.cards) do
+        f(G.hand.cards):foreach(function(v, k)
             local message = v.debuff and
                 "Card " .. k .. " should not be debuffed" or
                 "Card " .. k .. " should be debuffed"
 
             Balatest.assert(v.debuff == (v.base.value == "2"), message)
-        end
+        end)
     end,
 }
 
@@ -183,9 +185,9 @@ Balatest.TestPlay {
         Balatest.wait_for_input()
     end,
     assert = function()
-        for k, v in pairs(G.hand.cards) do
+        f(G.hand.cards):foreach(function(v, k)
             Balatest.assert(not v.debuff, "Card " .. k .. " should not be debuffed")
-        end
+        end)
     end,
 }
 

@@ -1,4 +1,4 @@
-local _, q = unpack(... or require "src.functional")
+local f, q = unpack(... or require "src.functional")
 
 SMODS.Atlas {
     px = 34,
@@ -16,26 +16,26 @@ local function common_rank()
     --- Tallies up a card area's cards.
     ---@param card_area CardArea
     local function tally_up(card_area)
-        for _, v in ipairs(card_area.cards) do
-            if not SMODS.has_no_rank(v) then
-                local id = v:get_id()
-                tally[id] = (tally[id] or 0) + 1
-                to_name[id] = v.base.value
-            end
-        end
+        f(card_area.cards):filter(function(v)
+            return not SMODS.has_no_rank(v)
+        end):foreach(function(v)
+            local id = v:get_id()
+            to_name[id] = v.base.value
+            tally[id] = (tally[id] or 0) + 1
+        end)
     end
 
     tally_up(G.deck)
     tally_up(G.hand)
     tally_up(G.discard)
-    local max_key, max_value = -1 / 0, -1 / 0
 
-    for k, v in pairs(tally) do
-        if v > max_value or k > max_key and v == max_value then
-            max_key = k
-            max_value = v
+    local max_key = f(tally):reduce({-1 / 0, -1 / 0}, function(a, v, k)
+        if v > a[1] or k > a[2] and v == a[1] then
+            return {v, k}
         end
-    end
+
+        return a
+    end)[2]
 
     return max_key, to_name[max_key]
 end
@@ -115,6 +115,7 @@ SMODS.Blind {
     pronouns = "she_her",
     mult = 2,
     dollars = 5,
+    config = {draw = 5},
     defeat = function(self)
         self.disabled = false
     end,
@@ -127,13 +128,9 @@ SMODS.Blind {
                 return false
             end
 
-            for i, v in ipairs(G.hand.cards) do
-                if i > 5 then
-                    break
-                end
-
+            f(G.hand.cards, ipairs):take(self.config.draw):foreach(function(v)
                 G.hand:add_to_highlighted(v, true)
-            end
+            end)
 
             G.FUNCS.play_cards_from_highlighted(nil)
         end
@@ -159,13 +156,15 @@ SMODS.Blind {
     dollars = 5,
     disable = function()
         local function disable()
-            for i = 1, #G.discard.cards do
-                draw_card(G.discard, G.hand, i / #G.discard.cards * 100, "up", false, G.discard.cards[i], nil, nil, true)
-            end
+            local count = #G.discard.cards
 
-            for i = 1, #G.discard.cards do
-                draw_card(G.hand, G.deck, i / #G.discard.cards * 100, "up", false, G.discard.cards[i])
-            end
+            f(G.discard.cards):take(count):foreach(function(v, i)
+                draw_card(G.discard, G.hand, i / count * 100, "up", false, v, nil, nil, true)
+            end)
+
+            f(G.discard.cards):take(count):foreach(function(v, i)
+                draw_card(G.hand, G.deck, i / count * 100, "up", false, v)
+            end)
         end
 
         q(disable)
@@ -225,11 +224,11 @@ SMODS.Blind {
         local needs_text_change = false
 
         local function process(card_area)
-            for _, v in pairs(card_area.cards) do
+            f(card_area.cards):foreach(function(v)
                 local debuff = v.debuff
                 v:set_debuff(self:recalc_debuff(v, false))
                 needs_text_change = needs_text_change or debuff ~= v.debuff
-            end
+            end)
         end
 
         process(G.deck)
@@ -265,16 +264,16 @@ SMODS.Blind {
         end
 
         local cards_added = {}
-        local length = #G.hand.highlighted
+        local count = #G.hand.highlighted
 
-        for i = 1, length do
+        f(G.hand.highlighted, ipairs):take(count):foreach(function(v, i)
             local copy = copy_card(G.hand.highlighted[i])
             copy:add_to_deck()
             table.insert(G.hand, copy)
             table.insert(cards_added, copy)
             table.insert(G.playing_cards, copy)
-            draw_card(G.hand, G.discard, i / length * 100, "down", false, copy, nil, nil, true)
-        end
+            draw_card(G.hand, G.discard, i / count * 100, "down", false, copy, nil, nil, true)
+        end)
 
         playing_card_joker_effects(cards_added)
     end,
