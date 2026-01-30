@@ -1,3 +1,5 @@
+local f, q = unpack(... or require "src.functional")
+
 local function can_use()
     return not ((G.play and #G.play.cards > 0 or
             G.CONTROLLER.locked or
@@ -39,24 +41,22 @@ SMODS.Consumable {
     end,
     use = function(_, card, _, _)
         for _, v in ipairs(Bakery_API.get_highlighted()) do
-            G.E_MANAGER:add_event(Event {
+            q {
                 delay = 0.1,
                 func = function()
                     v:set_edition({negative = true})
                     v:juice_up(0.5, 0.5)
-                    return true
                 end,
-            })
+            }
         end
 
-        G.E_MANAGER:add_event(Event {
+        q {
             delay = 0.1,
             func = function()
                 G.hand:change_size(card.ability.extra.hand)
                 Bakery_API.unhighlight_all()
-                return true
             end,
-        })
+        }
     end,
 }
 
@@ -92,14 +92,14 @@ SMODS.Consumable {
         end
 
         local function void()
-            local cards = F.filter(G.playing_cards, destructible)
+            local cards = f(G.playing_cards):filter(destructible):into()
 
             local function calculate_joker(v)
                 v:calculate_joker({remove_playing_cards = true, removed = cards})
             end
 
-            F.foreach(cards, destroy)
-            F.foreach(G.jokers.cards, calculate_joker)
+            f(cards):foreach(destroy)
+            f(G.jokers.cards):foreach(calculate_joker)
 
             for _ = 1, card.ability.extra.amount do
                 local cryptid = create_card(
@@ -117,17 +117,15 @@ SMODS.Consumable {
                 cryptid:add_to_deck()
                 G.consumeables:emplace(cryptid)
             end
-
-            return true
         end
 
         play_sound("Roland_void", 1, 0.7)
 
-        G.E_MANAGER:add_event(Event({
+        q {
             delay = 0.27,
             timer = "REAL",
             trigger = "after",
             func = void,
-        }))
+        }
     end,
 }

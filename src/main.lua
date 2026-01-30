@@ -1,13 +1,13 @@
-F = assert(SMODS.load_file("src/LuaFunctional/functional.lua"))()
-assert(SMODS.load_file("src/challenge.lua"))()
-assert(SMODS.load_file("src/spectral.lua"))()
-assert(SMODS.load_file("src/blind.lua"))()
-assert(SMODS.load_file("src/joker.lua"))()
+local qol = assert(SMODS.load_file("src/functional.lua"))() or require "src.functional"
+
+qol[1] {"challenge", "spectral", "blind", "joker", "back", "seal"}:foreach(function(v)
+    assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
+end)
 
 if Balatest then
-    assert(SMODS.load_file("src/tests/joker.tests.lua"))()
-    assert(SMODS.load_file("src/tests/blind.tests.lua"))()
-    assert(SMODS.load_file("src/tests/spectral.tests.lua"))()
+    qol[1] {"joker", "blind", "spectral"}:foreach(function(v)
+        assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
+    end)
 end
 
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)

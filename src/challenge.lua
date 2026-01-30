@@ -1,3 +1,4 @@
+local f, q = unpack(... or require "src.functional")
 local jokerful = {banned_cards = {}}
 local pastries = {banned_cards = {}, banned_tags = {}, banned_other = {}}
 
@@ -34,13 +35,16 @@ SMODS.Challenge {
     pronouns = "she_them",
 }
 
-G.E_MANAGER:add_event(Event {
+q {
     trigger = "immediate",
     func = function()
-        F.foreach(F.filter(G.P_CENTERS, is_joker), adder(jokerful.banned_cards))
-        F.foreach(F.filter(G.P_TAGS, is_banned_from_pastry), adder(pastries.banned_tags))
-        F.foreach(F.filter(G.P_BLINDS, is_banned_from_pastry), adder(pastries.banned_other))
-        F.foreach(F.filter(G.P_CENTERS, is_center_banned_from_pastry), adder(pastries.banned_cards))
-        return true
+        f {
+            {G.P_CENTERS, is_joker,                     jokerful.banned_cards},
+            {G.P_TAGS,    is_banned_from_pastry,        pastries.banned_tags},
+            {G.P_BLINDS,  is_banned_from_pastry,        pastries.banned_other},
+            {G.P_CENTERS, is_center_banned_from_pastry, pastries.banned_cards},
+        }:foreach(function(v)
+            f(v[1]):filter(v[2]):foreach(adder(v[3]))
+        end)
     end,
-})
+}

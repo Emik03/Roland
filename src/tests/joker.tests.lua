@@ -3,31 +3,6 @@ if not Balatest then
 end
 
 Balatest.TestPlay {
-    category = {"joker", "martingale"},
-    name = "martingale_oops",
-    jokers = {"j_Roland_martingale", "j_oops"},
-    execute = function()
-        Balatest.play_hand {"2S"}
-    end,
-    assert = function()
-        Balatest.assert_chips(7 * 2)
-    end,
-}
-
-Balatest.TestPlay {
-    category = {"joker", "martingale"},
-    name = "martingale_improbable",
-    blind = "bl_Roland_improbable",
-    jokers = {"j_Roland_martingale"},
-    execute = function()
-        Balatest.play_hand {"2S"}
-    end,
-    assert = function()
-        Balatest.assert_chips(7 * math.pow(2, 32))
-    end,
-}
-
-Balatest.TestPlay {
     category = {"joker", "escapey", "escape"},
     name = "escapey_none",
     jokers = {"j_Roland_escapey"},
@@ -348,5 +323,30 @@ Balatest.TestPlay {
         Balatest.assert_eq(#G.jokers.cards, 1)
         Balatest.assert_eq(G.jokers.cards[1].sell_cost, 8)
         Balatest.assert_eq(G.jokers.cards[1].ability.extra.level_up_by, 1)
+    end,
+}
+
+Balatest.TestPlay {
+    category = {"joker", "martingale"},
+    name = "martingale_oops",
+    jokers = {"j_Roland_martingale", "j_oops"},
+    execute = function()
+        Balatest.play_hand {"2S"}
+    end,
+    assert = function()
+        Balatest.assert_chips(7 * 2)
+    end,
+}
+
+Balatest.TestPlay {
+    category = {"joker", "martingale"},
+    name = "martingale_improbable",
+    blind = "bl_Roland_improbable",
+    jokers = {"j_Roland_martingale"},
+    execute = function()
+        Balatest.play_hand {"2S"}
+    end,
+    assert = function()
+        Balatest.assert_chips(7 * math.pow(2, 32))
     end,
 }

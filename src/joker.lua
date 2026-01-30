@@ -1,3 +1,5 @@
+local f, q = unpack(... or require "src.functional")
+
 local function can_use()
     return not ((G.play and #G.play.cards > 0 or
             G.CONTROLLER.locked or
@@ -8,14 +10,12 @@ local function can_use()
 end
 
 local function common_hand()
-    return (G.GAME or {}).current_round and F.reduce(
-        G.GAME.hands,
+    return (G.GAME or {}).current_round and f(G.GAME.hands):reduce(
         {name = "High Card", order = -1 / 0, played = 0},
         function(a, v, k)
             return (a.played < v.played or (a.played == v.played) and (a.order > v.order)) and
                 {name = k, order = v.order, played = v.played} or a
-        end,
-        pairs
+        end
     ).name or "High Card"
 end
 
@@ -70,7 +70,7 @@ SMODS.Joker {
         local quotes = loc_self.quotes
 
         local merge = G.jokers
-            and #F.filter(G.jokers.cards, is_mergeable_with(card)) > 0
+            and f(G.jokers.cards):filter(is_mergeable_with(card)):any()
             and loc_self.merge or {}
 
         local normal = (merge[1] or sinister) and {} or
@@ -96,15 +96,17 @@ SMODS.Joker {
     end,
     calculate = function(_, _, context)
         if type(G.escapey_debugger) == "function" then
-            G.escapey_debugger(F.reduce(context, "", function(acc, _, next) return acc .. ", " .. next end, pairs):sub(2))
+            G.escapey_debugger(f(context):reduce("", function(acc, _, next)
+                return acc .. ", " .. next
+            end):sub(2))
         end
     end,
     ---@param card Card
     Bakery_can_use = function(_, card)
         return not card.debuff and can_use() and (
             #G.GAME.tags ~= 0 or
-            F.any(G.consumeables.cards, destructible) or
-            F.any(F.filter(G.jokers.cards, is_mergeable_with(card)))
+            f(G.consumeables.cards):filter(destructible):any() or
+            f(G.jokers.cards):filter(is_mergeable_with(card)):any()
         )
     end,
     ---@param card Card
@@ -113,8 +115,8 @@ SMODS.Joker {
             return "DEBUFFED"
         end
 
-        return #G.GAME.tags == 0 and #F.filter(G.consumeables.cards, destructible) == 0 and
-            F.any(F.filter(G.jokers.cards, is_mergeable_with(card))) and "FUSE" or "ESCAPE"
+        return #G.GAME.tags == 0 and not f(G.consumeables.cards):filter(destructible):any() and
+            f(G.jokers.cards):filter(is_mergeable_with(card)):any() and "FUSE" or "ESCAPE"
     end,
     ---@param card Card
     Bakery_use_joker = function(_, card)
@@ -122,7 +124,7 @@ SMODS.Joker {
             return
         end
 
-        local consumables = F.filter(G.consumeables.cards, destructible)
+        local consumables = f(G.consumeables.cards):filter(destructible):into()
         local consumable_count = #consumables
         local tag_count = #G.GAME.tags
 
@@ -130,15 +132,12 @@ SMODS.Joker {
             local level_sum, sell_sum = 0, 0
             local any_carbon = is_carbon(card)
 
-            F.foreach(
-                F.filter(G.jokers.cards, is_mergeable_with(card)),
-                function(v)
-                    any_carbon = any_carbon or is_carbon(v)
-                    level_sum = level_sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
-                    sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
-                    v:start_dissolve({HEX("57ecab")}, nil, 1.6)
-                end
-            )
+            f(G.jokers.cards):filter(is_mergeable_with(card)):foreach(function(v)
+                any_carbon = any_carbon or is_carbon(v)
+                level_sum = level_sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
+                sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
+                v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+            end)
 
             if not any_carbon then
                 card.ability.extra.level_up_by = card.ability.extra.level_up_by + level_sum
@@ -178,7 +177,6 @@ SMODS.Joker {
                 play_sound("cancel", 1.66, 0.5)
                 v.HUD_tag.states.visible = false
                 v:remove()
-                return true
             end
         end
 
@@ -201,27 +199,21 @@ SMODS.Joker {
             local trigger = #G.GAME.tags >= 30 and "immediate" or "before"
             local delay = #G.GAME.tags >= 30 and 0 or 1 / #G.GAME.tags
 
-            F.foreach(
-                G.GAME.tags,
-                function(v)
-                    destroyed = destroyed + 1
+            f(G.GAME.tags):foreach(function(v)
+                q {
+                    trigger = trigger,
+                    blocking = #G.GAME.tags < 30,
+                    delay = delay,
+                    func = fast_delete(v),
+                }
 
-                    G.E_MANAGER:add_event(Event {
-                        trigger = trigger,
-                        blocking = #G.GAME.tags < 30,
-                        delay = delay,
-                        func = fast_delete(v),
-                    })
-                end
-            )
+                destroyed = destroyed + 1
+            end)
         else
-            F.foreach(
-                consumables,
-                function(v)
-                    destroyed = destroyed + 1
-                    v:start_dissolve({HEX("57ecab")}, nil, 1.6)
-                end
-            )
+            f(consumables):foreach(function(v)
+                v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+                destroyed = destroyed + 1
+            end)
         end
 
         level_up_hand(card, hand, nil, destroyed * card.ability.extra.level_up_by)
@@ -250,7 +242,7 @@ SMODS.Joker {
         local vars   = {normal}
 
         for i = #vars, 9 do
-            vars[i + 1] = math.pow(odds, i)
+            table.insert(vars, math.pow(odds, i))
         end
 
         return {vars = vars}
@@ -262,13 +254,16 @@ SMODS.Joker {
 
         local extra = card.ability.extra
         local xmult = extra.odds
+        local numerator = 1
 
         for _ = 1, 31 do
             if SMODS.pseudorandom_probability(card, "j_Roland_martingale", 1, extra.odds, "Martingale") then
                 break
             end
 
-            SMODS.calculate_effect({card = card, repetitions = 1, message = "1/" .. number_format(xmult)}, card)
+            numerator = numerator * (extra.odds - G.GAME.probabilities.normal)
+            local message = number_format(numerator) .. "/" .. number_format(xmult)
+            SMODS.calculate_effect({card = card, repetitions = 1, message = message}, card)
             xmult = xmult * extra.odds
         end
 

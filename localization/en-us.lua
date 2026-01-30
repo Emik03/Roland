@@ -1,13 +1,39 @@
 return {
     descriptions = {
+        Back = {
+            b_Roland_blossom = {
+                name = "Blossom Deck",
+                text = {
+                    "{C:attention}Small{} and {C:attention}Big Blinds{} are",
+                    "replaced with {C:attention}Boss Blinds",
+                    "that are {C:dark_edition}debuffed #1# times",
+                },
+            },
+            b_Roland_go = {
+                name = "placeholder",
+                text = {"grr"},
+            },
+        },
         Blind = {
             bl_Roland_improbable = {
                 name = "The Improbable",
-                text = {"{C:attention}All probabilities", "cannot happen"},
+                text = {"All probabilities", "cannot happen"},
             },
             bl_Roland_nimble = {
                 name = "The Nimble",
-                text = {"The first {C:attention}5 cards", "drawn are {C:attention}played"},
+                text = {"The first 5 cards", "drawn are played"},
+            },
+            bl_Roland_divide = {
+                name = "The Great Divide",
+                text = {"Half of the deck", "is {C:discard}discarded"},
+            },
+            bl_Roland_tranquilizer = {
+                name = "The Tranquilizer",
+                text = {"#1#s are debuffed", "Changes based on", "most common rank"},
+            },
+            bl_Roland_xerox = {
+                name = "The Xerox",
+                text = {"Discarded cards", "are copied"},
             },
         },
         Joker = {
@@ -79,6 +105,9 @@ return {
         challenge_names = {
             c_Roland_Jokerful = "Jokerful",
             c_Roland_Pastries = "Sweet Pastries",
+        },
+        v_dictionary = {
+            b_Roland_most_common_card = "(Rank)",
         },
         v_text = {
             ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
