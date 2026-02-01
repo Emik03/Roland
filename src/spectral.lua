@@ -1,6 +1,9 @@
 local f, q, u = unpack(... or require "src.functional")
 
-SMODS.Sound({key = "void", path = "void.ogg"})
+SMODS.Sound {
+    key = "void",
+    path = "void.ogg",
+}
 
 SMODS.Atlas {
     px = 71,
@@ -30,12 +33,12 @@ SMODS.Consumable {
     can_use = function(_, card)
         return u() and card.ability.extra.amount == #Bakery_API.get_highlighted()
     end,
-    use = function(_, card, _, _)
+    use = function(_, card)
         f(Bakery_API.get_highlighted()):foreach(function(v)
             q {
                 delay = 0.1,
                 func = function()
-                    v:set_edition({negative = true})
+                    v:set_edition {negative = true}
                     v:juice_up(0.5, 0.5)
                 end,
             }
@@ -48,6 +51,51 @@ SMODS.Consumable {
                 Bakery_API.unhighlight_all()
             end,
         }
+    end,
+}
+
+SMODS.Consumable {
+    key = "dual",
+    set = "Spectral",
+    pos = {x = 0, y = 0},
+    cost = 6,
+    atlas = "afterimage",
+    pronouns = "he_they",
+    config = {extra = {amount = 2}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.amount}}
+    end,
+    can_use = function()
+        return u() and #G.hand.cards > 0
+    end,
+    use = function(_, card, _)
+        local cards = f(G.hand.cards, ipairs):into()
+        pseudoshuffle(cards, pseudoseed "Roland_two")
+
+        f(cards):take(card.ability.extra.amount):foreach(function(v)
+            v:set_seal(SMODS.poll_seal {guaranteed = true})
+        end)
+    end,
+}
+
+SMODS.Consumable {
+    key = "glass",
+    set = "Spectral",
+    pos = {x = 0, y = 0},
+    cost = 6,
+    atlas = "afterimage",
+    pronouns = "he_they",
+    config = {extra = {amount = 1}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.amount}}
+    end,
+    can_use = function(_, card)
+        return u() and #Bakery_API.get_highlighted() == card.ability.extra.amount
+    end,
+    use = function(_, _, _)
+        f(Bakery_API.get_highlighted()):foreach(function(v)
+            v:set_seal "Roland_glass"
+        end)
     end,
 }
 
@@ -65,10 +113,10 @@ SMODS.Consumable {
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount}}
     end,
-    can_use = function(_, _)
+    can_use = function()
         return #G.playing_cards > 1 and u()
     end,
-    use = function(_, card, _, _)
+    use = function(_, card)
         local function destructible(v)
             return not v.ability or not (v.ability.eternal or v.ability.cry_absolute)
         end
@@ -86,7 +134,7 @@ SMODS.Consumable {
             local cards = f(G.playing_cards):filter(destructible):into()
 
             local function calculate_joker(v)
-                v:calculate_joker({remove_playing_cards = true, removed = cards})
+                v:calculate_joker {remove_playing_cards = true, removed = cards}
             end
 
             f(cards):foreach(destroy)

@@ -93,7 +93,7 @@ end
 SMODS.Blind {
     key = "improbable",
     boss = {min = 2, max = 10},
-    boss_colour = HEX("009966"),
+    boss_colour = HEX "009966",
     atlas = "blind",
     pos = {x = 0, y = 0},
     pronouns = "it_its",
@@ -109,7 +109,7 @@ SMODS.Blind {
 SMODS.Blind {
     key = "nimble",
     boss = {min = 1, max = 10},
-    boss_colour = HEX("0291fb"),
+    boss_colour = HEX "0291fb",
     atlas = "blind",
     pos = {x = 0, y = 1},
     pronouns = "she_her",
@@ -148,14 +148,14 @@ SMODS.Blind {
 SMODS.Blind {
     key = "divide",
     boss = {min = 4, max = 10},
-    boss_colour = HEX("0291fb"),
+    boss_colour = HEX "0291fb",
     atlas = "blind",
     pos = {x = 0, y = 1},
     pronouns = "they_them",
     mult = 2,
     dollars = 5,
     disable = function()
-        local function disable()
+        q(function()
             local count = #G.discard.cards
 
             f(G.discard.cards):take(count):foreach(function(v, i)
@@ -165,12 +165,11 @@ SMODS.Blind {
             f(G.discard.cards):take(count):foreach(function(v, i)
                 draw_card(G.hand, G.deck, i / count * 100, "up", false, v)
             end)
-        end
-
-        q(disable)
+        end)
     end,
     set_blind = function()
-        local function force_hand()
+        -- Allows the background to ease in first before drawing cards.
+        q(function()
             local length = (#G.deck.cards - 2) / 2
 
             for i = 0, length do
@@ -182,17 +181,14 @@ SMODS.Blind {
                 local card = G.deck.cards[#G.deck.cards - i]
                 draw_card(G.hand, G.discard, i / length * 100, "down", false, card, nil, nil, true)
             end
-        end
-
-        -- Allows the background to ease in first before drawing cards.
-        q(force_hand)
+        end)
     end,
 }
 
 SMODS.Blind {
     key = "tranquilizer",
     boss = {min = 4, max = 10},
-    boss_colour = HEX("0291fb"),
+    boss_colour = HEX "0291fb",
     atlas = "blind",
     pos = {x = 0, y = 1},
     pronouns = "they_them",
@@ -249,7 +245,7 @@ SMODS.Blind {
 SMODS.Blind {
     key = "xerox",
     boss = {min = 2, max = 10},
-    boss_colour = HEX("0291fb"),
+    boss_colour = HEX "0291fb",
     atlas = "blind",
     pos = {x = 0, y = 1},
     pronouns = "they_them",
@@ -267,7 +263,7 @@ SMODS.Blind {
         local count = #G.hand.highlighted
 
         f(G.hand.highlighted, ipairs):take(count):foreach(function(v, i)
-            local copy = copy_card(G.hand.highlighted[i])
+            local copy = copy_card(v)
             copy:add_to_deck()
             table.insert(G.hand, copy)
             table.insert(cards_added, copy)

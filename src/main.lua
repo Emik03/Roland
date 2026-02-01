@@ -1,4 +1,4 @@
-local qol = assert(SMODS.load_file("src/functional.lua"))() or require "src.functional"
+local qol = assert(SMODS.load_file "src/functional.lua")() or require "src.functional"
 
 qol[1] {"challenge", "spectral", "blind", "joker", "back", "seal"}:foreach(function(v)
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
@@ -20,5 +20,5 @@ SMODS.Atlas {
 }
 
 SMODS.current_mod.optional_features = function()
-    return {cardareas = {deck = true}}
+    return {cardareas = {deck = true, unscored = true}}
 end

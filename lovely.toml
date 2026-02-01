@@ -64,3 +64,24 @@ pattern = "elseif G.GAME.round_resets.blind == G.P_BLINDS.bl_big then"
 position = "at"
 payload = "elseif G.GAME.blind_on_deck == 'Big' then"
 match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.seal == 'Purple' and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then"
+position = "at"
+payload = """if self.seal == 'Purple' and
+    (next(SMODS.find_card "j_Roland_negative") or
+    #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit) then"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "local card = create_card('Tarot',G.consumeables, nil, nil, nil, nil, nil, '8ba')"
+position = "after"
+times = 1
+payload = """if next(SMODS.find_card "j_Roland_negative") then
+    card:set_edition "e_negative"
+end"""
+match_indent = true

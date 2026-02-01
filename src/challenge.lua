@@ -9,7 +9,7 @@ local function adder(tbl)
 end
 
 local function is_banned_from_pastry(_, k)
-    return not k:find("_Bakery_") and not k:find("_Roland_")
+    return not k:find "_Bakery_" and not k:find "_Roland_"
 end
 
 local function is_center_banned_from_pastry(v, k)

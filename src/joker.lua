@@ -65,10 +65,10 @@ SMODS.Joker {
             and loc_self.merge or {}
 
         local normal = (merge[1] or sinister) and {} or
-            pseudorandom_element(quotes.normal, pseudoseed("EscapeyQuotes")) or {}
+            pseudorandom_element(quotes.normal, pseudoseed "EscapeyQuotes") or {}
 
         local scared = (merge[1] or not sinister) and {} or
-            pseudorandom_element(quotes.scared, pseudoseed("EscapeyQuotes")) or {}
+            pseudorandom_element(quotes.scared, pseudoseed "EscapeyQuotes") or {}
 
         return {
             vars = {
@@ -127,7 +127,7 @@ SMODS.Joker {
                 any_carbon = any_carbon or is_carbon(v)
                 level_sum = level_sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
                 sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
-                v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+                v:start_dissolve({HEX "57ecab"}, nil, 1.6)
             end)
 
             if not any_carbon then
@@ -155,7 +155,7 @@ SMODS.Joker {
 
         local function fast_delete(v)
             return function()
-                attention_text({
+                attention_text {
                     scale = 0.7,
                     align = "cm",
                     text = "ESC",
@@ -163,7 +163,7 @@ SMODS.Joker {
                     colour = G.C.WHITE,
                     cover_colour = G.C.BLACK,
                     hold = 0.3 / G.SETTINGS.GAMESPEED,
-                })
+                }
 
                 play_sound("cancel", 1.66, 0.5)
                 v.HUD_tag.states.visible = false
@@ -174,7 +174,7 @@ SMODS.Joker {
         local hand = common_hand()
 
         if hand == "all" or hand == "allhands" or hand == "all_hands" then
-            update(localize("k_all_hands"), "...", "...", "")
+            update(localize "k_all_hands", "...", "...", "")
         elseif G.GAME.hands[hand or "NO_HAND_SPECIFIED"] then
             update(
                 localize(hand, "poker_hands"),
@@ -202,7 +202,7 @@ SMODS.Joker {
             end)
         else
             f(consumables):foreach(function(v)
-                v:start_dissolve({HEX("57ecab")}, nil, 1.6)
+                v:start_dissolve({HEX "57ecab"}, nil, 1.6)
                 destroyed = destroyed + 1
             end)
         end
@@ -213,6 +213,218 @@ SMODS.Joker {
             {sound = "button", volume = 0.7, pitch = 1.1, delay = 0},
             {mult = 0, chips = 0, handname = "", level = ""}
         )
+    end,
+}
+
+SMODS.Joker {
+    key = "temp",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 1,
+    rarity = 1,
+    config = {extra = {chips = 30}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.chips}}
+    end,
+    calculate = function(_, card, context)
+        return context.joker_main and {card = card, chips = card.ability.extra.chips} or nil
+    end,
+}
+
+SMODS.Joker {
+    key = "temp2",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 6,
+    rarity = 2,
+    loc_vars = function(self, _, _)
+        return {vars = {self.xmult()}}
+    end,
+    calculate = function(self, card, context)
+        return context.joker_main and {card = card, xmult = self.xmult()} or nil
+    end,
+    xmult = function()
+        return ((G.GAME or {}).blind or {}).mult or 1
+    end,
+}
+
+SMODS.Joker {
+    key = "temp3",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 8,
+    rarity = 3,
+    config = {extra = {probability = 1}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.probability}}
+    end,
+    calculate = function(_, card, context)
+        if context.mod_probability then
+            return {numerator = card.ability.extra.probability}
+        elseif context.after and not context.blueprint then
+            card.ability.extra.probability = card.ability.extra.probability + 1
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "temp4",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 8,
+    rarity = 3,
+    calculate = function(_, _, context)
+        return context.joker_main and {mult = hand_chips} or nil
+    end,
+}
+
+SMODS.Joker {
+    key = "temp5",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 2,
+    rarity = 1,
+    calculate = function(_, _, context)
+        local _ = context.selling_self and
+            draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[#G.deck.cards])
+    end,
+}
+
+SMODS.Joker {
+    key = "temp6",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    config = {extra = {money = 2}},
+    cost = 6,
+    rarity = 2,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.money}}
+    end,
+    calculate = function(_, card, context)
+        return context.remove_playing_cards and
+            {dollars = card.ability.extra.money * #context.removed, card = card} or nil
+    end,
+}
+
+SMODS.Joker {
+    key = "temp7",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 3,
+    rarity = 1,
+    calculate = function(_, _, context)
+        return context.repetition and
+            context.cardarea == G.play and
+            context.scoring_name == "Four of a Kind" and {repetitions = 1} or nil
+    end,
+}
+
+SMODS.Joker {
+    key = "temp8",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    config = {extra = {mult = 0}},
+    cost = 8,
+    rarity = 2,
+    calculate = function(_, card, context)
+        if context.joker_main then
+            return {mult = card.ability.extra.mult}
+        end
+
+        if context.individual and
+            context.cardarea == "unscored" and
+            context.scoring_name == "Four of a Kind" then
+            card.ability.extra.mult = card.ability.extra.mult + context.other_card.base.nominal
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "temp9",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    config = {extra = {mult = 0}},
+    cost = 8,
+    rarity = 3,
+    calculate = function(_, _, context)
+        if not context.individual or
+            context.cardarea ~= "unscored" or
+            context.scoring_name ~= "Four of a Kind" then
+            return
+        end
+
+        q(function()
+            playing_card_joker_effects(f(G.play):take(#G.play):map(function(v)
+                G.playing_card = (G.playing_card and G.playing_card + 1) or 1
+                G.deck.config.card_limit = G.deck.config.card_limit + 1
+                local copy = copy_card(v, nil, nil, G.playing_card)
+                copy:add_to_deck()
+                G.hand:emplace(copy)
+                copy:start_materialize()
+                table.insert(G.playing_cards, copy)
+                return copy
+            end):into())
+        end)
+    end,
+}
+
+SMODS.Joker {
+    key = "temp10",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    config = {extra = {xmult = 1.5}},
+    cost = 8,
+    rarity = 3,
+    calculate = function(_, card, context)
+        if context.individual and
+            context.cardarea == "unscored" and
+            SMODS.has_enhancement(context.other_card, "m_wild") then
+            return {xmult = card.ability.extra.xmult}
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "negative",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 6,
+    rarity = 2,
+}
+
+SMODS.Joker {
+    key = "mrsbones",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    config = {extra = {xmult = 4}},
+    cost = 8,
+    rarity = 3,
+    calculate = function(_, card, context)
+        if context.joker_main then
+            return {xmult = card.ability.extra.xmult}
+        end
+
+        if context.blind_defeated and G.GAME.chips / card.ability.extra.xmult < G.GAME.blind.chips then
+            q(function()
+                G.hand_text_area.blind_chips:juice_up()
+                G.hand_text_area.game_chips:juice_up()
+                play_sound("tarot1")
+                card:start_dissolve()
+                return true
+            end)
+        end
     end,
 }
 

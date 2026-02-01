@@ -23,7 +23,7 @@ local function protect_ev(fun)
     return fun
 end
 
-local luaf = assert(SMODS.load_file("src/LuaFunctional/functional.lua"))() or require "src.LuaFunctional.functional"
+local luaf = assert(SMODS.load_file "src/LuaFunctional/functional.lua")() or require "src.LuaFunctional.functional"
 
 if false then
     ---Returns the elements from the given `list`. This function is equivalent to
@@ -52,7 +52,7 @@ if false then
     ---@return T1, T2, T3, T4, T5, T6, T7, T8, T9, T10
     ---@nodiscard
     function unpack(list, i, j)
-        error({list, i, j})
+        error {list, i, j}
     end
 end
 
