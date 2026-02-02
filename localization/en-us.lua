@@ -15,6 +15,10 @@ return {
             },
         },
         Blind = {
+            bl_Roland_divide = {
+                name = "The Great Divide",
+                text = {"Half of the deck", "is {C:discard}discarded"},
+            },
             bl_Roland_improbable = {
                 name = "The Improbable",
                 text = {"All probabilities", "cannot happen"},
@@ -22,10 +26,6 @@ return {
             bl_Roland_nimble = {
                 name = "The Nimble",
                 text = {"The first 5 cards", "drawn are played"},
-            },
-            bl_Roland_divide = {
-                name = "The Great Divide",
-                text = {"Half of the deck", "is {C:discard}discarded"},
             },
             bl_Roland_tranquilizer = {
                 name = "The Tranquilizer",
@@ -40,31 +40,26 @@ return {
             j_Roland_escapey = {
                 name = "Escapey",
                 text = {
-                    "Destroy {C:attention}tags{} or {C:attention}non-selected",
-                    "{C:attention}consumables{} on use. Level up",
-                    "the {C:planet}most played hand{} by {C:planet}#1#{}",
-                    "for each destroyed object",
-                    "{C:inactive}(Currently #2#)",
-                    " ",
-                    "#3#{C:inactive,s:0.75,E:1}#4#{C:red,s:1.5,E:1}#5#",
-                    "#6#{C:blue,E:1}#7#{}#8#{C:inactive,s:0.75,E:1}#9#{C:red,s:1.5,E:1}#10#",
+                    "Use to {C:attention}destroy tags{} or {C:attention}unselected consumables",
+                    "in exchange for {C:planet}leveling up #1# random hands",
+                    "{C:inactive,s:0.75,E:1}#2#{C:red,s:1.5,E:1}#3#{s:0.9}#4#{C:blue,E:1,s:0.9}#5#{s:0.9}#6#",
                 },
-                merge = {"Since no objects apply, fuse", "with other ", " jokers"},
+                merge = {"Since none apply, fuse with other ", " jokers"},
                 quotes = {
-                    marble = {{"there is no escape..."}},
+                    marble = {"there is no escape..."},
                     normal = {
-                        {"I can't wait to",                        "work with you!"},
-                        {"Did you need something",                 "from me?"},
-                        {"Oh! I'm just so",                        "happy to see you!"},
-                        {"Can I talk about something irrelevant?", "I promise it won't be long."},
-                        {"Can you introduce me to your friends?",  "Assuming you have friends of course!"},
+                        "I can't wait to work with you!",
+                        "Did you need something from me?",
+                        "Oh! I'm just so happy to see you!",
+                        "Can I say something irrelevant? I promise it won't be long.",
+                        "Tell me about your buddies! Assuming you have them, anyway.",
                     },
                     scared = {
-                        {"What am I",         "going to do?!"},
-                        {"I'm not scared,",   "you are!"},
-                        {"Tell me when",      "this is over..."},
-                        {"I can't keep",      "looking at this!"},
-                        {"Let me go hide in", "this corner... Okay?"},
+                        "What am I going to do?!",
+                        "I'm not scared, you are!",
+                        "Tell me when this is over...",
+                        "I can't keep looking at this!",
+                        "Let me go hide in this corner... Okay?",
                     },
                 },
             },

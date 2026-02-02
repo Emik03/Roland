@@ -1,15 +1,5 @@
 local f, q, u = unpack(... or require "src.functional")
 
-local function common_hand()
-    return (G.GAME or {}).current_round and f(G.GAME.hands):reduce(
-        {name = "High Card", order = -1 / 0, played = 0},
-        function(a, v, k)
-            return (a.played < v.played or (a.played == v.played) and (a.order > v.order)) and
-                {name = k, order = v.order, played = v.played} or a
-        end
-    ).name or "High Card"
-end
-
 local function destructible(card)
     return not card.highlighted and not (card.ability or {}).eternal
 end
@@ -24,6 +14,35 @@ local function is_mergeable_with(it)
             card.label == "j_Roland_escapey" and not
             (card.ability or {}).eternal
     end
+end
+
+local function level_up(hand, by, card)
+    local function update(handname, chips, mult, level, pitch)
+        update_hand_text(
+            {sound = "button", volume = 0.7, pitch = pitch or 0.8, delay = 0.3},
+            {handname = handname, chips = chips, level = level, mult = mult}
+        )
+    end
+
+    if by <= 0 then
+        return
+    end
+
+    hand = hand or "NO_HAND_SPECIFIED"
+    local hand_obj = G.GAME.hands[hand]
+
+    if hand == "all" or hand == "allhands" or hand == "all_hands" then
+        update(localize "k_all_hands", "...", "...", "")
+
+        f(G.GAME.hands):keys():foreach(function(k)
+            level_up_hand(card, k, nil, by)
+        end)
+    elseif hand_obj then
+        update(localize(hand, "poker_hands"), hand_obj.chips, hand_obj.mult, hand_obj.level)
+        level_up_hand(card, hand, nil, by)
+    end
+
+    update("", 0, 0, "", 1.1)
 end
 
 SMODS.Atlas {
@@ -47,7 +66,7 @@ SMODS.Joker {
     pos = {x = 0, y = 0},
     sinis = {x = 2, y = 0},
     soul_pos = {x = 1, y = 0},
-    config = {extra = {level_up_by = 1}},
+    config = {extra = {hands = 2}},
     cost = 8,
     rarity = 3,
     eternal_compat = true,
@@ -61,27 +80,23 @@ SMODS.Joker {
         local quotes = loc_self.quotes
 
         local merge = G.jokers
-            and f(G.jokers.cards):filter(is_mergeable_with(card)):any()
+            and f(G.jokers.cards):any(is_mergeable_with(card))
             and loc_self.merge or {}
 
-        local normal = (merge[1] or sinister) and {} or
-            pseudorandom_element(quotes.normal, pseudoseed "EscapeyQuotes") or {}
+        local normal = (merge[1] or sinister) and "" or
+            pseudorandom_element(quotes.normal, pseudoseed "EscapeyQuotes") or ""
 
-        local scared = (merge[1] or not sinister) and {} or
-            pseudorandom_element(quotes.scared, pseudoseed "EscapeyQuotes") or {}
+        local scared = (merge[1] or not sinister) and "" or
+            pseudorandom_element(quotes.scared, pseudoseed "EscapeyQuotes") or ""
 
         return {
             vars = {
-                card.ability.extra.level_up_by,
-                localize(common_hand(), "poker_hands"),
+                card.ability.extra.hands,
+                normal,
+                scared,
                 merge[1] or "",
-                normal[1] or "",
-                scared[1] or "",
+                merge[1] and loc_self.name or "",
                 merge[2] or "",
-                merge[3] and loc_self.name or "",
-                merge[3] or "",
-                normal[2] or "",
-                scared[2] or "",
             },
         }
     end,
@@ -92,15 +107,13 @@ SMODS.Joker {
             end):sub(2))
         end
     end,
-    ---@param card Card
     Bakery_can_use = function(_, card)
         return not card.debuff and u() and (
             #G.GAME.tags ~= 0 or
-            f(G.consumeables.cards):filter(destructible):any() or
-            f(G.jokers.cards):filter(is_mergeable_with(card)):any()
+            f(G.consumeables.cards):any(destructible) or
+            f(G.jokers.cards):any(is_mergeable_with(card))
         )
     end,
-    ---@param card Card
     Bakery_use_button_text = function(_, card)
         if card.debuff then
             return "DEBUFFED"
@@ -109,7 +122,6 @@ SMODS.Joker {
         return #G.GAME.tags == 0 and not f(G.consumeables.cards):filter(destructible):any() and
             f(G.jokers.cards):filter(is_mergeable_with(card)):any() and "FUSE" or "ESCAPE"
     end,
-    ---@param card Card
     Bakery_use_joker = function(_, card)
         if card.debuff then
             return
@@ -125,32 +137,17 @@ SMODS.Joker {
 
             f(G.jokers.cards):filter(is_mergeable_with(card)):foreach(function(v)
                 any_carbon = any_carbon or is_carbon(v)
-                level_sum = level_sum + v.ability.extra.level_up_by * (v.getEvalQty and v:getEvalQty() or 1)
+                level_sum = level_sum + v.ability.extra.hands * (v.getEvalQty and v:getEvalQty() or 1)
                 sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
                 v:start_dissolve({HEX "57ecab"}, nil, 1.6)
             end)
 
             if not any_carbon then
-                card.ability.extra.level_up_by = card.ability.extra.level_up_by + level_sum
+                card.ability.extra.hands = card.ability.extra.hands + level_sum
             end
 
             card.sell_cost = card.sell_cost + sell_sum
             return
-        end
-
-        local function update(name, chip, mul, lv, notif, snd, vol, pit, de)
-            update_hand_text({
-                sound = type(snd) == "string" and snd or type(snd) == "nil" and "button",
-                volume = vol or 0.7,
-                pitch = pit or 0.8,
-                delay = de or 0.3,
-            }, {
-                handname = name or "????",
-                chips = chip or "?",
-                level = lv or "?",
-                mult = mul or "?",
-                StatusText = notif,
-            })
         end
 
         local function fast_delete(v)
@@ -169,19 +166,6 @@ SMODS.Joker {
                 v.HUD_tag.states.visible = false
                 v:remove()
             end
-        end
-
-        local hand = common_hand()
-
-        if hand == "all" or hand == "allhands" or hand == "all_hands" then
-            update(localize "k_all_hands", "...", "...", "")
-        elseif G.GAME.hands[hand or "NO_HAND_SPECIFIED"] then
-            update(
-                localize(hand, "poker_hands"),
-                G.GAME.hands[hand].chips,
-                G.GAME.hands[hand].mult,
-                G.GAME.hands[hand].level
-            )
         end
 
         local destroyed = 0
@@ -207,12 +191,17 @@ SMODS.Joker {
             end)
         end
 
-        level_up_hand(card, hand, nil, destroyed * card.ability.extra.level_up_by)
+        local hands = f(G.GAME.hands):filter(function(v, _)
+            return v.visible
+        end):keys():into()
 
-        update_hand_text(
-            {sound = "button", volume = 0.7, pitch = 1.1, delay = 0},
-            {mult = 0, chips = 0, handname = "", level = ""}
-        )
+        pseudoshuffle(hands, pseudoseed "RolandEscapey")
+        local levels = destroyed * card.ability.extra.hands
+        level_up("all", math.floor(levels / #hands), card)
+
+        f(hands):take(levels % #hands):foreach(function(v)
+            level_up(v, 1, card)
+        end)
     end,
 }
 
@@ -317,12 +306,16 @@ SMODS.Joker {
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
+    config = {extra = {money = 2}},
     cost = 3,
     rarity = 1,
-    calculate = function(_, _, context)
-        return context.repetition and
-            context.cardarea == G.play and
-            context.scoring_name == "Four of a Kind" and {repetitions = 1} or nil
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.money}}
+    end,
+    calculate = function(_, card, context)
+        return context.joker_main and
+            context.scoring_name == "Four of a Kind" and
+            {dollars = card.ability.extra.money} or nil
     end,
 }
 

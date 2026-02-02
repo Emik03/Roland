@@ -1,6 +1,6 @@
 local qol = assert(SMODS.load_file "src/functional.lua")() or require "src.functional"
 
-qol[1] {"challenge", "spectral", "blind", "joker", "back", "seal"}:foreach(function(v)
+qol[1] {"challenge", "spectral", "blind", "charm", "joker", "back", "seal"}:foreach(function(v)
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
 end)
 

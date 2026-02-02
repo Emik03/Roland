@@ -35,16 +35,13 @@ SMODS.Challenge {
     pronouns = "she_them",
 }
 
-q {
-    trigger = "immediate",
-    func = function()
-        f {
-            {G.P_CENTERS, is_joker,                     jokerful.banned_cards},
-            {G.P_TAGS,    is_banned_from_pastry,        pastries.banned_tags},
-            {G.P_BLINDS,  is_banned_from_pastry,        pastries.banned_other},
-            {G.P_CENTERS, is_center_banned_from_pastry, pastries.banned_cards},
-        }:foreach(function(v)
-            f(v[1]):filter(v[2]):foreach(adder(v[3]))
-        end)
-    end,
-}
+q(function()
+    f {
+        {G.P_CENTERS, is_joker,                     jokerful.banned_cards},
+        {G.P_TAGS,    is_banned_from_pastry,        pastries.banned_tags},
+        {G.P_BLINDS,  is_banned_from_pastry,        pastries.banned_other},
+        {G.P_CENTERS, is_center_banned_from_pastry, pastries.banned_cards},
+    }:foreach(function(v)
+        f(v[1]):filter(v[2]):foreach(adder(v[3]))
+    end)
+end)

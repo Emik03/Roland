@@ -174,7 +174,7 @@ Balatest.TestPlay {
     assert = function()
         Balatest.assert_eq(#G.jokers.cards, 1)
         Balatest.assert_eq(G.jokers.cards[1].sell_cost, 8)
-        Balatest.assert_eq(G.jokers.cards[1].ability.extra.level_up_by, 2)
+        Balatest.assert_eq(G.jokers.cards[1].ability.extra.levels, 2)
     end,
 }
 
@@ -237,7 +237,7 @@ Balatest.TestPlay {
     assert = function()
         Balatest.assert_eq(#G.jokers.cards, 1)
         Balatest.assert_eq(G.jokers.cards[1].sell_cost, 8)
-        Balatest.assert_eq(G.jokers.cards[1].ability.extra.level_up_by, 2)
+        Balatest.assert_eq(G.jokers.cards[1].ability.extra.levels, 2)
     end,
 }
 
@@ -279,7 +279,7 @@ Balatest.TestPlay {
 
         Balatest.assert_eq(#G.jokers.cards, 1)
         Balatest.assert_eq(G.jokers.cards[1].sell_cost, 8)
-        Balatest.assert_eq(G.jokers.cards[1].ability.extra.level_up_by, 1)
+        Balatest.assert_eq(G.jokers.cards[1].ability.extra.levels, 1)
     end,
 }
 
@@ -322,7 +322,7 @@ Balatest.TestPlay {
 
         Balatest.assert_eq(#G.jokers.cards, 1)
         Balatest.assert_eq(G.jokers.cards[1].sell_cost, 8)
-        Balatest.assert_eq(G.jokers.cards[1].ability.extra.level_up_by, 1)
+        Balatest.assert_eq(G.jokers.cards[1].ability.extra.levels, 1)
     end,
 }
 

@@ -70,7 +70,7 @@ SMODS.Consumable {
     end,
     use = function(_, card, _)
         local cards = f(G.hand.cards, ipairs):into()
-        pseudoshuffle(cards, pseudoseed "Roland_two")
+        pseudoshuffle(cards, pseudoseed "RolandDual")
 
         f(cards):take(card.ability.extra.amount):foreach(function(v)
             v:set_seal(SMODS.poll_seal {guaranteed = true})
