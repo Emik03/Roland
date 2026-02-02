@@ -45,6 +45,11 @@ local function level_up(hand, by, card)
     update("", 0, 0, "", 1.1)
 end
 
+SMODS.Sound {
+    key = "milestone",
+    path = "milestone.ogg",
+}
+
 SMODS.Atlas {
     px = 71,
     py = 95,
@@ -67,8 +72,8 @@ SMODS.Joker {
     sinis = {x = 2, y = 0},
     soul_pos = {x = 1, y = 0},
     config = {extra = {hands = 2}},
-    cost = 8,
-    rarity = 3,
+    cost = 6,
+    rarity = 2,
     eternal_compat = true,
     perishable_compat = true,
     blueprint_compat = false,
@@ -203,10 +208,14 @@ SMODS.Joker {
             level_up(v, 1, card)
         end)
     end,
+    debug_export = function(self, obj)
+        local to = obj or self
+        to.f, to.q, to.u = f, q, u
+    end,
 }
 
 SMODS.Joker {
-    key = "temp",
+    key = "msjoker", -- Blue bow
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
@@ -222,7 +231,7 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "temp2",
+    key = "bulldozer",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
@@ -240,52 +249,84 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "temp3",
+    key = "oops", -- Slot machine
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
     cost = 8,
     rarity = 3,
-    config = {extra = {probability = 1}},
+    config = {extra = {probability = 1, delta = 1}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.probability}}
     end,
     calculate = function(_, card, context)
         if context.mod_probability then
             return {numerator = card.ability.extra.probability}
+        elseif context.blind_defeated then
+            card.ability.extra.probability = card.ability.extra.delta
         elseif context.after and not context.blueprint then
-            card.ability.extra.probability = card.ability.extra.probability + 1
+            card.ability.extra.probability = card.ability.extra.probability + card.ability.extra.delta
         end
     end,
 }
 
 SMODS.Joker {
-    key = "temp4",
+    key = "estrogen",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
-    cost = 8,
-    rarity = 3,
+    cost = 6,
+    rarity = 2,
     calculate = function(_, _, context)
         return context.joker_main and {mult = hand_chips} or nil
     end,
 }
 
 SMODS.Joker {
-    key = "temp5",
+    key = "sunny", -- Cracked egg
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
     cost = 2,
     rarity = 1,
+    eternal_compat = false,
+    loc_vars = function(_, _, card)
+        local last = ((G.deck or {}).cards or {})[1]
+
+        if last or card.area ~= G.jokers then
+            return {
+                vars = {
+                    "",
+                    localize {type = "variable", key = "b_Roland_na"},
+                    "",
+                    colours = {G.C.JOKER_GREY, G.C.JOKER_GREY},
+                },
+            }
+        end
+
+        local suit = last.base.suit
+        local value = last.base.value
+        local name = last.ability.name or ""
+        local no_rank = SMODS.has_no_rank(last)
+        local no_suit = SMODS.has_no_suit(last)
+
+        return {
+            vars = {
+                value and not no_rank and localize(value or 14, "ranks") or name,
+                not no_rank and not no_suit and localize {type = "variable", key = "b_Roland_of"} or "",
+                no_suit and "" or localize(suit, "suits_plural"),
+                colours = {G.C.IMPORTANT, G.C.SUITS[suit] or G.C.JOKER_GREY},
+            },
+        }
+    end,
     calculate = function(_, _, context)
         local _ = context.selling_self and
-            draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[#G.deck.cards])
+            draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
     end,
 }
 
 SMODS.Joker {
-    key = "temp6",
+    key = "yard",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
@@ -302,12 +343,12 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "temp7",
+    key = "hexagon",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
     config = {extra = {money = 2}},
-    cost = 3,
+    cost = 4,
     rarity = 1,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.money}}
@@ -320,13 +361,16 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "temp8",
+    key = "hexagoner",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
     config = {extra = {mult = 0}},
-    cost = 8,
+    cost = 6,
     rarity = 2,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.mult}}
+    end,
     calculate = function(_, card, context)
         if context.joker_main then
             return {mult = card.ability.extra.mult}
@@ -341,7 +385,7 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "temp9",
+    key = "hexagonest",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
@@ -371,13 +415,16 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "temp10",
+    key = "temple",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
     config = {extra = {xmult = 1.5}},
-    cost = 8,
-    rarity = 3,
+    cost = 6,
+    rarity = 2,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
     calculate = function(_, card, context)
         if context.individual and
             context.cardarea == "unscored" and
@@ -388,7 +435,7 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "negative",
+    key = "misfortune",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
@@ -397,25 +444,124 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
+    key = "rigged",
+    atlas = "void",
+    config = {extra = {level = "1"}}, -- Strings do not get mutated by other mods, hopefully.
+    pos = {x = 0, y = 0},
+    eternal_compat = false,
+    cost = 8,
+    rarity = 2,
+    loc_vars = function(_, _, card)
+        return {vars = {}}
+    end,
+}
+
+---@diagnostic disable-next-line: undefined-global
+local rarities = Cryptid and
+    {{1, "Common"}, {2, "Uncommon"}, {3, "Rare"}, {"cry_epic"}, {4, "Legendary"}, {"cry_exotic"}} or
+    {{1, "Common"}, {2, "Uncommon"}, {3, "Rare"}, {4, "Legendary"}}
+
+local orig_poll_rarity = SMODS.poll_rarity
+
+---@diagnostic disable-next-line: duplicate-set-field
+function SMODS.poll_rarity(_pool_key, _rand_key)
+    local rarity = orig_poll_rarity(_pool_key, _rand_key)
+
+    local max = f(SMODS.find_card "j_Roland_rigged"):reduce(0, function(a, n)
+        return n.debuff and a or math.max(a, tonumber(n.ability.extra.level))
+    end)
+
+    if f(rarities, ipairs):take(max):filter(function(v)
+            return f(v):any(function(vv)
+                return vv == rarity
+            end)
+        end):any() then
+        return rarities[max + 1][1] or rarities[#rarities][1]
+    end
+
+    return rarity
+end
+
+local orig_update = Game.update
+
+---@diagnostic disable-next-line: duplicate-set-field
+function Game:update(dt)
+    orig_update(self, dt)
+
+    if not G.GAME then
+        return
+    end
+
+    local candidates = {}
+
+    local max = f(SMODS.find_card "j_Roland_rigged"):reduce(1, function(a, n)
+        local level = tonumber(n.ability.extra.level) or 1
+
+        if not candidates[level] then
+            candidates[level] = n
+        elseif level == 1 then
+            candidates[0] = n
+        end
+
+        return math.max(a, level)
+    end)
+
+    for i = math.min(max, #rarities - 2), 1, -1 do
+        if not candidates[i] then
+            goto continue
+        end
+
+        local skip = true
+
+        for j = i - 1, i == 1 and 0 or 1, -1 do
+            if not candidates[j] then
+                break
+            end
+
+            skip = j > 1
+        end
+
+        if skip then
+            goto continue
+        end
+
+        for j = i - 1, i == 1 and 0 or 1, -1 do
+            candidates[i].sell_cost = candidates[i].sell_cost + candidates[j].sell_cost
+            candidates[j].ability.extra.level = "-1"
+            candidates[j]:start_dissolve()
+        end
+
+        local extra = candidates[i].ability.extra
+        local level = tonumber(extra.level)
+        extra.level = tostring(level + 1)
+        candidates[i].children.center:set_sprite_pos({x = 0, y = math.min(level or 0, 2)})
+        play_sound("Roland_milestone", 0.9 ^ (level - 2))
+        ::continue::
+    end
+end
+
+SMODS.Joker {
     key = "mrsbones",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
-    config = {extra = {xmult = 4}},
-    cost = 8,
-    rarity = 3,
+    config = {extra = {xmult = 4, requirement = 4}},
+    cost = 4,
+    rarity = 2,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult, card.ability.extra.requirement * 100}}
+    end,
     calculate = function(_, card, context)
         if context.joker_main then
             return {xmult = card.ability.extra.xmult}
         end
 
-        if context.blind_defeated and G.GAME.chips / card.ability.extra.xmult < G.GAME.blind.chips then
+        if context.blind_defeated and G.GAME.chips / card.ability.extra.requirement < G.GAME.blind.chips then
             q(function()
                 G.hand_text_area.blind_chips:juice_up()
                 G.hand_text_area.game_chips:juice_up()
                 play_sound("tarot1")
                 card:start_dissolve()
-                return true
             end)
         end
     end,

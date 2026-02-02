@@ -1,8 +1,15 @@
 local _, q = unpack(... or require "src.functional")
 
+SMODS.Atlas {
+    key = "iphone",
+    path = "iphone.png",
+    px = 68,
+    py = 68,
+}
+
 Bakery_API.Charm {
-    key = "tags",
-    atlas = "void",
+    key = "iphone",
+    atlas = "iphone",
     pos = {x = 0, y = 0},
     calculate = function(_, _, context)
         local _ = context.skip_blind and q(function()

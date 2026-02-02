@@ -79,7 +79,7 @@ SMODS.Consumable {
 }
 
 SMODS.Consumable {
-    key = "glass",
+    key = "mirror",
     set = "Spectral",
     pos = {x = 0, y = 0},
     cost = 6,

@@ -71,7 +71,7 @@ target = "card.lua"
 pattern = "if self.seal == 'Purple' and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then"
 position = "at"
 payload = """if self.seal == 'Purple' and
-    (next(SMODS.find_card "j_Roland_negative") or
+    (next(SMODS.find_card "j_Roland_misfortune") or
     #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit) then"""
 match_indent = true
 
@@ -81,7 +81,7 @@ target = "card.lua"
 pattern = "local card = create_card('Tarot',G.consumeables, nil, nil, nil, nil, nil, '8ba')"
 position = "after"
 times = 1
-payload = """if next(SMODS.find_card "j_Roland_negative") then
+payload = """if next(SMODS.find_card "j_Roland_misfortune") then
     card:set_edition "e_negative"
 end"""
 match_indent = true

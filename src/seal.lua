@@ -8,11 +8,9 @@ local f, q = unpack(... or require "src.functional")
 -- }
 SMODS.Seal {
     key = "glass",
-    name = "RolandGlass",
-    badge_colour = HEX "12f254",
     atlas = "void",
     pos = {x = 0, y = 0},
-    config = {ready = true},
+    badge_colour = HEX "f6f6f6",
     calculate = function(_, card, context)
         if context.setting_blind or context.starting_shop then
             card.Roland_glass = nil

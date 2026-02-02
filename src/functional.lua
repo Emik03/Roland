@@ -23,7 +23,9 @@ local function protect_ev(fun)
     return fun
 end
 
+local origf = F
 local luaf = assert(SMODS.load_file "src/LuaFunctional/functional.lua")() or require "src.LuaFunctional.functional"
+F = origf -- We do not condone globals as side effects!
 
 if false then
     ---Returns the elements from the given `list`. This function is equivalent to
@@ -70,7 +72,7 @@ end
 
 --- Queues an event to be run.
 --- Note that events added this way implicitly `return true` unless you explicitly `return false`, unlike the vanilla ones.
---- @param fun (fun():boolean?)|Event The event or a function to run turn into an event.
+--- @param fun (fun():false|nil)|Event The event or a function to run turn into an event.
 --- @param front boolean|nil `true` to add the event to the front of the queue, rather than the end.
 local function q(fun, front)
     G.E_MANAGER:add_event(protect_ev(fun), nil, front)

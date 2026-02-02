@@ -10,8 +10,22 @@ return {
                 },
             },
             b_Roland_go = {
-                name = "placeholder",
-                text = {"grr"},
+                name = "Pass GO Deck",
+                text = {
+                    "Start with a {C:attention}Credit Card",
+                    "Set money to {C:money}0$",
+                    "when entering the shop",
+                },
+            },
+        },
+        BakeryCharm = {
+            BakeryCharm_Roland_iphone = {
+                name = "fat i phone",
+                text = {
+                    "Enter the shop",
+                    "when any {C:attention}Blind",
+                    "is {C:attention}skipped",
+                },
             },
         },
         Blind = {
@@ -37,6 +51,14 @@ return {
             },
         },
         Joker = {
+            j_Roland_bulldozer = {
+                name = "Bulldozer",
+                text = {
+                    "Give {X:red,C:white}XMult{} equal to",
+                    "the current {C:attention}Blind Size{C:attention}",
+                    "{C:inactive}(Currently {X:red,C:white}X#1#{C:inactive})",
+                },
+            },
             j_Roland_escapey = {
                 name = "Escapey",
                 text = {
@@ -63,6 +85,46 @@ return {
                     },
                 },
             },
+            j_Roland_estrogen = {
+                name = "Estrogen",
+                text = {"{C:mult}+Chips{} Mult"},
+            },
+            j_Roland_hexagon = {
+                name = "Hexagon",
+                text = {
+                    "Earn {C:money}#1#${} if",
+                    "played hand is a",
+                    "{C:attention}Four of a Kind",
+                },
+            },
+            j_Roland_hexagoner = {
+                name = "Hexagoner",
+                text = {
+                    "This Joker gains the",
+                    "rank of {C:attention}unscored cards",
+                    "if played hand is a",
+                    "{C:attention}Four of a Kind",
+                    "{C:inactive}(Currently {C:red}+#1#{C:inactive} Mult)",
+                },
+            },
+            j_Roland_hexagonest = {
+                name = "Hexagonest",
+                text = {
+                    "{C:attention}Unscored cards{} add a",
+                    "permanent copy to deck",
+                    "and draw it to {C:blue}hand",
+                    "if played hand is a",
+                    "{C:attention}Four of a Kind",
+                },
+            },
+            j_Roland_misfortune = {
+                name = "Misfortune Cookie",
+                text = {
+                    "{C:tarot}Tarot{} cards created",
+                    "by {C:tarot}Purple Seals",
+                    "become {C:dark_edition}Negative",
+                },
+            },
             j_Roland_martingale = {
                 name = "Martingale",
                 text = {
@@ -76,6 +138,72 @@ return {
                     "{s:0}Otherwise {C:green,s:0}#1# in #2#{s:0} chance to give {X:mult,C:white,s:0}X#9#{s:0} Mult",
                 },
             },
+            j_Roland_mrsbones = {
+                name = "Mrs. Bones",
+                text = {
+                    "{X:red,C:white}X#1#{} Mult",
+                    "{C:red,E:1}Self destructs{} if {C:chips}chips",
+                    "scored at the end of",
+                    "the {C:attention}Blind{} are less than",
+                    "{C:attention}#2#%{} of required {C:chips}chips",
+                },
+            },
+            j_Roland_msjoker = {
+                name = "Ms. Joker",
+                text = {"{C:chips}+#1#{} Chips"},
+            },
+            j_Roland_oops = {
+                name = "Oops! All 7s",
+                text = {
+                    "Listed {C:green,E:1}probabilities",
+                    "{C:attention}increase{} for each",
+                    "{C:hand}hand played this round",
+                    "{C:inactive}(Currently {C:green}X#1#{C:inactive})",
+                },
+            },
+            j_Roland_rigged = {
+                name = "Rigged",
+                text = {
+                    "{C:blue}#1#{}#2#{C:green}#3#{}#4#{C:red}#5#{}#6#{C:edition}#7#{}#8#{C:legendary}#9#{}#10#{C:dark_edition}#11#",
+                    "jokers cannot appear",
+                    "{C:attention}Upgrade{} this card by",
+                    "obtaining another {C:attention}Rigged",
+                },
+            },
+            j_Roland_sunny = {
+                name = "Sunny Side Up",
+                text = {
+                    "Sell this Joker to",
+                    "{C:attention}draw{} the bottom",
+                    "card of the {C:hand}deck",
+                    "{C:inactive}(Currently {V:1}#1##2#{V:2}#3#{C:inactive})",
+                },
+            },
+            j_Roland_temple = {
+                name = "Temple",
+                text = {
+                    "{C:attention}Unscored {C:enhanced}wild{} cards",
+                    "give {X:red,C:white}X#1#{} Mult",
+                },
+            },
+            j_Roland_yard = {
+                name = "Yard Sale",
+                text = {
+                    "Gain {C:money}#1#${} when a",
+                    "card is {C:attention}removed",
+                    "from the deck",
+                },
+            },
+        },
+        Other = {
+            Roland_glass_seal = {
+                name = "Glass Seal",
+                text = {
+                    "Gives a random tag at",
+                    "the end of the {C:attention}Blind",
+                    "{C:red,E:1}Self destructs{} if {C:attention}drawn",
+                },
+            },
         },
         Spectral = {
             c_Roland_afterimage = {
@@ -84,6 +212,22 @@ return {
                     "Add {C:dark_edition}Negative {}to {C:attention}#1#",
                     "selected card in hand",
                     "{C:red}#2#{} hand size",
+                },
+            },
+            c_Roland_dual = {
+                name = "Dual",
+                text = {
+                    "Add random seals",
+                    "to {C:attention}#1#{} random",
+                    "cards in {C:hands}hand",
+                },
+            },
+            c_Roland_mirror = {
+                name = "Mirror",
+                text = {
+                    "Add a {C:dark_edition}Glass Tag",
+                    "to {C:attention}#1#{} selected",
+                    "card in {C:hands}hand",
                 },
             },
             c_Roland_void = {
@@ -102,7 +246,13 @@ return {
             c_Roland_Pastries = "Sweet Pastries",
         },
         v_dictionary = {
+            b_Roland_comma = ", ",
+            b_Roland_of = " of ",
             b_Roland_most_common_card = "(Rank)",
+            b_Roland_na = "N/A",
+        },
+        labels = {
+            Roland_glass_seal = "Glass Seal",
         },
         v_text = {
             ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
