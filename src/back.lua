@@ -33,7 +33,6 @@ SMODS.Back {
                 end
 
                 play_sound "timpani"
-                return true
             end)
         end
     end,

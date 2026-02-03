@@ -75,8 +75,8 @@ SMODS.Joker {
     cost = 6,
     rarity = 2,
     eternal_compat = true,
-    perishable_compat = true,
     blueprint_compat = false,
+    perishable_compat = true,
     loc_vars = function(_, _, card)
         local loc_self = G.localization.descriptions.Joker.j_Roland_escapey
 
@@ -221,64 +221,15 @@ SMODS.Joker {
     pos = {x = 0, y = 0},
     cost = 1,
     rarity = 1,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
     config = {extra = {chips = 30}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.chips}}
     end,
     calculate = function(_, card, context)
         return context.joker_main and {card = card, chips = card.ability.extra.chips} or nil
-    end,
-}
-
-SMODS.Joker {
-    key = "bulldozer",
-    atlas = "void",
-    pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    cost = 6,
-    rarity = 2,
-    loc_vars = function(self, _, _)
-        return {vars = {self.xmult()}}
-    end,
-    calculate = function(self, card, context)
-        return context.joker_main and {card = card, xmult = self.xmult()} or nil
-    end,
-    xmult = function()
-        return ((G.GAME or {}).blind or {}).mult or 1
-    end,
-}
-
-SMODS.Joker {
-    key = "oops", -- Slot machine
-    atlas = "void",
-    pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    cost = 8,
-    rarity = 3,
-    config = {extra = {probability = 1, delta = 1}},
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.probability}}
-    end,
-    calculate = function(_, card, context)
-        if context.mod_probability then
-            return {numerator = card.ability.extra.probability}
-        elseif context.blind_defeated then
-            card.ability.extra.probability = card.ability.extra.delta
-        elseif context.after and not context.blueprint then
-            card.ability.extra.probability = card.ability.extra.probability + card.ability.extra.delta
-        end
-    end,
-}
-
-SMODS.Joker {
-    key = "estrogen",
-    atlas = "void",
-    pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    cost = 6,
-    rarity = 2,
-    calculate = function(_, _, context)
-        return context.joker_main and {mult = hand_chips} or nil
     end,
 }
 
@@ -290,6 +241,8 @@ SMODS.Joker {
     cost = 2,
     rarity = 1,
     eternal_compat = false,
+    blueprint_compat = true,
+    perishable_compat = true,
     loc_vars = function(_, _, card)
         local last = ((G.deck or {}).cards or {})[1]
 
@@ -326,23 +279,6 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "yard",
-    atlas = "void",
-    pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    config = {extra = {money = 2}},
-    cost = 6,
-    rarity = 2,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.money}}
-    end,
-    calculate = function(_, card, context)
-        return context.remove_playing_cards and
-            {dollars = card.ability.extra.money * #context.removed, card = card} or nil
-    end,
-}
-
-SMODS.Joker {
     key = "hexagon",
     atlas = "void",
     pronouns = "they_them",
@@ -350,6 +286,9 @@ SMODS.Joker {
     config = {extra = {money = 2}},
     cost = 4,
     rarity = 1,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.money}}
     end,
@@ -368,6 +307,9 @@ SMODS.Joker {
     config = {extra = {mult = 0}},
     cost = 6,
     rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = false,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.mult}}
     end,
@@ -392,6 +334,9 @@ SMODS.Joker {
     config = {extra = {mult = 0}},
     cost = 8,
     rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
     calculate = function(_, _, context)
         if not context.individual or
             context.cardarea ~= "unscored" or
@@ -415,6 +360,55 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
+    key = "estrogen",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    calculate = function(_, _, context)
+        return context.joker_main and {mult = hand_chips} or nil
+    end,
+}
+
+SMODS.Joker {
+    key = "yard",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    config = {extra = {money = 2}},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.money}}
+    end,
+    calculate = function(_, card, context)
+        return context.remove_playing_cards and
+            {dollars = card.ability.extra.money * #context.removed, card = card} or nil
+    end,
+}
+
+assert(SMODS.load_file("src/joker.rigged.lua"))({f, q, u})
+
+SMODS.Joker {
+    key = "misfortune",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+}
+
+SMODS.Joker {
     key = "temple",
     atlas = "void",
     pronouns = "they_them",
@@ -422,6 +416,9 @@ SMODS.Joker {
     config = {extra = {xmult = 1.5}},
     cost = 6,
     rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.xmult}}
     end,
@@ -435,110 +432,25 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "misfortune",
+    key = "bulldozer",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
     cost = 6,
     rarity = 2,
-}
-
-SMODS.Joker {
-    key = "rigged",
-    atlas = "void",
-    config = {extra = {level = "1"}}, -- Strings do not get mutated by other mods, hopefully.
-    pos = {x = 0, y = 0},
-    eternal_compat = false,
-    cost = 8,
-    rarity = 2,
-    loc_vars = function(_, _, card)
-        return {vars = {}}
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(self, _, _)
+        return {vars = {self.xmult()}}
+    end,
+    calculate = function(self, card, context)
+        return context.joker_main and {card = card, xmult = self.xmult()} or nil
+    end,
+    xmult = function()
+        return ((G.GAME or {}).blind or {}).mult or 1
     end,
 }
-
----@diagnostic disable-next-line: undefined-global
-local rarities = Cryptid and
-    {{1, "Common"}, {2, "Uncommon"}, {3, "Rare"}, {"cry_epic"}, {4, "Legendary"}, {"cry_exotic"}} or
-    {{1, "Common"}, {2, "Uncommon"}, {3, "Rare"}, {4, "Legendary"}}
-
-local orig_poll_rarity = SMODS.poll_rarity
-
----@diagnostic disable-next-line: duplicate-set-field
-function SMODS.poll_rarity(_pool_key, _rand_key)
-    local rarity = orig_poll_rarity(_pool_key, _rand_key)
-
-    local max = f(SMODS.find_card "j_Roland_rigged"):reduce(0, function(a, n)
-        return n.debuff and a or math.max(a, tonumber(n.ability.extra.level))
-    end)
-
-    if f(rarities, ipairs):take(max):filter(function(v)
-            return f(v):any(function(vv)
-                return vv == rarity
-            end)
-        end):any() then
-        return rarities[max + 1][1] or rarities[#rarities][1]
-    end
-
-    return rarity
-end
-
-local orig_update = Game.update
-
----@diagnostic disable-next-line: duplicate-set-field
-function Game:update(dt)
-    orig_update(self, dt)
-
-    if not G.GAME then
-        return
-    end
-
-    local candidates = {}
-
-    local max = f(SMODS.find_card "j_Roland_rigged"):reduce(1, function(a, n)
-        local level = tonumber(n.ability.extra.level) or 1
-
-        if not candidates[level] then
-            candidates[level] = n
-        elseif level == 1 then
-            candidates[0] = n
-        end
-
-        return math.max(a, level)
-    end)
-
-    for i = math.min(max, #rarities - 2), 1, -1 do
-        if not candidates[i] then
-            goto continue
-        end
-
-        local skip = true
-
-        for j = i - 1, i == 1 and 0 or 1, -1 do
-            if not candidates[j] then
-                break
-            end
-
-            skip = j > 1
-        end
-
-        if skip then
-            goto continue
-        end
-
-        for j = i - 1, i == 1 and 0 or 1, -1 do
-            candidates[i].sell_cost = candidates[i].sell_cost + candidates[j].sell_cost
-            candidates[j].ability.extra.level = "-1"
-            candidates[j]:start_dissolve()
-        end
-
-        local extra = candidates[i].ability.extra
-        local level = tonumber(extra.level)
-        extra.level = tostring(level + 1)
-        candidates[i].children.center:set_sprite_pos({x = 0, y = math.min(level or 0, 2)})
-        play_sound("Roland_milestone", 0.9 ^ (level - 2))
-        ::continue::
-    end
-end
 
 SMODS.Joker {
     key = "mrsbones",
@@ -548,10 +460,17 @@ SMODS.Joker {
     config = {extra = {xmult = 4, requirement = 4}},
     cost = 4,
     rarity = 2,
+    eternal_compat = false,
+    blueprint_compat = false,
+    perishable_compat = true,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.xmult, card.ability.extra.requirement * 100}}
     end,
     calculate = function(_, card, context)
+        if context.blueprint then
+            return
+        end
+
         if context.joker_main then
             return {xmult = card.ability.extra.xmult}
         end
@@ -563,6 +482,39 @@ SMODS.Joker {
                 play_sound("tarot1")
                 card:start_dissolve()
             end)
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "oops", -- Slot machine
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 8,
+    rarity = 3,
+    config = {extra = {probability = 1, delta = 1}},
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.probability}}
+    end,
+    calculate = function(_, card, context)
+        if context.blueprint or not card.ability then
+            return
+        end
+
+        local extra = card.ability.extra
+
+        if context.mod_probability then
+            return {numerator = extra.probability}
+        end
+
+        if context.blind_defeated then
+            extra.probability = extra.delta
+        elseif context.after then
+            extra.probability = extra.probability + extra.delta
         end
     end,
 }
