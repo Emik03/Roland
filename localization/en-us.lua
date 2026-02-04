@@ -112,7 +112,6 @@ return {
                 text = {
                     "{C:attention}Unscored cards{} add a",
                     "permanent copy to deck",
-                    "and draw it to {C:blue}hand",
                     "if played hand is a",
                     "{C:attention}Four of a Kind",
                 },
@@ -200,7 +199,7 @@ return {
                 name = "Glass Seal",
                 text = {
                     "Gives a random tag at",
-                    "the end of the {C:attention}Blind",
+                    "the end of the {C:attention}Ante",
                     "{C:red,E:1}Self destructs{} if {C:attention}drawn",
                 },
             },

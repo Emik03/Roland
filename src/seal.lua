@@ -11,6 +11,7 @@ SMODS.Seal {
     atlas = "void",
     pos = {x = 0, y = 0},
     badge_colour = HEX "f6f6f6",
+
     calculate = function(_, card, context)
         if context.setting_blind or context.starting_shop then
             card.Roland_glass = nil
@@ -20,7 +21,7 @@ SMODS.Seal {
             return
         end
 
-        if G.STATE == G.STATES.DRAW_TO_HAND and card == context.other_card and card.area == G.hand then
+        if G.STATE == G.STATES.DRAW_TO_HAND and card == context.other_card then
             card.Roland_glass = true
 
             return q(function()
@@ -28,7 +29,7 @@ SMODS.Seal {
             end)
         end
 
-        if not context.end_of_round then
+        if not context.ante_end then
             return
         end
 
@@ -40,7 +41,6 @@ SMODS.Seal {
                 f(G.GAME.hands):filter(function(v)
                     return v.visible
                 end):into(),
-
                 pseudoseed "Roland_glass"
             )
         end
