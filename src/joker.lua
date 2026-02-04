@@ -360,21 +360,6 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "estrogen",
-    atlas = "void",
-    pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    cost = 6,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    calculate = function(_, _, context)
-        return context.joker_main and {mult = hand_chips} or nil
-    end,
-}
-
-SMODS.Joker {
     key = "yard",
     atlas = "void",
     pronouns = "they_them",
@@ -483,6 +468,21 @@ SMODS.Joker {
                 card:start_dissolve()
             end)
         end
+    end,
+}
+
+SMODS.Joker {
+    key = "estrogen",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 8,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    calculate = function(_, _, context)
+        return context.joker_main and {mult = hand_chips} or nil
     end,
 }
 
