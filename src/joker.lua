@@ -379,8 +379,6 @@ SMODS.Joker {
     end,
 }
 
-assert(SMODS.load_file("src/joker.rigged.lua"))({f, q, u})
-
 SMODS.Joker {
     key = "misfortune",
     atlas = "void",
