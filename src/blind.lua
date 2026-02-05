@@ -92,7 +92,7 @@ end
 
 SMODS.Blind {
     key = "improbable",
-    boss = {min = 2, max = 10},
+    boss = {min = 4, max = 10},
     boss_colour = HEX "009966",
     atlas = "blind",
     pos = {x = 0, y = 0},
@@ -147,7 +147,7 @@ SMODS.Blind {
 
 SMODS.Blind {
     key = "divide",
-    boss = {min = 4, max = 10},
+    boss = {min = 1, max = 10},
     boss_colour = HEX "0291fb",
     atlas = "blind",
     pos = {x = 0, y = 1},
@@ -187,7 +187,7 @@ SMODS.Blind {
 
 SMODS.Blind {
     key = "tranquilizer",
-    boss = {min = 4, max = 10},
+    boss = {min = 6, max = 10},
     boss_colour = HEX "0291fb",
     atlas = "blind",
     pos = {x = 0, y = 1},
@@ -244,7 +244,7 @@ SMODS.Blind {
 
 SMODS.Blind {
     key = "xerox",
-    boss = {min = 2, max = 10},
+    boss = {min = 3, max = 10},
     boss_colour = HEX "0291fb",
     atlas = "blind",
     pos = {x = 0, y = 1},
