@@ -69,27 +69,21 @@ SMODS.Consumable {
         return u() and #G.hand.cards > 0
     end,
     use = function(_, card, _)
-        local banned_seals = {"Roland_glass"}
-
         local cards = f(G.hand.cards, ipairs):into()
         pseudoshuffle(cards, pseudoseed "RolandDual")
 
         f(cards):take(card.ability.extra.amount):foreach(function(v)
             local seal
 
-            local function nq(s)
-                return s ~= seal
-            end
-
             for _ = 1, 31 do
                 seal = SMODS.poll_seal {guaranteed = true}
 
-                if f(banned_seals):all(nq) then
+                if seal ~= "Roland_glass" then
                     break
                 end
             end
 
-            v:set_seal(f(banned_seals):all(nq) and seal or "Red")
+            v:set_seal(seal == "Roland_glass" and "Red" or seal)
         end)
     end,
 }

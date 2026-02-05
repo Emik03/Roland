@@ -474,13 +474,17 @@ SMODS.Joker {
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
+    config = {extra = {division = 4}},
     cost = 8,
     rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
-    calculate = function(_, _, context)
-        return context.joker_main and {mult = hand_chips} or nil
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.division}}
+    end,
+    calculate = function(_, card, context)
+        return context.joker_main and {mult = hand_chips / card.ability.extra.division} or nil
     end,
 }
 

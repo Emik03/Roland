@@ -13,7 +13,7 @@ return {
                 name = "Pass GO Deck",
                 text = {
                     "Start with a {C:attention}Credit Card",
-                    "Set money to {C:money}0$",
+                    "Set money to {C:money}$0",
                     "when entering the shop",
                 },
             },
@@ -87,12 +87,12 @@ return {
             },
             j_Roland_estrogen = {
                 name = "Estrogen",
-                text = {"{C:mult}+Chips{} Mult"},
+                text = {"{C:mult}+(Chips/#1#){} Mult"},
             },
             j_Roland_hexagon = {
                 name = "Hexagon",
                 text = {
-                    "Earn {C:money}#1#${} if",
+                    "Earn {C:money}$#1#{} if",
                     "played hand is a",
                     "{C:attention}Four of a Kind",
                 },
@@ -188,7 +188,7 @@ return {
             j_Roland_yard = {
                 name = "Yard Sale",
                 text = {
-                    "Gain {C:money}#1#${} when a",
+                    "Gain {C:money}$#1#{} when a",
                     "card is {C:attention}removed",
                     "from the deck",
                 },
@@ -201,6 +201,39 @@ return {
                     "Gives a random tag at",
                     "the end of the {C:attention}Ante",
                     "{C:red,E:1}Self destructs{} if {C:attention}drawn",
+                },
+            },
+        },
+        Sleeve = {
+            sleeve_Roland_blossom = {
+                name = "Blossom Sleeve",
+                text = {
+                    "{C:attention}Small{} and {C:attention}Big Blinds{} are",
+                    "replaced with {C:attention}Boss Blinds",
+                    "that are {C:dark_edition}debuffed #1# times",
+                },
+            },
+            sleeve_Roland_blossom_alt = {
+                name = "Efflorescent Sleeve",
+                text = {
+                    "{C:attention}Blinds{} are {C:dark_edition}debuffed",
+                    "{C:dark_edition}({X:dark_edition,C:white}ante{} {X:dark_edition,C:white}number{C:dark_edition}) times",
+                    "{C:inactive}(Instead of #1#)",
+                },
+            },
+            sleeve_Roland_go = {
+                name = "Pass GO Sleeve",
+                text = {
+                    "Start with a {C:attention}Credit Card",
+                    "Set money to {C:money}$0",
+                    "when entering the shop",
+                },
+            },
+            sleeve_Roland_go_alt = {
+                name = "Free Parking Sleeve",
+                text = {
+                    "Start with an additional",
+                    "{X:attention,C:white}#1#{C:attention} Credit Cards",
                 },
             },
         },

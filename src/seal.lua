@@ -40,7 +40,7 @@ SMODS.Seal {
             tag.ability.orbital_hand = pseudorandom_element(
                 f(G.GAME.hands):filter(function(v)
                     return v.visible
-                end):into(),
+                end):keys():into(),
                 pseudoseed "Roland_glass"
             )
         end
