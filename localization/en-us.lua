@@ -92,7 +92,8 @@ return {
             j_Roland_hexagon = {
                 name = "Hexagon",
                 text = {
-                    "Earn {C:money}$#1#{} if",
+                    "Gains {C:money}$#1#{} of",
+                    "{C:attention}sell value{} if",
                     "played hand is a",
                     "{C:attention}Four of a Kind",
                 },

@@ -283,7 +283,7 @@ SMODS.Joker {
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
-    config = {extra = {money = 2}},
+    config = {extra = {money = 4}},
     cost = 4,
     rarity = 1,
     eternal_compat = true,
@@ -293,9 +293,12 @@ SMODS.Joker {
         return {vars = {card.ability.extra.money}}
     end,
     calculate = function(_, card, context)
-        return context.joker_main and
-            context.scoring_name == "Four of a Kind" and
-            {dollars = card.ability.extra.money} or nil
+        if not context.joker_main or
+            context.scoring_name ~= "Four of a Kind" then
+            return
+        end
+
+        card.sell_cost = card.sell_cost + card.ability.extra.money
     end,
 }
 
