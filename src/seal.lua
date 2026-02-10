@@ -11,7 +11,7 @@ SMODS.Seal {
     key = "glass",
     atlas = "seal",
     pos = {x = 0, y = 0},
-    badge_colour = HEX "f6f6f6",
+    badge_colour = HEX "a6a6a6",
     pronouns = "he_him",
     calculate = function(_, card, context)
         if context.setting_blind or context.starting_shop then
