@@ -206,11 +206,11 @@ return {
             },
         },
         Other = {
-            Roland_glass_seal = {
+            roland_glass_seal = {
                 name = "Glass Seal",
                 text = {
-                    "Gives a random tag at",
-                    "the end of the {C:attention}Ante",
+                    "Creates a random {C:attention}Tag",
+                    "at the end of the {C:attention}Ante",
                     "{C:red,E:1}Self destructs{} if {C:attention}drawn",
                 },
             },
@@ -295,7 +295,7 @@ return {
             b_Roland_na = "N/A",
         },
         labels = {
-            Roland_glass_seal = "Glass Seal",
+            roland_glass_seal = "Glass Seal",
         },
         v_text = {
             ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
