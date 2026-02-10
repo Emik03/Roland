@@ -11,7 +11,7 @@ end
 local back = (function()
     local x = 0
 
-    ---@param tbl SMODS.Back|{alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
+    ---@param tbl SMODS.Back|{is_alt: function, alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
     return function(tbl)
         local key = tbl.key
         local apply = tbl.apply
@@ -29,6 +29,14 @@ local back = (function()
 
         tbl.pos = {x = x, y = 0}
         tbl.atlas = "back"
+
+        -- This API intends that you share the same functions for apply/calculate,
+        -- meaning that this may be called to check if a deck/sleeve combo is used even
+        -- when we are from the deck context. We add this to prevent accidental calls to nil.
+        function tbl:is_alt()
+            return false
+        end
+
         SMODS.Back(tbl)
         x = x + 1
 
