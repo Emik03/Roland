@@ -8,60 +8,66 @@ local function save(ret)
     return ret
 end
 
-local function back(b)
-    local key = b.key
-    local apply = b.apply
-    local calculate = b.calculate
+local back = (function()
+    local x = 0
 
-    function b:apply(...)
-        return apply and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and save(apply(self, ...))
+    return function(b)
+        local key = b.key
+        local apply = b.apply
+        local calculate = b.calculate
+
+        function b:apply(...)
+            return apply and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and save(apply(self, ...))
+        end
+
+        function b:calculate(...)
+            return calculate and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and calculate(self, ...)
+        end
+
+        b.pos = {x = x, y = 0}
+        b.atlas = "back"
+        SMODS.Back(b)
+        x = x + 1
+
+        ---@diagnostic disable-next-line: undefined-global
+        if not CardSleeves then
+            return
+        end
+
+        ---@diagnostic disable-next-line: undefined-global
+        CardSleeves.Sleeve {
+            key = key,
+            pos = b.pos,
+            atlas = "void",
+            config = b.config and f(b.config):into() or nil,
+            loc_vars = function(self, ...)
+                local ret = b.loc_vars and b.loc_vars(self, ...) or {}
+                ret.key = self:is_alt() and self.key .. "_alt" or self.key
+                return ret
+            end,
+            apply = function(self, ...)
+                return (b.alt_apply and self:is_alt() and b.alt_apply or apply)(self, ...)
+            end,
+            calculate = function(self, ...)
+                return (b.alt_calculate and self:is_alt() and b.alt_calculate or calculate)(self, ...)
+            end,
+            is_alt = function(self)
+                return self.get_current_deck_key() == "b_Roland_" .. key
+            end,
+        }
     end
+end)()
 
-    function b:calculate(...)
-        return calculate and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and calculate(self, ...)
-    end
+SMODS.Atlas {
+    key = "back",
+    path = "back.png",
+    px = 71,
+    py = 95,
+}
 
-    b.atlas = "void"
-    SMODS.Back(b)
-
-    ---@diagnostic disable-next-line: undefined-global
-    if not CardSleeves then
-        return
-    end
-
-    ---@diagnostic disable-next-line: undefined-global
-    CardSleeves.Sleeve {
-        key = key,
-        pos = b.pos,
-        atlas = "void",
-        config = b.config and f(b.config):into() or nil,
-        loc_vars = function(self, ...)
-            local ret = b.loc_vars and b.loc_vars(self, ...) or {}
-            ret.key = self:is_alt() and self.key .. "_alt" or self.key
-            return ret
-        end,
-        apply = function(self, ...)
-            return (b.alt_apply and self:is_alt() and b.alt_apply or apply)(self, ...)
-        end,
-        calculate = function(self, ...)
-            return (b.alt_calculate and self:is_alt() and b.alt_calculate or calculate)(self, ...)
-        end,
-        is_alt = function(self)
-            return self.get_current_deck_key() == "b_Roland_" .. key
-        end,
-    }
-end
-
--- SMODS.Atlas {
---     key = "back",
---     path = "back.png",
---     px = 71,
---     py = 95,
--- }
 back {
     key = "blossom",
     name = "Blossom",
-    pos = {x = 0, y = 0},
     config = {extra = {times = 2}},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.times}}
@@ -99,7 +105,6 @@ back {
 back {
     key = "go",
     name = "Go",
-    pos = {x = 0, y = 0},
     config = {extra = {times = 1, alt_times = 5}},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.alt_times - self.config.extra.times}}
