@@ -1,5 +1,25 @@
 local f, q, u = unpack(... or require "src.functional")
 
+local joker = (function()
+    local z = 0
+
+    ---@return {x: number, y: number}
+    local function inc()
+        local ret = {x = z % 6, y = math.floor(z / 6)}
+        z = z + 1
+        return ret
+    end
+
+    ---@param tbl SMODS.Joker|{sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}}
+    return function(tbl)
+        tbl.pos = inc()
+        tbl.atlas = "joker"
+        tbl.soul_pos = tbl.soul_pos and inc() or nil
+        tbl.sinis = tbl.sinis and inc() or nil
+        SMODS.Joker(tbl)
+    end
+end)()
+
 local function destructible(card)
     return not card.highlighted and not (card.ability or {}).eternal
 end
@@ -8,11 +28,9 @@ local function is_carbon(card)
     return card.edition and card.edition.key == "e_Bakery_Carbon"
 end
 
-local function is_mergeable_with(it)
-    return function(card)
-        return it.rank ~= card.rank and
-            card.label == "j_Roland_escapey" and not
-            (card.ability or {}).eternal
+local function is_mergeable_with(x)
+    return function(y)
+        return x.rank ~= y.rank and y.label == "j_Roland_escapey" and not (y.ability or {}).eternal
     end
 end
 
@@ -51,29 +69,20 @@ SMODS.Sound {
 }
 
 SMODS.Atlas {
+    key = "joker",
+    path = "joker.png",
     px = 71,
     py = 95,
-    key = "escapey",
-    path = "escapey.png",
 }
 
-SMODS.Atlas {
-    px = 71,
-    py = 95,
-    key = "martingale",
-    path = "martingale.png",
-}
-
-SMODS.Joker {
+joker {
     key = "escapey",
-    atlas = "escapey",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    sinis = {x = 2, y = 0},
-    soul_pos = {x = 1, y = 0},
     config = {extra = {hands = 2}},
-    cost = 6,
+    cost = 4,
     rarity = 2,
+    sinis = true,
+    soul_pos = true,
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
@@ -214,11 +223,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "msjoker", -- Blue bow
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     cost = 1,
     rarity = 1,
     eternal_compat = true,
@@ -233,11 +240,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "mrsbones",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     config = {extra = {xmult = 4, requirement = 4}},
     cost = 4,
     rarity = 2,
@@ -267,11 +272,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "estrogen",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     config = {extra = {division = 4}},
     cost = 8,
     rarity = 3,
@@ -286,11 +289,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "hexagon",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     config = {extra = {money = 6}},
     cost = 6,
     rarity = 1,
@@ -310,11 +311,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "hexagoner",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     config = {extra = {mult = 0}},
     cost = 6,
     rarity = 2,
@@ -337,11 +336,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "hexagonest",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     config = {extra = {mult = 0}},
     cost = 6,
     rarity = 3,
@@ -370,11 +367,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "sunny", -- Cracked egg
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     cost = 2,
     rarity = 1,
     eternal_compat = false,
@@ -415,11 +410,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "yard",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     config = {extra = {money = 2}},
     cost = 6,
     rarity = 2,
@@ -435,11 +428,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "misfortune",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -447,11 +438,9 @@ SMODS.Joker {
     perishable_compat = true,
 }
 
-SMODS.Joker {
+joker {
     key = "temple",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     config = {extra = {xmult = 1.5}},
     cost = 6,
     rarity = 2,
@@ -470,11 +459,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "bulldozer",
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -491,11 +478,9 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "oops", -- Slot machine
-    atlas = "void",
     pronouns = "they_them",
-    pos = {x = 0, y = 0},
     cost = 8,
     rarity = 3,
     config = {extra = {probability = 1, delta = 1}},
@@ -524,12 +509,10 @@ SMODS.Joker {
     end,
 }
 
-SMODS.Joker {
+joker {
     key = "martingale",
-    atlas = "martingale",
     pronouns = "he_him",
-    pos = {x = 0, y = 0},
-    config = {extra = {odds = 2, times = 0, martingale = true}},
+    config = {extra = {odds = 2, times = 0}},
     cost = 7,
     rarity = 3,
     eternal_compat = true,

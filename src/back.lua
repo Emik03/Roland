@@ -11,22 +11,25 @@ end
 local back = (function()
     local x = 0
 
-    return function(b)
-        local key = b.key
-        local apply = b.apply
-        local calculate = b.calculate
+    ---@param tbl SMODS.Back|{alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
+    return function(tbl)
+        local key = tbl.key
+        local apply = tbl.apply
+        local calculate = tbl.calculate
 
-        function b:apply(...)
+        function tbl:apply(...)
+            ---@diagnostic disable-next-line: redundant-return-value
             return apply and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and save(apply(self, ...))
         end
 
-        function b:calculate(...)
+        function tbl:calculate(...)
+            ---@diagnostic disable-next-line: return-type-mismatch
             return calculate and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and calculate(self, ...)
         end
 
-        b.pos = {x = x, y = 0}
-        b.atlas = "back"
-        SMODS.Back(b)
+        tbl.pos = {x = x, y = 0}
+        tbl.atlas = "back"
+        SMODS.Back(tbl)
         x = x + 1
 
         ---@diagnostic disable-next-line: undefined-global
@@ -37,19 +40,19 @@ local back = (function()
         ---@diagnostic disable-next-line: undefined-global
         CardSleeves.Sleeve {
             key = key,
-            pos = b.pos,
+            pos = tbl.pos,
             atlas = "void",
-            config = b.config and f(b.config):into() or nil,
+            config = tbl.config and f(tbl.config):into() or nil,
             loc_vars = function(self, ...)
-                local ret = b.loc_vars and b.loc_vars(self, ...) or {}
+                local ret = tbl.loc_vars and tbl.loc_vars(self, ...) or {}
                 ret.key = self:is_alt() and self.key .. "_alt" or self.key
                 return ret
             end,
             apply = function(self, ...)
-                return (b.alt_apply and self:is_alt() and b.alt_apply or apply)(self, ...)
+                return (tbl.alt_apply and self:is_alt() and tbl.alt_apply or apply)(self, ...)
             end,
             calculate = function(self, ...)
-                return (b.alt_calculate and self:is_alt() and b.alt_calculate or calculate)(self, ...)
+                return (tbl.alt_calculate and self:is_alt() and tbl.alt_calculate or calculate)(self, ...)
             end,
             is_alt = function(self)
                 return self.get_current_deck_key() == "b_Roland_" .. key

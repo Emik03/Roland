@@ -1,8 +1,8 @@
 local _, q = unpack(... or require "src.functional")
 
 SMODS.Atlas {
-    key = "iphone",
-    path = "iphone.png",
+    key = "charm",
+    path = "charm.png",
     px = 68,
     py = 68,
 }
@@ -13,8 +13,9 @@ q(function()
 
     local charm = Bakery_API.Charm {
         key = "iphone",
-        atlas = "iphone",
+        atlas = "charm",
         pos = {x = 0, y = 0},
+        alerted = true,
         unlocked = true,
         discovered = true,
         calculate = function(_, _, context)
@@ -33,6 +34,6 @@ q(function()
 
     charm:inject()
     charm:process_loc_text()
-    -- charm._d, charm._u, charm._saved_d_u = true, true, true  -- SMODS._save_d_u(charm)
+    -- SMODS._save_d_u(charm)
     SMODS.current_mod = current_mod
 end)
