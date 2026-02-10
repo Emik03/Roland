@@ -1,6 +1,6 @@
 local qol = assert(SMODS.load_file "src/functional.lua")() or require "src.functional"
 
-qol[1] {"challenge", "spectral", "blind", "charm", "joker", "back", "seal"}:foreach(function(v)
+qol[1] {"challenge", "spectral", "tweaks", "blind", "charm", "joker", "back", "seal"}:foreach(function(v)
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
 end)
 
@@ -9,8 +9,6 @@ if Balatest then
         assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
     end)
 end
-
-SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 
 SMODS.Atlas {
     px = 256,

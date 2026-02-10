@@ -1,5 +1,17 @@
 local f, q = unpack(... or require "src.functional")
 
+local blind = (function()
+    local y = 0
+
+    ---@param tbl SMODS.Blind
+    return function(tbl)
+        tbl.pos = {x = 0, y = y}
+        tbl.atlas = "blind"
+        SMODS.Blind(tbl)
+        y = y + 1
+    end
+end)()
+
 SMODS.Atlas {
     px = 34,
     py = 34,
@@ -50,71 +62,15 @@ local function disable_improbable()
 end
 
 local function is_locked()
-    return G.STATE ~= G.STATES.SELECTING_HAND or G.CONTROLLER.locked or (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)
+    return G.STATE ~= G.STATES.SELECTING_HAND or G.CONTROLLER.locked or
+        (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)
 end
 
-if cry_prob then
-    local orig_prob = cry_prob
-
-    ---@diagnostic disable-next-line: lowercase-global
-    cry_prob = function(owned, den, rigged)
-        return G.GAME.modifiers.Roland_improbable and 0 or orig_prob(owned, den, rigged)
-    end
-end
-
-local orig_update = Game.update
-
----@diagnostic disable-next-line: duplicate-set-field
-function Game:update(dt)
-    orig_update(self, dt)
-    local orig = G.GAME.probabilities
-
-    if not G.GAME.modifiers.Roland_improbable or getmetatable(orig) then
-        return
-    end
-
-    local normal = orig.normal
-
-    local mt = {
-        orig = orig,
-        __index = function(_, k)
-            return k == "normal" and 0 or orig[k]
-        end,
-        __newindex = function(_, k, v)
-            orig[k] = (k == "normal" and v == 0) and normal or v
-        end,
-    }
-
-    local proxy = {}
-    setmetatable(proxy, mt)
-    G.GAME.probabilities = proxy
-end
-
-SMODS.Blind {
-    key = "improbable",
-    boss = {min = 4, max = 10},
-    boss_colour = HEX "009966",
-    atlas = "blind",
-    pos = {x = 0, y = 0},
-    pronouns = "it_its",
-    mult = 2,
-    dollars = 5,
-    defeat = disable_improbable,
-    disable = disable_improbable,
-    set_blind = function(_)
-        G.GAME.modifiers.Roland_improbable = true
-    end,
-}
-
-SMODS.Blind {
+blind {
     key = "nimble",
-    boss = {min = 1, max = 10},
+    boss = {min = 1},
     boss_colour = HEX "0291fb",
-    atlas = "blind",
-    pos = {x = 0, y = 1},
     pronouns = "she_her",
-    mult = 2,
-    dollars = 5,
     config = {draw = 5},
     defeat = function(self)
         self.disabled = false
@@ -145,15 +101,11 @@ SMODS.Blind {
     end,
 }
 
-SMODS.Blind {
+blind {
     key = "divide",
-    boss = {min = 1, max = 10},
-    boss_colour = HEX "0291fb",
-    atlas = "blind",
-    pos = {x = 0, y = 1},
+    boss = {min = 1},
+    boss_colour = HEX "b18480",
     pronouns = "they_them",
-    mult = 2,
-    dollars = 5,
     disable = function()
         q(function()
             local count = #G.discard.cards
@@ -185,19 +137,97 @@ SMODS.Blind {
     end,
 }
 
-SMODS.Blind {
-    key = "tranquilizer",
-    boss = {min = 6, max = 10},
-    boss_colour = HEX "0291fb",
-    atlas = "blind",
-    pos = {x = 0, y = 1},
+blind {
+    key = "mitotic",
+    boss = {min = 3},
+    boss_colour = HEX "80b48e",
     pronouns = "they_them",
+    disable = function(self)
+        self.disabled = true
+    end,
+    calculate = function(_, b, context)
+        if b.disabled or not context.pre_discard then
+            return
+        end
+
+        local cards_added = {}
+        local count = #G.hand.highlighted
+
+        f(G.hand.highlighted, ipairs):take(count):foreach(function(v, i)
+            local copy = copy_card(v)
+            copy:add_to_deck()
+            table.insert(G.hand, copy)
+            table.insert(cards_added, copy)
+            table.insert(G.playing_cards, copy)
+            draw_card(G.hand, G.discard, i / count * 100, "down", false, copy, nil, nil, true)
+        end)
+
+        b.triggered = true
+        playing_card_joker_effects(cards_added)
+    end,
+}
+
+blind {
+    key = "improbable",
+    boss = {min = 4},
+    boss_colour = HEX "009966",
+    pronouns = "it_its",
     mult = 2,
     dollars = 5,
+    defeat = disable_improbable,
+    disable = disable_improbable,
+    set_blind = function(_)
+        G.GAME.modifiers.Roland_improbable = true
+    end,
+}
+
+if cry_prob then
+    local orig_cry_prob = cry_prob
+
+    ---@diagnostic disable-next-line: lowercase-global
+    function cry_prob(...)
+        return G.GAME.modifiers.Roland_improbable and 0 or orig_cry_prob(...)
+    end
+end
+
+local orig_update = Game.update
+
+---@diagnostic disable-next-line: duplicate-set-field
+function Game.update(...)
+    orig_update(...)
+    local orig = G.GAME.probabilities
+
+    if not G.GAME.modifiers.Roland_improbable or getmetatable(orig) then
+        return
+    end
+
+    local normal = orig.normal
+
+    local mt = {
+        orig = orig,
+        __index = function(_, k)
+            return k == "normal" and 0 or orig[k]
+        end,
+        __newindex = function(_, k, v)
+            orig[k] = (k == "normal" and v == 0) and normal or v
+        end,
+    }
+
+    local proxy = {}
+    setmetatable(proxy, mt)
+    G.GAME.probabilities = proxy
+end
+
+blind {
+    key = "tranquilizer",
+    boss = {min = 6},
+    boss_colour = HEX "bdaecc",
+    pronouns = "they_them",
     collection_loc_vars = function(_)
         return {
             vars = {localize {
-                type = "variable", key = "b_Roland_most_common_card",
+                type = "variable",
+                key = "b_Roland_most_common_card",
             }},
         }
     end,
@@ -238,39 +268,53 @@ SMODS.Blind {
     end,
     recalc_debuff = function(self, card)
         local id, _ = common_rank()
-        return not self.disabled and id == card:get_id()
+        local ret = not self.disabled and id == card:get_id()
+        self.triggered = ret
+        return ret
     end,
 }
 
-SMODS.Blind {
-    key = "xerox",
-    boss = {min = 3, max = 10},
-    boss_colour = HEX "0291fb",
-    atlas = "blind",
-    pos = {x = 0, y = 1},
+blind {
+    key = "equinox",
+    boss = {min = 6},
+    boss_colour = HEX "000000",
     pronouns = "they_them",
-    mult = 2,
-    dollars = 5,
-    disable = function(self)
-        self.disabled = true
+    defeat = function()
+        G.GAME.modifiers.Roland_equinox = false
     end,
-    calculate = function(_, blind, context)
-        if blind.disabled or not context.pre_discard then
-            return
-        end
-
-        local cards_added = {}
-        local count = #G.hand.highlighted
-
-        f(G.hand.highlighted, ipairs):take(count):foreach(function(v, i)
-            local copy = copy_card(v)
-            copy:add_to_deck()
-            table.insert(G.hand, copy)
-            table.insert(cards_added, copy)
-            table.insert(G.playing_cards, copy)
-            draw_card(G.hand, G.discard, i / count * 100, "down", false, copy, nil, nil, true)
-        end)
-
-        playing_card_joker_effects(cards_added)
+    disable = function()
+        G.GAME.modifiers.Roland_equinox = false
+    end,
+    set_blind = function()
+        G.GAME.modifiers.Roland_equinox = true
     end,
 }
+
+local function equinox()
+    return G.GAME and
+        G.GAME.modifiers and
+        G.GAME.modifiers.Roland_equinox and
+        G.STATE ~= G.STATES.GAME_OVER
+end
+
+local orig_draw = Card.draw
+
+---@diagnostic disable-next-line: duplicate-set-field
+function Card:draw(...)
+    if equinox() and not self.states.hover.is and not self.states.focus.is then
+        add_to_drawhash(self)
+    else
+        return orig_draw(self, ...)
+    end
+end
+
+local orig_draw_self = UIElement.draw_self
+
+---@diagnostic disable-next-line: duplicate-set-field
+function UIElement:draw_self(...)
+    if equinox() and not self.config.button and not self.config.button_UIE then
+        add_to_drawhash(self)
+    else
+        return orig_draw_self(self, ...)
+    end
+end

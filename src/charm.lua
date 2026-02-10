@@ -15,6 +15,8 @@ q(function()
         key = "iphone",
         atlas = "iphone",
         pos = {x = 0, y = 0},
+        unlocked = true,
+        discovered = true,
         calculate = function(_, _, context)
             local _ = context.skip_blind and q(function()
                 G.blind_prompt_box = G.blind_prompt_box and G.blind_prompt_box:remove()
@@ -31,6 +33,6 @@ q(function()
 
     charm:inject()
     charm:process_loc_text()
-    SMODS._save_d_u(charm)
+    -- charm._d, charm._u, charm._saved_d_u = true, true, true  -- SMODS._save_d_u(charm)
     SMODS.current_mod = current_mod
 end)

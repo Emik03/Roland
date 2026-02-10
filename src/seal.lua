@@ -1,14 +1,15 @@
 local f, q = unpack(... or require "src.functional")
 
--- SMODS.Atlas {
---     px = 71,
---     py = 95,
---     key = "seal",
---     path = "seal.png",
--- }
+SMODS.Atlas {
+    px = 71,
+    py = 95,
+    key = "seal",
+    path = "seal.png",
+}
+
 SMODS.Seal {
     key = "glass",
-    atlas = "void",
+    atlas = "seal",
     pos = {x = 0, y = 0},
     badge_colour = HEX "f6f6f6",
 

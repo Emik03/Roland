@@ -31,11 +31,19 @@ return {
         Blind = {
             bl_Roland_divide = {
                 name = "The Great Divide",
-                text = {"Half of the deck", "is {C:discard}discarded"},
+                text = {"Half of the deck", "is discarded"},
+            },
+            bl_Roland_equinox = {
+                name = "The Equinox",
+                text = {"No UI"},
             },
             bl_Roland_improbable = {
                 name = "The Improbable",
                 text = {"All probabilities", "cannot happen"},
+            },
+            bl_Roland_mitotic = {
+                name = "The Mitotic",
+                text = {"Discarded cards", "are copied"},
             },
             bl_Roland_nimble = {
                 name = "The Nimble",
@@ -45,9 +53,11 @@ return {
                 name = "The Tranquilizer",
                 text = {"#1#s are debuffed", "Changes based on", "most common rank"},
             },
-            bl_Roland_xerox = {
-                name = "The Xerox",
-                text = {"Discarded cards", "are copied"},
+        },
+        Enhanced = {
+            m_wild = {
+                name = "Wild Card",
+                text = {unpack(G.localization.descriptions.Enhanced.m_wild.text), "Can not be", "debuffed"},
             },
         },
         Joker = {
@@ -103,8 +113,8 @@ return {
                 text = {
                     "This Joker gains the",
                     "rank of {C:attention}unscored cards",
-                    "if played hand is a",
-                    "{C:attention}Four of a Kind",
+                    "to Mult if played hand",
+                    "is a {C:attention}Four of a Kind",
                     "{C:inactive}(Currently {C:red}+#1#{C:inactive} Mult)",
                 },
             },
@@ -176,7 +186,7 @@ return {
                     "Sell this Joker to",
                     "{C:attention}draw{} the bottom",
                     "card of the {C:hand}deck",
-                    "{C:inactive}(Currently {V:1}#1##2#{V:2}#3#{C:inactive})",
+                    "{C:inactive}(Currently {V:1}#1#{C:inactive}#2#{V:2}#3#{C:inactive})",
                 },
             },
             j_Roland_temple = {

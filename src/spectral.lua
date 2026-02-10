@@ -1,5 +1,19 @@
 local f, q, u = unpack(... or require "src.functional")
 
+local spectral = (function()
+    local x = 0
+
+    ---@param tbl SMODS.Consumable
+    return function(tbl)
+        tbl.cost = 4
+        tbl.set = "Spectral"
+        tbl.atlas = "spectral"
+        tbl.pos = {x = x, y = 0}
+        SMODS.Consumable(tbl)
+        x = x + 1
+    end
+end)()
+
 SMODS.Sound {
     key = "void",
     path = "void.ogg",
@@ -8,8 +22,8 @@ SMODS.Sound {
 SMODS.Atlas {
     px = 71,
     py = 95,
-    key = "afterimage",
-    path = "afterimage.png",
+    key = "spectral",
+    path = "spectral.png",
 }
 
 SMODS.Atlas {
@@ -19,12 +33,8 @@ SMODS.Atlas {
     path = "void.png",
 }
 
-SMODS.Consumable {
+spectral {
     key = "afterimage",
-    set = "Spectral",
-    pos = {x = 0, y = 0},
-    cost = 4,
-    atlas = "afterimage",
     pronouns = "he_they",
     config = {extra = {amount = 1, hand = -1}},
     loc_vars = function(_, _, card)
@@ -54,12 +64,8 @@ SMODS.Consumable {
     end,
 }
 
-SMODS.Consumable {
+spectral {
     key = "dual",
-    set = "Spectral",
-    pos = {x = 0, y = 0},
-    cost = 4,
-    atlas = "afterimage",
     pronouns = "he_they",
     config = {extra = {amount = 2}},
     loc_vars = function(_, _, card)
@@ -88,12 +94,8 @@ SMODS.Consumable {
     end,
 }
 
-SMODS.Consumable {
+spectral {
     key = "mirror",
-    set = "Spectral",
-    pos = {x = 0, y = 0},
-    cost = 4,
-    atlas = "afterimage",
     pronouns = "he_they",
     config = {extra = {amount = 1}},
     loc_vars = function(_, _, card)
@@ -109,13 +111,9 @@ SMODS.Consumable {
     end,
 }
 
-SMODS.Consumable {
+spectral {
     key = "void",
-    set = "Spectral",
-    pos = {x = 0, y = 0},
-    cost = 4,
     hidden = true,
-    atlas = "void",
     soul_rate = 0.003,
     soul_set = "Spectral",
     pronouns = "she_they",

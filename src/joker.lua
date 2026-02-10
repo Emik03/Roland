@@ -234,47 +234,55 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "sunny", -- Cracked egg
+    key = "mrsbones",
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
-    cost = 2,
-    rarity = 1,
+    config = {extra = {xmult = 4, requirement = 4}},
+    cost = 4,
+    rarity = 2,
     eternal_compat = false,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult, card.ability.extra.requirement * 100}}
+    end,
+    calculate = function(_, card, context)
+        if context.blueprint then
+            return
+        end
+
+        if context.joker_main then
+            return {xmult = card.ability.extra.xmult}
+        end
+
+        if context.blind_defeated and G.GAME.chips / card.ability.extra.requirement < G.GAME.blind.chips then
+            q(function()
+                G.hand_text_area.blind_chips:juice_up()
+                G.hand_text_area.game_chips:juice_up()
+                play_sound("tarot1")
+                card:start_dissolve()
+            end)
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "estrogen",
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    config = {extra = {division = 4}},
+    cost = 8,
+    rarity = 3,
+    eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        local last = ((G.deck or {}).cards or {})[1]
-
-        if last or card.area ~= G.jokers then
-            return {
-                vars = {
-                    "",
-                    localize {type = "variable", key = "b_Roland_na"},
-                    "",
-                    colours = {G.C.JOKER_GREY, G.C.JOKER_GREY},
-                },
-            }
-        end
-
-        local suit = last.base.suit
-        local value = last.base.value
-        local name = last.ability.name or ""
-        local no_rank = SMODS.has_no_rank(last)
-        local no_suit = SMODS.has_no_suit(last)
-
-        return {
-            vars = {
-                value and not no_rank and localize(value or 14, "ranks") or name,
-                not no_rank and not no_suit and localize {type = "variable", key = "b_Roland_of"} or "",
-                no_suit and "" or localize(suit, "suits_plural"),
-                colours = {G.C.IMPORTANT, G.C.SUITS[suit] or G.C.JOKER_GREY},
-            },
-        }
+        return {vars = {card.ability.extra.division}}
     end,
-    calculate = function(_, _, context)
-        local _ = context.selling_self and
-            draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
+    calculate = function(_, card, context)
+        return context.joker_main and {mult = hand_chips / card.ability.extra.division} or nil
     end,
 }
 
@@ -283,8 +291,8 @@ SMODS.Joker {
     atlas = "void",
     pronouns = "they_them",
     pos = {x = 0, y = 0},
-    config = {extra = {money = 4}},
-    cost = 4,
+    config = {extra = {money = 6}},
+    cost = 6,
     rarity = 1,
     eternal_compat = true,
     blueprint_compat = true,
@@ -335,7 +343,7 @@ SMODS.Joker {
     pronouns = "they_them",
     pos = {x = 0, y = 0},
     config = {extra = {mult = 0}},
-    cost = 8,
+    cost = 6,
     rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
@@ -349,7 +357,7 @@ SMODS.Joker {
 
         q(function()
             playing_card_joker_effects(f(G.play):take(#G.play):map(function(v)
-                G.playing_card = (G.playing_card and G.playing_card + 1) or 1
+                G.playing_card = (G.playing_card or 0) + 1
                 G.deck.config.card_limit = G.deck.config.card_limit + 1
                 local copy = copy_card(v, nil, nil, G.playing_card)
                 copy:add_to_deck()
@@ -359,6 +367,51 @@ SMODS.Joker {
                 return copy
             end):into())
         end)
+    end,
+}
+
+SMODS.Joker {
+    key = "sunny", -- Cracked egg
+    atlas = "void",
+    pronouns = "they_them",
+    pos = {x = 0, y = 0},
+    cost = 2,
+    rarity = 1,
+    eternal_compat = false,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local last = ((G.deck or {}).cards or {})[1]
+
+        if not last or card.area ~= G.jokers then
+            return {
+                vars = {
+                    "",
+                    localize {type = "variable", key = "b_Roland_na"},
+                    "",
+                    colours = {G.C.JOKER_GREY, G.C.JOKER_GREY},
+                },
+            }
+        end
+
+        local suit = last.base.suit
+        local value = last.base.value
+        local name = last.ability.name or ""
+        local no_rank = SMODS.has_no_rank(last)
+        local no_suit = SMODS.has_no_suit(last)
+
+        return {
+            vars = {
+                value and not no_rank and localize(value or 14, "ranks") or name,
+                not no_rank and not no_suit and localize {type = "variable", key = "b_Roland_of"} or "",
+                no_suit and "" or localize(suit, "suits_plural"),
+                colours = {G.C.IMPORTANT, G.C.SUITS[suit] or G.C.JOKER_GREY},
+            },
+        }
+    end,
+    calculate = function(_, _, context)
+        local _ = context.selling_self and
+            draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
     end,
 }
 
@@ -435,59 +488,6 @@ SMODS.Joker {
     end,
     xmult = function()
         return ((G.GAME or {}).blind or {}).mult or 1
-    end,
-}
-
-SMODS.Joker {
-    key = "mrsbones",
-    atlas = "void",
-    pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    config = {extra = {xmult = 4, requirement = 4}},
-    cost = 4,
-    rarity = 2,
-    eternal_compat = false,
-    blueprint_compat = false,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.xmult, card.ability.extra.requirement * 100}}
-    end,
-    calculate = function(_, card, context)
-        if context.blueprint then
-            return
-        end
-
-        if context.joker_main then
-            return {xmult = card.ability.extra.xmult}
-        end
-
-        if context.blind_defeated and G.GAME.chips / card.ability.extra.requirement < G.GAME.blind.chips then
-            q(function()
-                G.hand_text_area.blind_chips:juice_up()
-                G.hand_text_area.game_chips:juice_up()
-                play_sound("tarot1")
-                card:start_dissolve()
-            end)
-        end
-    end,
-}
-
-SMODS.Joker {
-    key = "estrogen",
-    atlas = "void",
-    pronouns = "they_them",
-    pos = {x = 0, y = 0},
-    config = {extra = {division = 4}},
-    cost = 8,
-    rarity = 3,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.division}}
-    end,
-    calculate = function(_, card, context)
-        return context.joker_main and {mult = hand_chips / card.ability.extra.division} or nil
     end,
 }
 

@@ -24,10 +24,12 @@ local function back(b)
     b.atlas = "void"
     SMODS.Back(b)
 
+    ---@diagnostic disable-next-line: undefined-global
     if not CardSleeves then
         return
     end
 
+    ---@diagnostic disable-next-line: undefined-global
     CardSleeves.Sleeve {
         key = key,
         pos = b.pos,

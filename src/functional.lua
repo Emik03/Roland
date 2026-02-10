@@ -81,8 +81,7 @@ end
 --- Determines if a center is allowed to be usable.
 ---@return boolean
 local function u()
-    return not ((G.play and #G.play.cards > 0 or
-            G.CONTROLLER.locked or
+    return not ((G.play and #G.play.cards > 0 or G.CONTROLLER.locked or
             (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) and
         G.STATE ~= G.STATES.HAND_PLAYED and
         G.STATE ~= G.STATES.DRAW_TO_HAND and
