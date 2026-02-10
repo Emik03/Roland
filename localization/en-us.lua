@@ -19,13 +19,17 @@ return {
             },
         },
         BakeryCharm = {
-            BakeryCharm_Roland_iphone = {
+            BakeryCharm_Roland_fat = {
                 name = "fat i phone",
                 text = {
                     "Enter the shop",
                     "when any {C:attention}Blind",
                     "is {C:attention}skipped",
                 },
+            },
+            BakeryCharm_Roland_flexible = {
+                name = "flexi ble phone",
+                text = {unpack(G.localization.descriptions.Joker.j_ring_master.text)},
             },
         },
         Blind = {
@@ -192,7 +196,7 @@ return {
             j_Roland_temple = {
                 name = "Temple",
                 text = {
-                    "{C:attention}Unscored {C:enhanced}wild{} cards",
+                    "{C:attention}Unscored Wild{} cards",
                     "give {X:red,C:white}X#1#{} Mult",
                 },
             },
@@ -290,6 +294,7 @@ return {
         },
         v_dictionary = {
             b_Roland_comma = ", ",
+            b_Roland_entering_shop = "Entering shop!",
             b_Roland_of = " of ",
             b_Roland_most_common_card = "(Rank)",
             b_Roland_na = "N/A",

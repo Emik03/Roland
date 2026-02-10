@@ -63,11 +63,6 @@ local function level_up(hand, by, card)
     update("", 0, 0, "", 1.1)
 end
 
-SMODS.Sound {
-    key = "milestone",
-    path = "milestone.ogg",
-}
-
 SMODS.Atlas {
     key = "joker",
     path = "joker.png",
@@ -538,7 +533,7 @@ joker {
         local xmult = extra.odds
         local numerator = 1
 
-        for _ = 1, 31 do
+        for _ = 1, 63 do
             if SMODS.pseudorandom_probability(card, "j_Roland_martingale", 1, extra.odds, "Martingale") then
                 break
             end
