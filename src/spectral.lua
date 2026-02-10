@@ -26,13 +26,6 @@ SMODS.Atlas {
     path = "spectral.png",
 }
 
-SMODS.Atlas {
-    px = 71,
-    py = 95,
-    key = "void",
-    path = "void.png",
-}
-
 spectral {
     key = "afterimage",
     pronouns = "he_they",
