@@ -225,7 +225,7 @@ joker {
 
 joker {
     key = "msjoker", -- Blue bow
-    pronouns = "they_them",
+    pronouns = "she_her",
     cost = 1,
     rarity = 1,
     eternal_compat = true,
@@ -242,7 +242,7 @@ joker {
 
 joker {
     key = "mrsbones",
-    pronouns = "they_them",
+    pronouns = "she_her",
     config = {extra = {xmult = 4, requirement = 4}},
     cost = 4,
     rarity = 2,
@@ -274,7 +274,7 @@ joker {
 
 joker {
     key = "estrogen",
-    pronouns = "they_them",
+    pronouns = "she_her",
     config = {extra = {division = 4}},
     cost = 8,
     rarity = 3,
@@ -291,7 +291,7 @@ joker {
 
 joker {
     key = "hexagon",
-    pronouns = "they_them",
+    pronouns = "it_its",
     config = {extra = {money = 6}},
     cost = 6,
     rarity = 1,
@@ -313,7 +313,7 @@ joker {
 
 joker {
     key = "hexagoner",
-    pronouns = "they_them",
+    pronouns = "it_its",
     config = {extra = {mult = 0}},
     cost = 6,
     rarity = 2,
@@ -338,7 +338,7 @@ joker {
 
 joker {
     key = "hexagonest",
-    pronouns = "they_them",
+    pronouns = "it_its",
     config = {extra = {mult = 0}},
     cost = 6,
     rarity = 3,
@@ -412,7 +412,7 @@ joker {
 
 joker {
     key = "yard",
-    pronouns = "they_them",
+    pronouns = "he_him",
     config = {extra = {money = 2}},
     cost = 6,
     rarity = 2,
@@ -430,7 +430,7 @@ joker {
 
 joker {
     key = "misfortune",
-    pronouns = "they_them",
+    pronouns = "she_they",
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -440,7 +440,7 @@ joker {
 
 joker {
     key = "temple",
-    pronouns = "they_them",
+    pronouns = "any_all",
     config = {extra = {xmult = 1.5}},
     cost = 6,
     rarity = 2,
@@ -461,7 +461,7 @@ joker {
 
 joker {
     key = "bulldozer",
-    pronouns = "they_them",
+    pronouns = "it_its",
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -480,7 +480,7 @@ joker {
 
 joker {
     key = "oops", -- Slot machine
-    pronouns = "they_them",
+    pronouns = "he_they",
     cost = 8,
     rarity = 3,
     config = {extra = {probability = 1, delta = 1}},

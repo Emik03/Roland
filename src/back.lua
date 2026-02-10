@@ -71,6 +71,7 @@ SMODS.Atlas {
 back {
     key = "blossom",
     name = "Blossom",
+    pronouns = "any_all",
     config = {extra = {times = 2}},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.times}}
@@ -108,6 +109,7 @@ back {
 back {
     key = "go",
     name = "Go",
+    pronouns = "he_him",
     config = {extra = {times = 1, alt_times = 5}},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.alt_times - self.config.extra.times}}

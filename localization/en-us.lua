@@ -57,7 +57,7 @@ return {
         Enhanced = {
             m_wild = {
                 name = "Wild Card",
-                text = {unpack(G.localization.descriptions.Enhanced.m_wild.text), "Can not be", "debuffed"},
+                text = {"Can not be", "debuffed", unpack(G.localization.descriptions.Enhanced.m_wild.text)},
             },
         },
         Joker = {

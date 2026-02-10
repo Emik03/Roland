@@ -59,7 +59,7 @@ spectral {
 
 spectral {
     key = "dual",
-    pronouns = "he_they",
+    pronouns = "they_them",
     config = {extra = {amount = 2}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount}}
@@ -89,7 +89,7 @@ spectral {
 
 spectral {
     key = "mirror",
-    pronouns = "he_they",
+    pronouns = "he_him",
     config = {extra = {amount = 1}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount}}
@@ -109,7 +109,7 @@ spectral {
     hidden = true,
     soul_rate = 0.003,
     soul_set = "Spectral",
-    pronouns = "she_they",
+    pronouns = "it_its",
     config = {extra = {amount = 2}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount}}

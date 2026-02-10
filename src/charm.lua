@@ -14,6 +14,7 @@ q(function()
     local charm = Bakery_API.Charm {
         key = "iphone",
         atlas = "charm",
+        pronouns = "he_they",
         pos = {x = 0, y = 0},
         alerted = true,
         unlocked = true,

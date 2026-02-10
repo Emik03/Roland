@@ -105,7 +105,7 @@ blind {
     key = "divide",
     boss = {min = 1},
     boss_colour = HEX "b18480",
-    pronouns = "they_them",
+    pronouns = "he_they",
     disable = function()
         q(function()
             local count = #G.discard.cards
@@ -141,7 +141,7 @@ blind {
     key = "mitotic",
     boss = {min = 3},
     boss_colour = HEX "80b48e",
-    pronouns = "they_them",
+    pronouns = "it_its",
     disable = function(self)
         self.disabled = true
     end,
@@ -278,7 +278,7 @@ blind {
     key = "equinox",
     boss = {min = 6},
     boss_colour = HEX "000000",
-    pronouns = "they_them",
+    pronouns = "any_all",
     defeat = function()
         G.GAME.modifiers.Roland_equinox = false
     end,
