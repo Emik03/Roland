@@ -449,6 +449,10 @@ joker {
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_SEALS.Purple)
+        table.insert(info_queue, G.P_CENTERS.e_negative)
+    end,
 }
 
 joker {
@@ -460,7 +464,8 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
-    loc_vars = function(_, _, card)
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_CENTERS.m_wild)
         return {vars = {card.ability.extra.xmult}}
     end,
     calculate = function(_, card, context)

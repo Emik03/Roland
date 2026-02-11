@@ -77,7 +77,7 @@ return {
                 name = "Escapey",
                 text = {
                     "Use to {C:attention}destroy tags{} or {C:attention}unselected consumables",
-                    "in exchange for {C:planet}leveling up #1# random hands",
+                    "in exchange for {C:planet}leveling up {X:planet,C:white}#1#{C:planet} random hands",
                     "{C:inactive,s:0.75,E:1}#2#{C:red,s:1.5,E:1}#3#{s:0.9}#4#{C:blue,E:1,s:0.9}#5#{s:0.9}#6#",
                 },
                 merge = {"Since none apply, fuse with other ", " jokers"},
@@ -173,15 +173,6 @@ return {
                     "{C:attention}increase{} for each",
                     "{C:hand}hand played this round",
                     "{C:inactive}(Currently {C:green}X#1#{C:inactive})",
-                },
-            },
-            j_Roland_rigged = {
-                name = "Rigged",
-                text = {
-                    "{C:blue}#1#{}#2#{C:green}#3#{}#4#{C:red}#5#{}#6#{C:edition}#7#{}#8#{C:legendary}#9#{}#10#{C:dark_edition}#11#",
-                    "jokers cannot appear",
-                    "{C:attention}Upgrade{} this card by",
-                    "obtaining another {C:attention}Rigged",
                 },
             },
             j_Roland_sunny = {
@@ -292,6 +283,7 @@ return {
         challenge_names = {
             c_Roland_Jokerful = "Jokerful",
             c_Roland_Pastries = "Sweet Pastries",
+            c_Roland_Surgery = "Surgery",
         },
         v_dictionary = {
             b_Roland_bye = "Bye!",
@@ -310,6 +302,8 @@ return {
         v_text = {
             ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
             ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},
+            ch_c_Roland_Oops_All_Tranquilizers = {"Non-showdown blinds are replaced with {C:blue}The Tranquilizer"},
+            ch_c_Roland_Linked_Rank = {"Cards of the same rank share state"},
         },
     },
 }

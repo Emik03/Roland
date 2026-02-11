@@ -1,7 +1,7 @@
 local f, q = unpack(... or require "src.functional")
 local jokerful = {banned_cards = {}}
 local pastries = {banned_cards = {}, banned_tags = {}, banned_other = {}}
-
+-- local surgery = {banned_other = {}}
 local function adder(tbl)
     return function(v)
         table.insert(tbl, {id = v.key})
@@ -12,6 +12,9 @@ local function is_banned_from_pastry(_, k)
     return not k:find "_Bakery_" and not k:find "_Roland_"
 end
 
+-- local function is_blind_banned_from_surgery(v, k)
+--     return k ~= "bl_Roland_tranquilizer" and not (v.boss or {}).showdown
+-- end
 local function is_center_banned_from_pastry(v, k)
     local pastries_targets = {Enhanced = true, Joker = true, Tarot = true, Spectral = true}
     return pastries_targets[v.set] and is_banned_from_pastry(v, k)
@@ -35,12 +38,26 @@ SMODS.Challenge {
     pronouns = "she_them",
 }
 
+-- SMODS.Challenge {
+--     key = "Surgery",
+--     rules = {custom = {{id = "Roland_Oops_All_Tranquilizers"}, {id = "Roland_Linked_Rank"}}},
+--     restrictions = surgery,
+--     pronouns = "she_them",
+--     calculate = function()
+--         f(G.playing_cards):skip(1):take(5):foreach(function(v)
+--             ---@type Card
+--             v = v
+--             v.config.center = G.playing_cards[1].config.center
+--         end)
+--     end,
+-- }
 q(function()
     f {
         {G.P_CENTERS, is_joker,                     jokerful.banned_cards},
         {G.P_TAGS,    is_banned_from_pastry,        pastries.banned_tags},
         {G.P_BLINDS,  is_banned_from_pastry,        pastries.banned_other},
         {G.P_CENTERS, is_center_banned_from_pastry, pastries.banned_cards},
+        -- {G.P_BLINDS,  is_blind_banned_from_surgery, surgery.banned_other},
     }:foreach(function(v)
         f(v[1]):filter(v[2]):foreach(adder(v[3]))
     end)

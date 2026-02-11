@@ -30,7 +30,8 @@ spectral {
     key = "afterimage",
     pronouns = "he_they",
     config = {extra = {amount = 1, hand = -1}},
-    loc_vars = function(_, _, card)
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_CENTERS.e_negative)
         return {vars = {card.ability.extra.amount, card.ability.extra.hand}}
     end,
     can_use = function(_, card)
@@ -91,7 +92,8 @@ spectral {
     key = "mirror",
     pronouns = "he_him",
     config = {extra = {amount = 1}},
-    loc_vars = function(_, _, card)
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_SEALS.Roland_glass)
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function(_, card)
@@ -111,7 +113,9 @@ spectral {
     soul_set = "Spectral",
     pronouns = "it_its",
     config = {extra = {amount = 2}},
-    loc_vars = function(_, _, card)
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_CENTERS.e_negative)
+        table.insert(info_queue, G.P_CENTERS.c_cryptid)
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function()

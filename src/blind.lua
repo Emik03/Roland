@@ -117,6 +117,10 @@ blind {
         q(function()
             local count = #G.discard.cards
 
+            if count == 0 then
+                return
+            end
+
             f(G.discard.cards):take(count):foreach(function(v, i)
                 draw_card(G.discard, G.hand, i / count * 100, "up", false, v, nil, nil, true)
             end)
