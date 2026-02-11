@@ -318,7 +318,10 @@ local orig_draw = Card.draw
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function Card:draw(...)
-    if equinox() and not self.states.hover.is and not self.states.focus.is then
+    if equinox() and
+        not SMODS.Mods.Roland.config.equinox_assist and
+        not self.states.hover.is and
+        not self.states.focus.is then
         add_to_drawhash(self)
     else
         return orig_draw(self, ...)
@@ -329,7 +332,9 @@ local orig_draw_self = UIElement.draw_self
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function UIElement:draw_self(...)
-    if equinox() and not self.config.button and not self.config.button_UIE then
+    if equinox() and
+        not self.config.button and
+        not self.config.button_UIE then
         add_to_drawhash(self)
     else
         return orig_draw_self(self, ...)
