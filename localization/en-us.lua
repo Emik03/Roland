@@ -99,8 +99,8 @@ return {
                     },
                 },
             },
-            j_Roland_estrogen = {
-                name = "Estrogen",
+            j_Roland_phytoestrogens = {
+                name = "Phytoestrogens",
                 text = {"{C:mult}+(Chips/#1#){} Mult"},
             },
             j_Roland_hexagon = {

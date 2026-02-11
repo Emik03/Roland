@@ -280,7 +280,7 @@ joker {
 }
 
 joker {
-    key = "estrogen",
+    key = "phytoestrogens",
     pronouns = "she_her",
     config = {extra = {division = 4}},
     cost = 8,
