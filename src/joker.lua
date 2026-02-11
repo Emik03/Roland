@@ -10,13 +10,23 @@ local joker = (function()
         return ret
     end
 
-    ---@param tbl SMODS.Joker|{sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}}
+    ---@param tbl SMODS.Joker|{artist?: string, sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}}
     return function(tbl)
         tbl.pos = inc()
         tbl.atlas = "joker"
         tbl.soul_pos = tbl.soul_pos and inc() or nil
         tbl.sinis = tbl.sinis and inc() or nil
         SMODS.Joker(tbl)
+
+        local _ = tbl.artist and q(function()
+            Bakery_API.contributors.Roland_char = Bakery_API.contributors.Roland_char or {
+                name = "char (@irregulester)",
+                fg = HEX "f8f8f2",
+                bg = HEX "ff79c6",
+            }
+
+            Bakery_API.credit(tbl)
+        end)
     end
 end)()
 
@@ -474,8 +484,9 @@ joker {
 }
 
 joker {
-    key = "oops", -- Slot machine
+    key = "oops",
     pronouns = "he_they",
+    artist = "Roland_char",
     cost = 8,
     rarity = 3,
     config = {extra = {probability = 1, delta = 1}},
