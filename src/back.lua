@@ -49,7 +49,7 @@ local back = (function()
         CardSleeves.Sleeve {
             key = key,
             pos = tbl.pos,
-            atlas = "void",
+            atlas = "back",
             config = tbl.config and f(tbl.config):into() or nil,
             loc_vars = function(self, ...)
                 local ret = tbl.loc_vars and tbl.loc_vars(self, ...) or {}
