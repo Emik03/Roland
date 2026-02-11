@@ -21,6 +21,11 @@ SMODS.Atlas {
     atlas_table = "ANIMATION_ATLAS",
 }
 
+SMODS.Sound {
+    key = "kick",
+    path = "kick.ogg",
+}
+
 local function common_rank()
     local tally = {}
     local to_name = {}
@@ -72,11 +77,11 @@ blind {
     boss_colour = HEX "0291fb",
     pronouns = "she_her",
     config = {draw = 5},
-    defeat = function(self)
-        self.disabled = false
+    defeat = function()
+        G.GAME.Roland_nimble_disabled = nil
     end,
-    disable = function(self)
-        self.disabled = true
+    disable = function()
+        G.GAME.Roland_nimble_disabled = true
     end,
     drawn_to_hand = function(self)
         local function force_hand()
@@ -89,15 +94,16 @@ blind {
             end)
 
             G.FUNCS.play_cards_from_highlighted(nil)
+            self:disable()
         end
 
-        if not self.disabled then
-            self.disabled = true
+        if not G.GAME.Roland_nimble_disabled then
+            G.GAME.Roland_nimble_disabled = true
             q {func = force_hand, blocking = false}
         end
     end,
-    set_blind = function(self)
-        self.disabled = false
+    set_blind = function()
+        G.GAME.Roland_nimble_disabled = nil
     end,
 }
 
@@ -107,6 +113,7 @@ blind {
     boss_colour = HEX "b18480",
     pronouns = "he_they",
     disable = function()
+        -- Ensures that this runs after 'set_blind' since it also gets added to queue.
         q(function()
             local count = #G.discard.cards
 
@@ -162,6 +169,7 @@ blind {
             draw_card(G.hand, G.discard, i / count * 100, "down", false, copy, nil, nil, true)
         end)
 
+        b:wiggle()
         b.triggered = true
         playing_card_joker_effects(cards_added)
     end,
@@ -196,8 +204,16 @@ local orig_update = Game.update
 function Game.update(...)
     orig_update(...)
     local orig = G.GAME.probabilities
+    local improbable = G.GAME.modifiers.Roland_improbable
 
-    if not G.GAME.modifiers.Roland_improbable or getmetatable(orig) then
+    -- Normally unreachable since we set it to nil ourselves,
+    -- but other mods may want to use this modifier.
+    if improbable == false then
+        disable_improbable()
+        return
+    end
+
+    if not improbable or getmetatable(orig) then
         return
     end
 
@@ -247,7 +263,7 @@ blind {
             return
         end
 
-        local needs_text_change = false
+        local needs_text_change
 
         local function process(card_area)
             f(card_area.cards):foreach(function(v)
@@ -280,12 +296,13 @@ blind {
     boss_colour = HEX "000000",
     pronouns = "any_all",
     defeat = function()
-        G.GAME.modifiers.Roland_equinox = false
+        G.GAME.modifiers.Roland_equinox = nil
     end,
     disable = function()
-        G.GAME.modifiers.Roland_equinox = false
+        G.GAME.modifiers.Roland_equinox = nil
     end,
     set_blind = function()
+        play_sound("Roland_kick", 1, 0.7)
         G.GAME.modifiers.Roland_equinox = true
     end,
 }

@@ -14,16 +14,16 @@ local spectral = (function()
     end
 end)()
 
-SMODS.Sound {
-    key = "void",
-    path = "void.ogg",
-}
-
 SMODS.Atlas {
     px = 71,
     py = 95,
     key = "spectral",
     path = "spectral.png",
+}
+
+SMODS.Sound {
+    key = "void",
+    path = "void.ogg",
 }
 
 spectral {

@@ -215,7 +215,8 @@ return {
                 text = {
                     "Creates a random {C:attention}Tag",
                     "at the end of the {C:attention}Ante",
-                    "{C:red,E:1}Self destructs{} if {C:attention}drawn",
+                    "{C:red,E:1}Shatters{} if drawn",
+                    "during any {C:attention}Blind",
                 },
             },
         },
@@ -293,11 +294,12 @@ return {
             c_Roland_Pastries = "Sweet Pastries",
         },
         v_dictionary = {
+            b_Roland_bye = "Bye!",
             b_Roland_comma = ", ",
             b_Roland_entering_shop = "Entering shop!",
-            b_Roland_of = " of ",
             b_Roland_most_common_card = "(Rank)",
             b_Roland_na = "N/A",
+            b_Roland_of = " of ",
         },
         labels = {
             roland_glass_seal = "Glass Seal",

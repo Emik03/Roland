@@ -266,12 +266,18 @@ joker {
             return {xmult = card.ability.extra.xmult}
         end
 
-        if context.blind_defeated and G.GAME.chips / card.ability.extra.requirement < G.GAME.blind.chips then
+        if not card.getting_sliced and
+            context.end_of_round and
+            G.GAME.chips / card.ability.extra.requirement < G.GAME.blind.chips then
+            card.getting_sliced = true
+            local message = localize {type = "variable", key = "b_Roland_bye"}
+            SMODS.calculate_effect({message = message, colour = G.C.RED}, card)
+
             q(function()
                 G.hand_text_area.blind_chips:juice_up()
                 G.hand_text_area.game_chips:juice_up()
-                play_sound("tarot1")
                 card:start_dissolve()
+                play_sound("tarot1")
             end)
         end
     end,
@@ -297,14 +303,14 @@ joker {
 joker {
     key = "hexagon",
     pronouns = "it_its",
-    config = {extra = {money = 6}},
+    config = {extra = {price = 6}},
     cost = 6,
     rarity = 1,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.money}}
+        return {vars = {card.ability.extra.price}}
     end,
     calculate = function(_, card, context)
         if not context.joker_main or
@@ -312,7 +318,9 @@ joker {
             return
         end
 
-        card.sell_cost = card.sell_cost + card.ability.extra.money
+        card.ability.extra_value = card.ability.extra_value + card.ability.extra.price
+        card:set_cost()
+        return {message = localize "k_val_up", colour = G.C.MONEY}
     end,
 }
 
@@ -337,6 +345,7 @@ joker {
             context.cardarea == "unscored" and
             context.scoring_name == "Four of a Kind" then
             card.ability.extra.mult = card.ability.extra.mult + context.other_card.base.nominal
+            return {message = localize "k_upgrade_ex", colour = G.C.RED, message_card = card}
         end
     end,
 }
@@ -350,7 +359,7 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
-    calculate = function(_, _, context)
+    calculate = function(_, card, context)
         if not context.individual or
             context.cardarea ~= "unscored" or
             context.scoring_name ~= "Four of a Kind" then
@@ -358,7 +367,9 @@ joker {
         end
 
         q(function()
-            playing_card_joker_effects(f(G.play):take(#G.play):map(function(v)
+            f(G.play.cards):filter(function(v)
+                return not v.highlighted
+            end):foreach(function(v)
                 G.playing_card = (G.playing_card or 0) + 1
                 G.deck.config.card_limit = G.deck.config.card_limit + 1
                 local copy = copy_card(v, nil, nil, G.playing_card)
@@ -366,8 +377,9 @@ joker {
                 G.hand:emplace(copy)
                 copy:start_materialize()
                 table.insert(G.playing_cards, copy)
-                return copy
-            end):into())
+                playing_card_joker_effects({copy})
+                card:juice_up()
+            end)
         end)
     end,
 }
@@ -479,7 +491,15 @@ joker {
         return context.joker_main and {card = card, xmult = self.xmult()} or nil
     end,
     xmult = function()
-        return ((G.GAME or {}).blind or {}).mult or 1
+        local function mult(id)
+            local next = {Select = true, Upcoming = true}
+            local states = G.GAME.round_resets.blind_states
+            local choices = G.GAME.round_resets.blind_choices
+            return next[states[id]] and G.P_BLINDS[choices[id]].mult
+        end
+
+        local m = ((G.GAME or {}).blind or {}).mult
+        return m and m ~= 0 and m or mult "Small" or mult "Big" or mult "Boss" or 1
     end,
 }
 
@@ -507,10 +527,14 @@ joker {
             return {numerator = extra.probability}
         end
 
-        if context.blind_defeated then
+        if context.end_of_round and extra.probability ~= extra.delta then
             extra.probability = extra.delta
-        elseif context.after then
+            return {message = localize "k_reset", colour = G.C.RED}
+        end
+
+        if context.after then
             extra.probability = extra.probability + extra.delta
+            return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
         end
     end,
 }

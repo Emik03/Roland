@@ -14,6 +14,23 @@ SMODS.Seal {
     badge_colour = HEX "a6a6a6",
     pronouns = "he_him",
     calculate = function(_, card, context)
+        local function proc()
+            card.Roland_glass = true
+            local tag = Tag(get_next_tag_key "Roland_glass")
+
+            if tag.name == "Orbital Tag" then
+                tag.ability.orbital_hand = pseudorandom_element(
+                    f(G.GAME.hands):filter(function(v)
+                        return v.visible
+                    end):keys():into(),
+                    pseudoseed "Roland_glass"
+                )
+            end
+
+            add_tag(tag)
+            play_sound "other1"
+        end
+
         if context.setting_blind or context.starting_shop then
             card.Roland_glass = nil
         end
@@ -22,30 +39,18 @@ SMODS.Seal {
             return
         end
 
-        if G.STATE == G.STATES.DRAW_TO_HAND and card == context.other_card then
-            card.Roland_glass = true
-
-            return q(function()
+        if context.hand_drawn and f(context.hand_drawn):any(function(v)
+                return v == card
+            end) then
+            q(function()
                 card:shatter()
             end)
+
+            SMODS.calculate_context({remove_playing_cards = true, removed = {card}})
         end
 
-        if not context.ante_end then
-            return
+        if context.ante_end then
+            proc()
         end
-
-        card.Roland_glass = true
-        local tag = Tag(get_next_tag_key "Roland_glass")
-
-        if tag.name == "Orbital Tag" then
-            tag.ability.orbital_hand = pseudorandom_element(
-                f(G.GAME.hands):filter(function(v)
-                    return v.visible
-                end):keys():into(),
-                pseudoseed "Roland_glass"
-            )
-        end
-
-        add_tag(tag)
     end,
 }

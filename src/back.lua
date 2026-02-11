@@ -87,7 +87,7 @@ back {
     apply = function(_, _)
         G.GAME.modifiers.Roland_blossom_deck = true
     end,
-    calculate = function(self, _, context)
+    calculate = function(self, card, context)
         if not context.setting_blind then
             return
         end
@@ -106,8 +106,10 @@ back {
             q {
                 delay = 0.4,
                 func = function()
+                    SMODS.calculate_effect({message = localize("ph_boss_disabled")}, card)
                     G.GAME.blind:wiggle()
                     play_sound "timpani"
+                    delay(0.4)
                 end,
             }
         end
@@ -134,7 +136,22 @@ back {
             end
         end)
     end,
-    calculate = function(_, _, context)
-        local _ = context.starting_shop and ease_dollars(-G.GAME.dollars)
+    calculate = function(_, card, context)
+        if not context.starting_shop then
+            return
+        end
+
+        ease_dollars(-G.GAME.dollars)
+
+        attention_text({
+            text = localize("k_nope_ex"),
+            scale = 1.3,
+            hold = 1.4,
+            major = card,
+            backdrop_colour = G.C.MONEY,
+            align = "cm",
+            offset = {x = 0, y = 0},
+            silent = true,
+        })
     end,
 }
