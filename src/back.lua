@@ -122,7 +122,7 @@ back {
     pronouns = "he_him",
     config = {extra = {times = 1, alt_times = 5}},
     loc_vars = function(self, info_queue, _)
-        table.insert(info_queue, G.P_CENTERS.j_credit_card)
+        local _ = info_queue and table.insert(info_queue, G.P_CENTERS.j_credit_card)
         return {vars = {self.config.extra.alt_times - self.config.extra.times}}
     end,
     apply = function(self)
