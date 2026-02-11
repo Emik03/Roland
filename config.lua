@@ -1,1 +1,1 @@
-return {["equinox_assist"] = false}
+return {escapey_debugger = false, equinox_assist = false}

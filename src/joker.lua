@@ -222,10 +222,6 @@ joker {
             level_up(v, 1, card)
         end)
     end,
-    debug_export = function(self, obj)
-        local to = obj or self
-        to.f, to.q, to.u = f, q, u
-    end,
 }
 
 joker {
