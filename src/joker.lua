@@ -477,6 +477,11 @@ joker {
         table.insert(info_queue, G.P_SEALS.Purple)
         table.insert(info_queue, G.P_CENTERS.e_negative)
     end,
+    in_pool = function()
+        return f(G.playing_cards):any(function(v)
+            return v.seal == "Purple"
+        end)
+    end,
 }
 
 joker {
