@@ -169,10 +169,9 @@ return {
             j_Roland_oops = {
                 name = "Oops! All 7s",
                 text = {
-                    "Listed {C:green,E:1}probabilities",
-                    "{C:attention}increase{} for each",
-                    "{C:hand}hand played this round",
-                    "{C:inactive}(Currently {C:green}X#1#{C:inactive})",
+                    "{X:green,C:white}X#1#{C:green,E:1} probability {}after every",
+                    "{C:blue}hand {}played this round",
+                    "{C:inactive}(Currently {X:green,C:white}X#2#{C:inactive})",
                 },
             },
             j_Roland_sunny = {

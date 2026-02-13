@@ -532,14 +532,15 @@ joker {
     key = "oops",
     pronouns = "he_they",
     artist = "Roland_char",
-    cost = 8,
+    cost = 7,
     rarity = 3,
-    config = {extra = {probability = 1, delta = 1}},
+    config = {extra = {probability = 1, probability_mult = 2, reset = 1}},
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.probability}}
+        local extra = card.ability.extra
+        return {vars = {extra.probability_mult, extra.probability}}
     end,
     calculate = function(_, card, context)
         if context.blueprint or not card.ability then
@@ -552,13 +553,13 @@ joker {
             return {numerator = extra.probability}
         end
 
-        if context.end_of_round and extra.probability ~= extra.delta then
-            extra.probability = extra.delta
+        if context.end_of_round and extra.probability ~= extra.reset then
+            extra.probability = extra.reset
             return {message = localize "k_reset", colour = G.C.RED}
         end
 
         if context.after then
-            extra.probability = extra.probability + extra.delta
+            extra.probability = extra.probability * extra.probability_mult
             return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
         end
     end,
@@ -567,8 +568,8 @@ joker {
 joker {
     key = "martingale",
     pronouns = "he_him",
-    config = {extra = {odds = 2, times = 0}},
-    cost = 7,
+    config = {extra = {odds = 2}},
+    cost = 8,
     rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
@@ -589,11 +590,9 @@ joker {
             return
         end
 
-        local extra = card.ability.extra
-        local xmult = extra.odds
-        local numerator = 1
+        local extra, numerator, xmult = card.ability.extra, 1, 1
 
-        for _ = 1, 63 do
+        for _ = 1, 64 do
             if SMODS.pseudorandom_probability(card, "j_Roland_martingale", 1, extra.odds, "Martingale") then
                 break
             end
