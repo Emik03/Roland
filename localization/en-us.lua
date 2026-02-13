@@ -203,10 +203,9 @@ return {
             roland_glass_seal = {
                 name = "Glass Seal",
                 text = {
-                    "Creates a random {C:attention}Tag",
-                    "at the end of the {C:attention}Ante",
-                    "{C:red,E:1}Shatters{} if drawn",
-                    "during any {C:attention}Blind",
+                    "{C:red,E:1}Shatters {}and creates",
+                    "a random {C:attention}Tag {}if",
+                    "drawn during a {C:attention}Blind",
                 },
             },
         },

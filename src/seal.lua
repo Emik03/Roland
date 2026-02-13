@@ -14,6 +14,10 @@ SMODS.Seal {
     badge_colour = HEX "a6a6a6",
     pronouns = "he_him",
     calculate = function(_, card, context)
+        local function eq(v)
+            return v == card
+        end
+
         local function proc()
             card.Roland_glass = true
             local tag = Tag(get_next_tag_key "Roland_glass")
@@ -39,18 +43,17 @@ SMODS.Seal {
             return
         end
 
-        if context.hand_drawn and f(context.hand_drawn):any(function(v)
-                return v == card
-            end) then
-            q(function()
-                card:shatter()
-            end)
+        local hand_drawn = context.hand_drawn
 
-            SMODS.calculate_context({remove_playing_cards = true, removed = {card}})
+        if type(hand_drawn) ~= "table" or not f(hand_drawn):any(eq) then
+            return
         end
 
-        if context.ante_end then
-            proc()
-        end
+        q(function()
+            card:shatter()
+        end)
+
+        SMODS.calculate_context({remove_playing_cards = true, removed = {card}})
+        proc()
     end,
 }
