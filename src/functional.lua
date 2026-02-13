@@ -66,8 +66,25 @@ local _ = luaf._proto
 ---@param f_pairs? fun(t: table): unknown
 ---@param numeric boolean?
 ---@return Query
+---@overload fun(obj: true): (fun(): true)
+---@overload fun(obj: false): (fun(): false)
+---@overload fun(obj: string): (fun(any): any)
 local function f(obj, f_pairs, numeric)
-    return f_pairs and luaf.from(obj, f_pairs, numeric ~= false) or (obj[1] and luaf.ipairs(obj) or luaf.pairs(obj))
+    if obj == true then
+        return luaf.tru
+    elseif obj == false then
+        return luaf.fals
+    elseif type(obj) == "string" then
+        return luaf.index(obj)
+    elseif type(obj) ~= "table" then
+        error("Invalid argument type for f's obj: " .. type(obj))
+    elseif f_pairs then
+        return luaf.from(obj, f_pairs, numeric ~= false)
+    elseif obj[#obj] then
+        return luaf.ipairs(obj)
+    else
+        return luaf.pairs(obj)
+    end
 end
 
 --- Queues an event to be run.
