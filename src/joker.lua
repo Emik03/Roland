@@ -1,5 +1,9 @@
 local f, q, u = unpack(... or require "src.functional")
 
+if false then
+    Cryptid = Cryptid -- Suppresses warnings about the global.
+end
+
 local joker = (function()
     local z = 0
 
@@ -282,14 +286,15 @@ joker {
 joker {
     key = "phytoestrogens",
     pronouns = "she_her",
-    config = {extra = {division = 4}},
+    config = {extra = {division = Cryptid and 1 or 4}},
     cost = 8,
     rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.division}}
+        local division = card.ability.extra.division
+        return {vars = {division == 1 and "" or "/" .. number_format(division)}}
     end,
     calculate = function(_, card, context)
         return context.joker_main and {mult = hand_chips / card.ability.extra.division} or nil
@@ -297,85 +302,104 @@ joker {
 }
 
 joker {
-    key = "hexagon",
+    key = "monomino",
     pronouns = "it_its",
-    config = {extra = {price = 6}},
-    cost = 6,
+    config = {extra = {price = 4, hand_name = "Four of a Kind"}},
+    cost = 4,
     rarity = 1,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.price}}
+        local extra = card.ability.extra
+        return {vars = {extra.price, localize(extra.hand_name, "poker_hands")}}
     end,
     calculate = function(_, card, context)
-        if not context.joker_main or
-            context.scoring_name ~= "Four of a Kind" then
+        local extra = card.ability.extra
+
+        if not context.before or context.scoring_name ~= extra.hand_name then
             return
         end
 
-        card.ability.extra_value = card.ability.extra_value + card.ability.extra.price
+        card.ability.extra_value = card.ability.extra_value + extra.price
         card:set_cost()
         return {message = localize "k_val_up", colour = G.C.MONEY}
     end,
 }
 
 joker {
-    key = "hexagoner",
+    key = "domino",
     pronouns = "it_its",
-    config = {extra = {mult = 0}},
-    cost = 6,
+    config = {extra = {mult_gain = 4, hand_name = "Four of a Kind", mult = 0}},
+    cost = 4,
     rarity = 2,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = false,
     loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.mult}}
+        local extra = card.ability.extra
+        return {vars = {extra.mult_gain, localize(extra.hand_name, "poker_hands"), extra.mult}}
     end,
     calculate = function(_, card, context)
+        local extra = card.ability.extra
+
         if context.joker_main then
-            return {mult = card.ability.extra.mult}
+            return {mult = extra.mult}
         end
 
-        if context.individual and
-            context.cardarea == "unscored" and
-            context.scoring_name == "Four of a Kind" then
-            card.ability.extra.mult = card.ability.extra.mult + context.other_card.base.nominal
-            return {message = localize "k_upgrade_ex", colour = G.C.RED, message_card = card}
+        if not context.before or context.scoring_name ~= extra.hand_name then
+            return
         end
+
+        extra.mult = extra.mult + extra.mult_gain
+        return {message = localize "k_upgrade_ex", colour = G.C.RED, message_card = card}
     end,
 }
 
 joker {
-    key = "hexagonest",
+    key = "trimino",
     pronouns = "it_its",
-    config = {extra = {mult = 0}},
-    cost = 6,
+    config = {extra = {times = 4, hand_name = "Four of a Kind"}},
+    cost = 8,
     rarity = 3,
-    eternal_compat = true,
+    eternal_compat = false,
     blueprint_compat = true,
     perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local extra = card.ability.extra
+        return {vars = {extra.times, localize(extra.hand_name, "poker_hands")}}
+    end,
     calculate = function(_, card, context)
-        if not context.individual or
-            context.cardarea ~= "unscored" or
-            context.scoring_name ~= "Four of a Kind" then
+        local extra = card.ability.extra
+
+        if not context.before or card.getting_sliced or context.scoring_name ~= extra.hand_name then
             return
         end
 
+        card.getting_sliced = true
+
         q(function()
-            f(G.play.cards):filter(function(v)
-                return not v.highlighted
-            end):foreach(function(v)
+            local scored_cards = f(G.play.cards):filter(function(v)
+                return v.highlighted
+            end):into()
+
+            local copied = {}
+
+            for _ = 1, extra.times do
                 G.playing_card = (G.playing_card or 0) + 1
                 G.deck.config.card_limit = G.deck.config.card_limit + 1
-                local copy = copy_card(v, nil, nil, G.playing_card)
+                local chosen = pseudorandom_element(scored_cards, pseudoseed "Roland_trimino")
+                local copy = copy_card(chosen, nil, nil, G.playing_card)
                 copy:add_to_deck()
                 G.hand:emplace(copy)
                 copy:start_materialize()
+                table.insert(copied, copy)
                 table.insert(G.playing_cards, copy)
-                playing_card_joker_effects({copy})
-                card:juice_up()
-            end)
+            end
+
+            SMODS.calculate_effect({{message = localize "k_copied_ex", message_card = card}}, card)
+            playing_card_joker_effects(copied)
+            card:start_dissolve()
         end)
     end,
 }

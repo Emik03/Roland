@@ -101,34 +101,34 @@ return {
             },
             j_Roland_phytoestrogens = {
                 name = "Phytoestrogens",
-                text = {"{C:mult}+(Chips/#1#){} Mult"},
+                text = {"{C:mult}+Chips#1#{} Mult"},
             },
-            j_Roland_hexagon = {
-                name = "Hexagon",
+            j_Roland_monomino = {
+                name = "Monomino",
                 text = {
                     "Gains {C:money}$#1#{} of",
                     "{C:attention}sell value{} if",
                     "played hand is a",
-                    "{C:attention}Four of a Kind",
+                    "{C:attention}#2#",
                 },
             },
-            j_Roland_hexagoner = {
-                name = "Hexagoner",
+            j_Roland_domino = {
+                name = "Domino",
                 text = {
-                    "This Joker gains the",
-                    "rank of {C:attention}unscored cards",
-                    "to Mult if played hand",
-                    "is a {C:attention}Four of a Kind",
-                    "{C:inactive}(Currently {C:red}+#1#{C:inactive} Mult)",
-                },
-            },
-            j_Roland_hexagonest = {
-                name = "Hexagonest",
-                text = {
-                    "{C:attention}Unscored cards{} add a",
-                    "permanent copy to deck",
+                    "This Joker gains {C:mult}+#1# {}Mult",
                     "if played hand is a",
-                    "{C:attention}Four of a Kind",
+                    "{C:attention}#2#",
+                    "{C:inactive}(Currently {C:red}+#3#{C:inactive} Mult)",
+                },
+            },
+            j_Roland_trimino = {
+                name = "Trimino",
+                text = {
+                    "Copies {C:attention}#1# {C:green}random",
+                    "scoring cards and",
+                    "{C:red,E:1}self-destructs {}if",
+                    "played hand is a",
+                    "{C:attention}#2#",
                 },
             },
             j_Roland_misfortune = {
