@@ -33,6 +33,10 @@ return {
             },
         },
         Blind = {
+            bl_Roland_bottom = {
+                name = "The Bottom",
+                text = {"Infinite discards", "Lose if any card was", "not played or discarded"},
+            },
             bl_Roland_divide = {
                 name = "The Great Divide",
                 text = {"Half of the deck", "is discarded"},
@@ -40,6 +44,10 @@ return {
             bl_Roland_equinox = {
                 name = "The Equinox",
                 text = {"No UI"},
+            },
+            bl_Roland_falseshuffle = {
+                name = "The False Shuffle",
+                text = {"Enhanced cards", "are drawn last"},
             },
             bl_Roland_improbable = {
                 name = "The Improbable",

@@ -66,6 +66,11 @@ local function disable_improbable()
     end
 end
 
+local function has_enhancement(card)
+    local e = SMODS.get_enhancements(card)
+    return not not (e and next(e))
+end
+
 local function is_locked()
     return G.STATE ~= G.STATES.SELECTING_HAND or G.CONTROLLER.locked or
         (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)
@@ -104,6 +109,41 @@ blind {
     end,
     set_blind = function()
         G.GAME.Roland_nimble_disabled = nil
+    end,
+}
+
+blind {
+    key = "falseshuffle",
+    boss = {min = 3},
+    boss_colour = HEX "888888",
+    pronouns = "any_all",
+    disable = function()
+        q(function()
+            f(G.hand.cards):foreach(function(v, i)
+                draw_card(G.hand, G.deck, i / #G.hand.cards * 100, "up", false, v)
+            end)
+        end)
+
+        q(function()
+            pseudoshuffle(G.deck.cards, pseudoseed "Roland_falseshuffle")
+        end)
+    end,
+    calculate = function(_, b, context)
+        if b.disabled or not context.drawing_cards then
+            return
+        end
+
+        b:juice_up()
+
+        table.sort(
+            G.deck.cards,
+            function(v1, v2)
+                return has_enhancement(v1) and not has_enhancement(v2)
+            end
+        )
+    end,
+    in_pool = function()
+        return G.playing_cards and f(G.playing_cards):any(has_enhancement)
     end,
 }
 
@@ -153,9 +193,6 @@ blind {
     boss = {min = 3},
     boss_colour = HEX "80b48e",
     pronouns = "it_its",
-    disable = function(self)
-        self.disabled = true
-    end,
     calculate = function(_, b, context)
         if b.disabled or not context.pre_discard then
             return
@@ -176,6 +213,83 @@ blind {
         b:wiggle()
         b.triggered = true
         playing_card_joker_effects(cards_added)
+    end,
+}
+
+blind {
+    key = "tranquilizer",
+    boss = {min = 6},
+    boss_colour = HEX "bdaecc",
+    pronouns = "they_them",
+    collection_loc_vars = function(_)
+        return {
+            vars = {localize {
+                type = "variable",
+                key = "b_Roland_most_common_card",
+            }},
+        }
+    end,
+    loc_vars = function(_)
+        local _, name = common_rank()
+        return {vars = {localize(name or "Ace", "ranks")}}
+    end,
+    disable = function(self)
+        self.disabled = true
+    end,
+    calculate = function(self, _, context)
+        if not context.card_added and
+            not context.drawing_cards and
+            not context.playing_card_added and
+            not context.pre_discard and
+            not context.press_play then
+            return
+        end
+
+        local needs_text_change
+
+        local function process(card_area)
+            f(card_area.cards):foreach(function(v)
+                local debuff = v.debuff
+                v:set_debuff(self:recalc_debuff(v, false))
+                needs_text_change = needs_text_change or debuff ~= v.debuff
+            end)
+        end
+
+        process(G.deck)
+        process(G.hand)
+        process(G.discard)
+
+        if needs_text_change then
+            G.GAME.blind:wiggle()
+            G.GAME.blind:set_text()
+        end
+    end,
+    recalc_debuff = function(self, card)
+        local id, _ = common_rank()
+        local ret = not self.disabled and id == card:get_id()
+        self.triggered = ret
+        return ret
+    end,
+}
+
+blind {
+    key = "bottom",
+    boss = {min = 6},
+    boss_colour = HEX "bdaecc",
+    pronouns = "they_them",
+    calculate = function(_, b, context)
+        if b.disabled then
+            return
+        end
+
+        if context.pre_discard then
+            ease_discard(1)
+        end
+
+        if context.end_of_round and (next(G.deck.cards) or next(G.hand.cards)) then
+            G.STATE = G.STATES.GAME_OVER
+            G.STATE_COMPLETE = false
+        end
     end,
 }
 
@@ -237,62 +351,6 @@ function Game.update(...)
     setmetatable(proxy, mt)
     G.GAME.probabilities = proxy
 end
-
-blind {
-    key = "tranquilizer",
-    boss = {min = 6},
-    boss_colour = HEX "bdaecc",
-    pronouns = "they_them",
-    collection_loc_vars = function(_)
-        return {
-            vars = {localize {
-                type = "variable",
-                key = "b_Roland_most_common_card",
-            }},
-        }
-    end,
-    loc_vars = function(_)
-        local _, name = common_rank()
-        return {vars = {localize(name or "Ace", "ranks")}}
-    end,
-    disable = function(self)
-        self.disabled = true
-    end,
-    calculate = function(self, _, context)
-        if not context.card_added and
-            not context.drawing_cards and
-            not context.playing_card_added and
-            not context.pre_discard and
-            not context.press_play then
-            return
-        end
-
-        local needs_text_change
-
-        local function process(card_area)
-            f(card_area.cards):foreach(function(v)
-                local debuff = v.debuff
-                v:set_debuff(self:recalc_debuff(v, false))
-                needs_text_change = needs_text_change or debuff ~= v.debuff
-            end)
-        end
-
-        process(G.deck)
-        process(G.hand)
-        process(G.discard)
-
-        if needs_text_change then
-            G.GAME.blind:wiggle()
-            G.GAME.blind:set_text()
-        end
-    end,
-    recalc_debuff = function(self, card)
-        local id, _ = common_rank()
-        local ret = not self.disabled and id == card:get_id()
-        self.triggered = ret
-        return ret
-    end,
-}
 
 blind {
     key = "equinox",

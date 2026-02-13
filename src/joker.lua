@@ -525,7 +525,7 @@ joker {
 
 joker {
     key = "oops",
-    pronouns = "he_they",
+    pronouns = "she_they",
     artist = "Roland_char",
     cost = 7,
     rarity = 3,
