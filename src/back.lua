@@ -1,10 +1,7 @@
 local f, q = unpack(... or require "src.functional")
 
 local function save(ret)
-    q(function()
-        save_run()
-    end)
-
+    q(save_run)
     return ret
 end
 

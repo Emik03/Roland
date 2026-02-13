@@ -124,11 +124,7 @@ joker {
         }
     end,
     calculate = function(_, _, context)
-        if type(G.escapey_debugger) == "function" then
-            G.escapey_debugger(f(context):reduce("", function(acc, _, next)
-                return acc .. ", " .. next
-            end):sub(2))
-        end
+        local _ = type(G.escapey_debugger) == "function" and G.escapey_debugger(f(context):keys():conjoin(", "))
     end,
     Bakery_can_use = function(_, card)
         return not card.debuff and u() and (
@@ -214,9 +210,7 @@ joker {
             end)
         end
 
-        local hands = f(G.GAME.hands):filter(function(v, _)
-            return v.visible
-        end):keys():into()
+        local hands = f(G.GAME.hands):filter(f "visible"):keys():into()
 
         pseudoshuffle(hands, pseudoseed "RolandEscapey")
         local levels = destroyed * card.ability.extra.hands
@@ -379,10 +373,7 @@ joker {
         card.getting_sliced = true
 
         q(function()
-            local scored_cards = f(G.play.cards):filter(function(v)
-                return v.highlighted
-            end):into()
-
+            local scored_cards = f(G.play.cards):filter(f "highlighted"):into()
             local copied = {}
 
             for _ = 1, extra.times do
@@ -442,8 +433,7 @@ joker {
         }
     end,
     calculate = function(_, _, context)
-        local _ = context.selling_self and
-            draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
+        local _ = context.selling_self and draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
     end,
 }
 
