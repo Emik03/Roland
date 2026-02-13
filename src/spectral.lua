@@ -1,5 +1,9 @@
 local f, q, u = unpack(... or require "src.functional")
 
+if false then
+    Cryptid = Cryptid -- Suppresses warnings about the global.
+end
+
 local spectral = (function()
     local x = 0
 
@@ -108,10 +112,10 @@ spectral {
 
 spectral {
     key = "void",
-    hidden = true,
-    soul_rate = 0.003,
-    soul_set = "Spectral",
     pronouns = "it_its",
+    hidden = not Cryptid,
+    soul_rate = not Cryptid and 0.003 or nil,
+    soul_set = not Cryptid and "Spectral" or nil,
     config = {extra = {amount = 2}},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_CENTERS.e_negative)
