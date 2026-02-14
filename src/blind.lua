@@ -274,7 +274,7 @@ blind {
 
 blind {
     key = "bottom",
-    boss = {min = 6},
+    boss = {min = 2},
     boss_colour = HEX "817536",
     pronouns = "they_them",
     calculate = function(_, b, context)
@@ -282,7 +282,7 @@ blind {
             return
         end
 
-        if context.pre_discard then
+        if context.pre_discard and next(G.hand.highlighted) then
             b:wiggle()
             ease_discard(1)
         end
