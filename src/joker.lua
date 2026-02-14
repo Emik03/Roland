@@ -25,8 +25,8 @@ local joker = (function()
         local _ = tbl.artist and q(function()
             Bakery_API.contributors.Roland_char = Bakery_API.contributors.Roland_char or {
                 name = "char (@irregulester)",
-                fg = HEX "f8f8f2",
-                bg = HEX "ff79c6",
+                fg = HEX "f8f8f2ff",
+                bg = HEX "ff79c6ff",
             }
 
             tbl.artist = "Roland_" .. tbl.artist
@@ -159,7 +159,7 @@ joker {
                 any_carbon = any_carbon or is_carbon(v)
                 level_sum = level_sum + v.ability.extra.hands * (v.getEvalQty and v:getEvalQty() or 1)
                 sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
-                v:start_dissolve({HEX "57ecab"}, nil, 1.6)
+                v:start_dissolve({HEX "57ecabff"}, nil, 1.6)
             end)
 
             if not any_carbon then
@@ -206,7 +206,7 @@ joker {
             end)
         else
             f(consumables):foreach(function(v)
-                v:start_dissolve({HEX "57ecab"}, nil, 1.6)
+                v:start_dissolve({HEX "57ecabff"}, nil, 1.6)
                 destroyed = destroyed + 1
             end)
         end
@@ -435,7 +435,25 @@ joker {
         }
     end,
     calculate = function(_, _, context)
-        local _ = context.selling_self and draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
+        if not context.forcetrigger and not context.selling_self then
+            return
+        end
+
+        draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
+        local current_round = G.GAME.current_round
+        local facing_blind = G.GAME.facing_blind
+        SMODS.calculate_context({drawing_cards = true, draw = {G.deck.cards}})
+
+        SMODS.calculate_context({
+            ---@diagnostic disable-next-line: assign-type-mismatch
+            first_hand_drawn = not current_round.any_hand_drawn and facing_blind,
+            ---@diagnostic disable-next-line: assign-type-mismatch
+            hand_drawn = facing_blind and {G.deck.cards[1]},
+            other_drawn = not facing_blind and {G.deck.cards[1]},
+        })
+
+        ---@diagnostic disable-next-line: inject-field
+        facing_blind.any_hand_drawn = facing_blind.any_hand_drawn or facing_blind
     end,
 }
 
@@ -495,6 +513,11 @@ joker {
             SMODS.has_enhancement(context.other_card, "m_wild") then
             return {xmult = card.ability.extra.xmult}
         end
+    end,
+    in_pool = function()
+        return f(G.playing_cards):any(function(v)
+            return SMODS.has_enhancement(v, "m_wild")
+        end)
     end,
 }
 

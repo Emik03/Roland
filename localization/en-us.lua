@@ -33,10 +33,6 @@ return {
             },
         },
         Blind = {
-            bl_Roland_bottom = {
-                name = "The Bottom",
-                text = {"Infinite discards", "Lose if any card was", "not played or discarded"},
-            },
             bl_Roland_divide = {
                 name = "The Great Divide",
                 text = {"Half of the deck", "is discarded"},
@@ -64,6 +60,33 @@ return {
             bl_Roland_tranquilizer = {
                 name = "The Tranquilizer",
                 text = {"#1#s are debuffed", "Changes based on", "most common rank"},
+            },
+            bl_Roland_venerable_visage = {
+                name = "Venerable Visage",
+                text = {"Infinite discards", "Lose if any card was", "not played or discarded"},
+                fail = {
+                    "Blasphemy.",
+                    "Blunder.",
+                    "Crisis.",
+                    "Death.",
+                    "Denied.",
+                    "Failure.",
+                    "Fall.",
+                    "Feeble.",
+                    "Foolish.",
+                    "Ignorant.",
+                    "Illiterate.",
+                    "Judgement.",
+                    "Misery.",
+                    "Mistake.",
+                    "Mockery.",
+                    "Perish.",
+                    "Pity.",
+                    "Terror.",
+                    "Tyranny.",
+                    "Unfortunate.",
+                    "Weak.",
+                },
             },
         },
         Enhanced = {

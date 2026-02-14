@@ -71,6 +71,34 @@ local function has_enhancement(card)
     return not not (e and next(e))
 end
 
+local function hsv_to_rgb(h, s, v)
+    s, v = s or 1, v or 1
+
+    if s <= 0 then
+        return v, v, v
+    end
+
+    local c = v * s
+    local r, g, b = 0, 0, 0
+    local x, m = (1 - math.abs((h * 6 % 2) - 1)) * c, v - c
+
+    if h < 1 / 6 then
+        r, g, b = c, x, 0
+    elseif h < 2 / 6 then
+        r, g, b = x, c, 0
+    elseif h < 3 / 6 then
+        r, g, b = 0, c, x
+    elseif h < 4 / 6 then
+        r, g, b = 0, x, c
+    elseif h < 5 / 6 then
+        r, g, b = x, 0, c
+    else
+        r, g, b = c, 0, x
+    end
+
+    return r + m, g + m, b + m
+end
+
 local function is_locked()
     return G.STATE ~= G.STATES.SELECTING_HAND or G.CONTROLLER.locked or
         (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)
@@ -79,7 +107,7 @@ end
 blind {
     key = "nimble",
     boss = {min = 1},
-    boss_colour = HEX "0291fb",
+    boss_colour = HEX "0291fbff",
     pronouns = "she_her",
     config = {draw = 5},
     defeat = function()
@@ -115,7 +143,7 @@ blind {
 blind {
     key = "falseshuffle",
     boss = {min = 3},
-    boss_colour = HEX "ff7f3d",
+    boss_colour = HEX "ff7f3dff",
     pronouns = "any_all",
     disable = function()
         q(function()
@@ -150,7 +178,7 @@ blind {
 blind {
     key = "divide",
     boss = {min = 1},
-    boss_colour = HEX "b18480",
+    boss_colour = HEX "b18480ff",
     pronouns = "he_they",
     disable = function()
         -- Ensures that this runs after 'set_blind' since it also gets added to queue.
@@ -191,7 +219,7 @@ blind {
 blind {
     key = "mitotic",
     boss = {min = 3},
-    boss_colour = HEX "80b48e",
+    boss_colour = HEX "80b48eff",
     pronouns = "it_its",
     calculate = function(_, b, context)
         if b.disabled or not context.pre_discard then
@@ -219,7 +247,7 @@ blind {
 blind {
     key = "tranquilizer",
     boss = {min = 6},
-    boss_colour = HEX "bdaecc",
+    boss_colour = HEX "bdaeccff",
     pronouns = "they_them",
     collection_loc_vars = function(_)
         return {
@@ -273,32 +301,9 @@ blind {
 }
 
 blind {
-    key = "bottom",
-    boss = {min = 2},
-    boss_colour = HEX "817536",
-    pronouns = "they_them",
-    calculate = function(_, b, context)
-        if b.disabled then
-            return
-        end
-
-        if context.pre_discard and next(G.hand.highlighted) then
-            b:wiggle()
-            ease_discard(1)
-        end
-
-        if context.end_of_round and (next(G.deck.cards) or next(G.hand.cards)) then
-            b:wiggle()
-            G.STATE = G.STATES.GAME_OVER
-            G.STATE_COMPLETE = false
-        end
-    end,
-}
-
-blind {
     key = "improbable",
     boss = {min = 4},
-    boss_colour = HEX "009966",
+    boss_colour = HEX "009966ff",
     pronouns = "it_its",
     mult = 2,
     dollars = 5,
@@ -323,8 +328,14 @@ local orig_update = Game.update
 ---@diagnostic disable-next-line: duplicate-set-field
 function Game.update(...)
     orig_update(...)
-    local orig = G.GAME.probabilities
-    local improbable = G.GAME.modifiers.Roland_improbable
+
+    local boss_colour = (G.P_BLINDS.bl_Roland_venerable_visage or {}).boss_colour
+
+    if boss_colour then
+        boss_colour[1], boss_colour[2], boss_colour[3] = hsv_to_rgb(os.clock() / 6 % 1)
+    end
+
+    local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 
     -- Normally unreachable since we set it to nil ourselves,
     -- but other mods may want to use this modifier.
@@ -357,7 +368,7 @@ end
 blind {
     key = "equinox",
     boss = {min = 6},
-    boss_colour = HEX "000000",
+    boss_colour = HEX "000000ff",
     pronouns = "any_all",
     defeat = function()
         G.GAME.modifiers.Roland_equinox = nil
@@ -404,3 +415,94 @@ function UIElement:draw_self(...)
         return orig_draw_self(self, ...)
     end
 end
+
+blind {
+    key = "venerable_visage",
+    boss = {showdown = true},
+    boss_colour = HEX "f6f6f2ff",
+    pronouns = "any_all",
+    calculate = function(self, b, context)
+        if b.disabled then
+            return
+        end
+
+        if context.pre_discard and next(G.hand.highlighted) then
+            q(function()
+                b:wiggle()
+                ease_discard(1)
+            end)
+        end
+
+        if b.Roland_oh_no or not context.end_of_round or not next(G.deck.cards) or not next(G.hand.cards) then
+            return
+        end
+
+        b.Roland_oh_no = true
+        b:wiggle()
+        self.vitriol(b)
+
+        q {
+            trigger = "before",
+            func = function()
+                G.STATE = G.STATES.GAME_OVER
+                G.STATE_COMPLETE = false
+            end,
+        }
+    end,
+    vitriol = function(b)
+        local fail = G.localization.descriptions.Blind.bl_Roland_venerable_visage.fail
+        local speed = 0.1
+
+        SMODS.draw_cards(#G.deck.cards)
+        play_sound("gong", 0.6)
+
+        attention_text {
+            text = pseudorandom_element(fail, pseudoseed "Roland_venerable_visage"),
+            offset = {x = 0, y = -3.6},
+            major = G.play,
+            scale = 3,
+            hold = 2,
+        }
+
+        delay(1)
+
+        f(G.playing_cards):foreach(function(v)
+            q {
+                trigger = "before",
+                delay = speed,
+                func = function()
+                    v:start_dissolve()
+                    v:shatter()
+                end,
+            }
+        end)
+
+        delay(1)
+
+        f(G.P_CARDS):foreach(function(v)
+            q {
+                delay = speed,
+                func = function()
+                    G.playing_card = (G.playing_card and G.playing_card + 1) or 1
+
+                    local card = Card(
+                        b and b.T.x or 0,
+                        b and b.T.y or 0,
+                        G.CARD_W,
+                        G.CARD_H,
+                        v,
+                        G.P_CENTERS.m_Bakery_Curse or G.P_CENTERS.c_base,
+                        {playing_card = G.playing_card}
+                    )
+
+                    table.insert(G.playing_cards, card)
+                    G.deck:emplace(card)
+                    play_sound("card1")
+                    card:add_to_deck()
+                end,
+            }
+        end)
+
+        delay(1)
+    end,
+}
