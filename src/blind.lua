@@ -115,7 +115,7 @@ blind {
 blind {
     key = "falseshuffle",
     boss = {min = 3},
-    boss_colour = HEX "888888",
+    boss_colour = HEX "ff7f3d",
     pronouns = "any_all",
     disable = function()
         q(function()
@@ -133,7 +133,7 @@ blind {
             return
         end
 
-        b:juice_up()
+        b:wiggle()
 
         table.sort(
             G.deck.cards,
@@ -236,7 +236,7 @@ blind {
     disable = function(self)
         self.disabled = true
     end,
-    calculate = function(self, _, context)
+    calculate = function(self, b, context)
         if not context.card_added and
             not context.drawing_cards and
             not context.playing_card_added and
@@ -260,8 +260,8 @@ blind {
         process(G.discard)
 
         if needs_text_change then
-            G.GAME.blind:wiggle()
-            G.GAME.blind:set_text()
+            b:wiggle()
+            b:set_text()
         end
     end,
     recalc_debuff = function(self, card)
@@ -275,7 +275,7 @@ blind {
 blind {
     key = "bottom",
     boss = {min = 6},
-    boss_colour = HEX "bdaecc",
+    boss_colour = HEX "817536",
     pronouns = "they_them",
     calculate = function(_, b, context)
         if b.disabled then
@@ -283,10 +283,12 @@ blind {
         end
 
         if context.pre_discard then
+            b:wiggle()
             ease_discard(1)
         end
 
         if context.end_of_round and (next(G.deck.cards) or next(G.hand.cards)) then
+            b:wiggle()
             G.STATE = G.STATES.GAME_OVER
             G.STATE_COMPLETE = false
         end
