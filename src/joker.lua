@@ -29,6 +29,7 @@ local joker = (function()
                 bg = HEX "ff79c6",
             }
 
+            tbl.artist = "Roland_" .. tbl.artist
             Bakery_API.credit(tbl)
         end)
     end
@@ -298,6 +299,7 @@ joker {
 joker {
     key = "monomino",
     pronouns = "it_its",
+    artist = "char",
     config = {extra = {price = 4, hand_name = "Four of a Kind"}},
     cost = 4,
     rarity = 1,
@@ -526,7 +528,7 @@ joker {
 joker {
     key = "oops",
     pronouns = "she_they",
-    artist = "Roland_char",
+    artist = "char",
     cost = 7,
     rarity = 3,
     config = {extra = {probability = 1, probability_mult = 2, reset = 1}},
