@@ -75,7 +75,6 @@ SMODS.Atlas {
 
 back {
     key = "blossom",
-    name = "Blossom",
     pronouns = "any_all",
     config = {extra = {times = 2}},
     loc_vars = function(self, _, _)
@@ -115,7 +114,6 @@ back {
 
 back {
     key = "go",
-    name = "Go",
     pronouns = "he_him",
     config = {extra = {times = 1, alt_times = 5}},
     loc_vars = function(self, info_queue, _)
@@ -141,15 +139,47 @@ back {
 
         ease_dollars(-G.GAME.dollars)
 
-        attention_text({
+        attention_text {
             text = localize("k_nope_ex"),
-            scale = 1.3,
-            hold = 1.4,
-            major = card,
             backdrop_colour = G.C.MONEY,
-            align = "cm",
             offset = {x = 0, y = 0},
             silent = true,
-        })
+            major = card,
+            align = "cm",
+            scale = 1.3,
+            hold = 1.4,
+        }
     end,
 }
+
+back {
+    key = "swapper",
+    pronouns = "he_him",
+    apply = function(self)
+        local modifiers = G.GAME.modifiers
+        modifiers.Roland_swapper_deck = true
+        modifiers.Roland_alt_swapper_deck = modifiers.Roland_alt_swapper_deck or self:is_alt()
+    end,
+    calculate = function() end,
+}
+
+local swapper = {Spectral = "Tarot", Tarot = "Spectral"}
+local orig_create_card = create_card
+
+---@diagnostic disable-next-line: lowercase-global
+function create_card(_type, ...)
+    if not G.GAME.modifiers.Roland_swapper_deck then
+        return orig_create_card(_type, ...)
+    end
+
+    if not G.GAME.modifiers.Roland_alt_swapper_deck then
+        return orig_create_card(swapper[_type] or _type, ...)
+    end
+
+    local type = f(SMODS.ConsumableTypes):keys():filter(function(v)
+        return v ~= _type
+    end):into()
+
+    local has_type = SMODS.ConsumableTypes[_type]
+    return orig_create_card(has_type and pseudorandom_element(type, pseudoseed "Roland_alt_swapper_deck") or _type, ...)
+end
