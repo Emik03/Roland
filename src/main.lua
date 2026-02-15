@@ -10,16 +10,29 @@ if Balatest then
     end)
 end
 
+qol[2](function()
+    ---@type table<string, {name: string, fg: table, bg: table}>
+    local contributors = Bakery_API.contributors
+
+    contributors.Roland_aster = {
+        name = "asterSSH",
+        fg = HEX "f8f8f2ff",
+        bg = HEX "bd93f9ff",
+    }
+
+    contributors.Roland_char = {
+        name = "char (@irregulester)",
+        fg = HEX "f8f8f2ff",
+        bg = HEX "ff79c6ff",
+    }
+end)
+
 SMODS.Atlas {
     px = 256,
     py = 256,
     key = "modicon",
     path = "icon.png",
 }
-
-SMODS.current_mod.optional_features = function()
-    return {cardareas = {deck = true, unscored = true}}
-end
 
 SMODS.current_mod.config_tab = function()
     return {
@@ -34,14 +47,6 @@ SMODS.current_mod.config_tab = function()
                     ref_table = SMODS.Mods.Roland.config,
                     ref_value = "equinox_assist",
                 },
-                SMODS.Mods.DebugPlus and create_toggle {
-                    label = localize {type = "variable", key = "b_Roland_escapey_debugger"},
-                    ref_table = SMODS.Mods.Roland.config,
-                    ref_value = "escapey_debugger",
-                    callback = function(v)
-                        G.escapey_debugger = v and print or nil
-                    end,
-                },
                 SMODS.Mods.DebugPlus and UIBox_button {
                     label = {localize {type = "variable", key = "b_Roland_debug_export"}},
                     func = G.P_CENTERS.j_Roland_escapey.debug_export,
@@ -53,6 +58,10 @@ SMODS.current_mod.config_tab = function()
             },
         }},
     }
+end
+
+SMODS.current_mod.optional_features = function()
+    return {cardareas = {deck = true, unscored = true}}
 end
 
 function G.FUNCS.Roland_debug_export(_, tbl)

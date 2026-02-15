@@ -7,7 +7,7 @@ end
 local spectral = (function()
     local x = 0
 
-    ---@param tbl SMODS.Consumable
+    ---@param tbl SMODS.Consumable|{artist?: string}
     return function(tbl)
         tbl.cost = 4
         tbl.set = "Spectral"
@@ -15,6 +15,11 @@ local spectral = (function()
         tbl.pos = {x = x, y = 0}
         SMODS.Consumable(tbl)
         x = x + 1
+
+        local _ = tbl.artist and q(function()
+            tbl.artist = "Roland_" .. tbl.artist
+            Bakery_API.credit(tbl)
+        end)
     end
 end)()
 
@@ -33,6 +38,7 @@ SMODS.Sound {
 spectral {
     key = "afterimage",
     pronouns = "he_they",
+    artist = "aster",
     config = {extra = {amount = 1, hand = -1}},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_CENTERS.e_negative)
@@ -113,6 +119,7 @@ spectral {
 spectral {
     key = "void",
     pronouns = "it_its",
+    artist = "aster",
     hidden = not Cryptid,
     soul_rate = not Cryptid and 0.003 or nil,
     soul_set = not Cryptid and "Spectral" or nil,

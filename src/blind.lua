@@ -332,7 +332,7 @@ function Game.update(...)
     local boss_colour = (G.P_BLINDS.bl_Roland_venerable_visage or {}).boss_colour
 
     if boss_colour then
-        boss_colour[1], boss_colour[2], boss_colour[3] = hsv_to_rgb(os.clock() / 6 % 1)
+        boss_colour[1], boss_colour[2], boss_colour[3] = hsv_to_rgb(os.clock() / 6 % 1, 0.25, 0.75)
     end
 
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities

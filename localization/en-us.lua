@@ -17,6 +17,13 @@ return {
                     "when entering the shop",
                 },
             },
+            b_Roland_swapper = {
+                name = "Swapper Deck",
+                text = {
+                    "{C:tarot}Tarot {}and {C:spectral}Spectral",
+                    "cards swap places",
+                },
+            },
         },
         BakeryCharm = {
             BakeryCharm_Roland_fat = {
@@ -68,22 +75,15 @@ return {
                     "Blasphemy.",
                     "Blunder.",
                     "Crisis.",
-                    "Death.",
                     "Denied.",
                     "Failure.",
                     "Fall.",
-                    "Feeble.",
                     "Foolish.",
-                    "Ignorant.",
                     "Illiterate.",
                     "Judgement.",
-                    "Misery.",
                     "Mistake.",
-                    "Mockery.",
                     "Perish.",
                     "Pity.",
-                    "Terror.",
-                    "Tyranny.",
                     "Unfortunate.",
                     "Weak.",
                 },
@@ -270,6 +270,20 @@ return {
                 text = {
                     "Start with an additional",
                     "{X:attention,C:white}#1#{C:attention} Credit Cards",
+                },
+            },
+            sleeve_Roland_swapper = {
+                name = "Swapper Sleeve",
+                text = {
+                    "{C:tarot}Tarot {}and {C:spectral}Spectral",
+                    "cards swap places",
+                },
+            },
+            sleeve_Roland_swapper_alt = {
+                name = "Sleeve Swapper",
+                text = {
+                    "{C:attention}All {}consumable",
+                    "types swap places",
                 },
             },
         },
