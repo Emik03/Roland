@@ -49,7 +49,7 @@ SMODS.Seal {
             card:shatter()
         end)
 
-        SMODS.calculate_context({remove_playing_cards = true, removed = {card}})
+        SMODS.calculate_context {remove_playing_cards = true, removed = {card}}
         proc()
     end,
 }
