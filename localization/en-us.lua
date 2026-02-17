@@ -29,14 +29,22 @@ return {
             BakeryCharm_Roland_fat = {
                 name = "fat i phone",
                 text = {
-                    "Enter the shop",
-                    "when any {C:attention}Blind",
-                    "is {C:attention}skipped",
+                    "{C:attention}+#1# Booster Pack {}slots",
+                    "All {C:attention}Booster Packs {}are {C:attention}Mega",
+                    "{C:inactive}(Whenever applicable)",
                 },
             },
             BakeryCharm_Roland_flexible = {
                 name = "flexi ble phone",
                 text = {unpack(G.localization.descriptions.Joker.j_ring_master.text)},
+            },
+            BakeryCharm_Roland_wii = {
+                name = "wii phone",
+                text = {
+                    "Enter the shop",
+                    "when any {C:attention}Blind",
+                    "is {C:attention}skipped",
+                },
             },
         },
         Blind = {

@@ -36,6 +36,26 @@ end)()
 charm {
     key = "fat",
     pronouns = "he_they",
+    config = {extra = {mod = 1}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.mod}}
+    end,
+    equip = function(_, card)
+        SMODS.change_booster_limit(card.ability.extra.mod)
+    end,
+    unequip = function(card)
+        SMODS.change_booster_limit(-card.ability.extra.mod)
+    end,
+}
+
+charm {
+    key = "flexible",
+    pronouns = "any_all",
+}
+
+charm {
+    key = "wii",
+    pronouns = "they_them",
     calculate = function(_, card, context)
         if not context.skip_blind then
             return
@@ -59,15 +79,39 @@ charm {
     end,
 }
 
-charm {
-    key = "flexible",
-    pronouns = "any_all",
-    cost = 10,
-}
-
 local orig_showman = SMODS.showman
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function SMODS.showman(...)
     return G.GAME.Bakery_charm == "BakeryCharm_Roland_flexible" or orig_showman(...)
+end
+
+local orig_init = Card.init
+
+---@diagnostic disable-next-line: duplicate-set-field
+function Card:init(X, Y, W, H, card, center, params, ...)
+    if G.GAME.Bakery_charm ~= "BakeryCharm_Roland_fat" or center.set ~= "Booster" then
+        return orig_init(self, X, Y, W, H, card, center, params, ...)
+    end
+
+    local key = center.key:gsub("normal", "mega"):gsub("jumbo", "mega"):gsub("mini", "mega")
+
+    if G.P_CENTERS[key] then
+        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
+    end
+
+    key = key:gsub("_?%d+$", "_1")
+
+    if G.P_CENTERS[key] then
+        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
+    end
+
+    key = key:gsub("_?%d+$", "")
+
+    if G.P_CENTERS[key] then
+        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
+    end
+
+    self.Roland_no_mega = true
+    return orig_init(self, X, Y, W, H, card, center, params, ...)
 end
