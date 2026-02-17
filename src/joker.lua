@@ -1,9 +1,5 @@
 local f, q, u = unpack(... or require "src.functional")
 
-if false then
-    Cryptid = Cryptid -- Suppresses warnings about the global.
-end
-
 local joker = (function()
     local z = 0
 
@@ -605,13 +601,13 @@ joker {
         local odds   = card.ability.extra.odds
         local vars   = {normal}
 
-        for i = #vars, 9 do
+        for i = 0, 7 do
             table.insert(vars, math.pow(odds, i))
         end
 
         return {vars = vars}
     end,
-    calculate = function(_, card, context)
+    calculate = function(self, card, context)
         if not context.joker_main then
             return
         end
@@ -619,7 +615,7 @@ joker {
         local extra, numerator, xmult = card.ability.extra, 1, 1
 
         for _ = 1, 64 do
-            if SMODS.pseudorandom_probability(card, "j_Roland_martingale", 1, extra.odds, "Martingale") then
+            if SMODS.pseudorandom_probability(card, self.key, 1, extra.odds, "RolandMartingale") then
                 break
             end
 

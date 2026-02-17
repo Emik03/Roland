@@ -4,11 +4,13 @@ local blind = (function()
     local y = 0
 
     ---@param tbl SMODS.Blind
+    ---@return SMODS.Blind
     return function(tbl)
         tbl.pos = {x = 0, y = y}
         tbl.atlas = "blind"
-        SMODS.Blind(tbl)
+        local ret = SMODS.Blind(tbl)
         y = y + 1
+        return ret
     end
 end)()
 
@@ -153,7 +155,7 @@ blind {
         end)
 
         q(function()
-            pseudoshuffle(G.deck.cards, pseudoseed "Roland_falseshuffle")
+            pseudoshuffle(G.deck.cards, pseudoseed "RolandFalseShuffle")
         end)
     end,
     calculate = function(_, b, context)
@@ -323,48 +325,6 @@ if cry_prob then
     end
 end
 
-local orig_update = Game.update
-
----@diagnostic disable-next-line: duplicate-set-field
-function Game.update(...)
-    orig_update(...)
-
-    local boss_colour = (G.P_BLINDS.bl_Roland_venerable_visage or {}).boss_colour
-
-    if boss_colour then
-        boss_colour[1], boss_colour[2], boss_colour[3] = hsv_to_rgb(os.clock() / 6 % 1, 0.25, 0.75)
-    end
-
-    local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
-
-    -- Normally unreachable since we set it to nil ourselves,
-    -- but other mods may want to use this modifier.
-    if improbable == false then
-        disable_improbable()
-        return
-    end
-
-    if not improbable or getmetatable(orig) then
-        return
-    end
-
-    local normal = orig.normal
-
-    local mt = {
-        orig = orig,
-        __index = function(_, k)
-            return k == "normal" and 0 or orig[k]
-        end,
-        __newindex = function(_, k, v)
-            orig[k] = (k == "normal" and v == 0) and normal or v
-        end,
-    }
-
-    local proxy = {}
-    setmetatable(proxy, mt)
-    G.GAME.probabilities = proxy
-end
-
 blind {
     key = "equinox",
     boss = {min = 6},
@@ -416,7 +376,7 @@ function UIElement:draw_self(...)
     end
 end
 
-blind {
+local venerable_visage = blind {
     key = "venerable_visage",
     boss = {showdown = true},
     boss_colour = HEX "f6f6f2ff",
@@ -433,12 +393,11 @@ blind {
             end)
         end
 
-        if b.Roland_oh_no or not context.end_of_round or not next(G.deck.cards) or not next(G.hand.cards) then
+        if b.Roland_vitriol or not context.end_of_round or not next(G.deck.cards) or not next(G.hand.cards) then
             return
         end
 
-        b.Roland_oh_no = true
-        b:wiggle()
+        b.Roland_vitriol = true
         self.vitriol(b)
 
         q {
@@ -450,6 +409,10 @@ blind {
         }
     end,
     vitriol = function(b)
+        if type(b) == "table" and type(b.wiggle) == "function" then
+            b:wiggle()
+        end
+
         local fail = G.localization.descriptions.Blind.bl_Roland_venerable_visage.fail
         local speed = 0.1
 
@@ -457,7 +420,7 @@ blind {
         play_sound("gong", 0.6)
 
         attention_text {
-            text = pseudorandom_element(fail, pseudoseed "Roland_venerable_visage"),
+            text = pseudorandom_element(fail, pseudoseed "RolandVenerableVisage"),
             offset = {x = 0, y = -3.6},
             major = G.play,
             scale = 3,
@@ -506,3 +469,45 @@ blind {
         delay(1)
     end,
 }
+
+local orig_update = Game.update
+
+---@diagnostic disable-next-line: duplicate-set-field
+function Game.update(...)
+    orig_update(...)
+
+    local boss_colour = (venerable_visage or {}).boss_colour
+
+    if boss_colour then
+        boss_colour[1], boss_colour[2], boss_colour[3] = hsv_to_rgb(os.clock() / 6 % 1, 0.25, 0.75)
+    end
+
+    local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
+
+    -- Normally unreachable since we set it to nil ourselves,
+    -- but other mods may want to use this modifier.
+    if improbable == false then
+        disable_improbable()
+        return
+    end
+
+    if not improbable or getmetatable(orig) then
+        return
+    end
+
+    local normal = orig.normal
+
+    local mt = {
+        orig = orig,
+        __index = function(_, k)
+            return k == "normal" and 0 or orig[k]
+        end,
+        __newindex = function(_, k, v)
+            orig[k] = (k == "normal" and v == 0) and normal or v
+        end,
+    }
+
+    local proxy = {}
+    setmetatable(proxy, mt)
+    G.GAME.probabilities = proxy
+end

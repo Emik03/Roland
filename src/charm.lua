@@ -1,4 +1,5 @@
 local _, q = unpack(... or require "src.functional")
+local mod = SMODS.current_mod
 
 SMODS.Atlas {
     key = "charm",
@@ -14,7 +15,7 @@ local charm = (function()
     return function(tbl)
         q(function()
             local current_mod = SMODS.current_mod
-            SMODS.current_mod = SMODS.Mods.Roland
+            SMODS.current_mod = mod
 
             -- SMODS._save_d_u(charm)
             tbl.alerted = true

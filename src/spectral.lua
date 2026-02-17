@@ -1,25 +1,24 @@
 local f, q, u = unpack(... or require "src.functional")
 
-if false then
-    Cryptid = Cryptid -- Suppresses warnings about the global.
-end
-
 local spectral = (function()
     local x = 0
 
     ---@param tbl SMODS.Consumable|{artist?: string}
+    ---@return SMODS.Consumable
     return function(tbl)
         tbl.cost = 4
         tbl.set = "Spectral"
         tbl.atlas = "spectral"
         tbl.pos = {x = x, y = 0}
-        SMODS.Consumable(tbl)
+        local ret = SMODS.Consumable(tbl)
         x = x + 1
 
         local _ = tbl.artist and q(function()
             tbl.artist = "Roland_" .. tbl.artist
             Bakery_API.credit(tbl)
         end)
+
+        return ret
     end
 end)()
 
@@ -116,13 +115,12 @@ spectral {
     end,
 }
 
-spectral {
+local void = spectral {
     key = "void",
     pronouns = "it_its",
     artist = "aster",
-    hidden = not Cryptid,
-    soul_rate = not Cryptid and 0.003 or nil,
-    soul_set = not Cryptid and "Spectral" or nil,
+    soul_rate = 0.003,
+    soul_set = "Spectral",
     config = {extra = {amount = 2}},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_CENTERS.e_negative)
@@ -174,3 +172,7 @@ spectral {
         }
     end,
 }
+
+q(function()
+    void.hidden = not SMODS.Mods.Cryptid
+end)
