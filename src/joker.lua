@@ -281,18 +281,22 @@ joker {
 joker {
     key = "phytoestrogens",
     pronouns = "she_her",
-    config = {extra = {division = Cryptid and 1 or 4}},
+    config = {extra = {xmult = 0.1}},
     cost = 8,
     rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        local division = card.ability.extra.division
-        return {vars = {division == 1 and "" or "/" .. number_format(division)}}
+        return {vars = {card.ability.extra.xmult}}
     end,
     calculate = function(_, card, context)
-        return context.joker_main and {mult = hand_chips / card.ability.extra.division} or nil
+        if not context.joker_main then
+            return
+        end
+
+        SMODS.calculate_effect({mult = hand_chips}, card)
+        SMODS.calculate_effect({xmult = card.ability.extra.mult}, card)
     end,
 }
 
