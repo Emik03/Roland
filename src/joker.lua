@@ -470,9 +470,9 @@ joker {
         return {vars = {extra.mult, extra.suits}}
     end,
     calculate = function(_, card, context)
-        local function count(v)
-            return f(context.scoring_hand):any(function(c)
-                return c:is_suit(v)
+        local function count(_, k)
+            return f(context.scoring_hand):any(function(v)
+                return v:is_suit(k)
             end)
         end
 
