@@ -327,7 +327,7 @@ end
 
 function SMODS.current_mod:calculate(context)
     ---@diagnostic disable-next-line: undefined-global
-    local _ = type(Roland_calculate) == "function" and Roland_calculate(qol[1](context):keys():conjoin(", "))
+    local _ = type(G.calc) == "function" and G.calc(f(context):keys():conjoin(", "))
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 
     -- Normally unreachable since we set it to nil ourselves,

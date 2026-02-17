@@ -63,7 +63,7 @@ function SMODS.current_mod.config_tab()
     }
 end
 
-SMODS.current_mod.optional_features = function()
+function SMODS.current_mod.optional_features()
     return {cardareas = {deck = true, unscored = true}}
 end
 

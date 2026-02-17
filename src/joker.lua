@@ -120,8 +120,6 @@ joker {
             },
         }
     end,
-    calculate = function(_, _, context)
-    end,
     Bakery_can_use = function(_, card)
         return not card.debuff and u() and (
             #G.GAME.tags ~= 0 or
@@ -659,8 +657,3 @@ joker {
         end
     end,
 }
-
-function SMODS.current_mod:calculate(context)
-    ---@diagnostic disable-next-line: undefined-global
-    local _ = type(Roland_calculate) == "function" and Roland_calculate(qol[1](context):keys():conjoin(", "))
-end
