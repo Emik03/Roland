@@ -325,6 +325,39 @@ if cry_prob then
     end
 end
 
+function SMODS.current_mod:calculate(context)
+    ---@diagnostic disable-next-line: undefined-global
+    local _ = type(Roland_calculate) == "function" and Roland_calculate(qol[1](context):keys():conjoin(", "))
+    local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
+
+    -- Normally unreachable since we set it to nil ourselves,
+    -- but other mods may want to use this modifier.
+    if improbable == false then
+        disable_improbable()
+        return
+    end
+
+    if not improbable or getmetatable(orig) then
+        return
+    end
+
+    local normal = orig.normal
+
+    local mt = {
+        orig = orig,
+        __index = function(_, k)
+            return k == "normal" and 0 or orig[k]
+        end,
+        __newindex = function(_, k, v)
+            orig[k] = (k == "normal" and v == 0) and normal or v
+        end,
+    }
+
+    local proxy = {}
+    setmetatable(proxy, mt)
+    G.GAME.probabilities = proxy
+end
+
 blind {
     key = "equinox",
     boss = {min = 6},
@@ -470,44 +503,14 @@ local venerable_visage = blind {
     end,
 }
 
-local orig_update = Game.update
+local orig_game_draw = Game.draw
 
 ---@diagnostic disable-next-line: duplicate-set-field
-function Game.update(...)
-    orig_update(...)
+function Game.draw(...)
+    orig_game_draw(...)
+    local boss_colour = venerable_visage.boss_colour
 
-    local boss_colour = (venerable_visage or {}).boss_colour
-
-    if boss_colour then
+    if type(boss_colour) == "table" then
         boss_colour[1], boss_colour[2], boss_colour[3] = hsv_to_rgb(os.clock() / 6 % 1, 0.25, 0.75)
     end
-
-    local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
-
-    -- Normally unreachable since we set it to nil ourselves,
-    -- but other mods may want to use this modifier.
-    if improbable == false then
-        disable_improbable()
-        return
-    end
-
-    if not improbable or getmetatable(orig) then
-        return
-    end
-
-    local normal = orig.normal
-
-    local mt = {
-        orig = orig,
-        __index = function(_, k)
-            return k == "normal" and 0 or orig[k]
-        end,
-        __newindex = function(_, k, v)
-            orig[k] = (k == "normal" and v == 0) and normal or v
-        end,
-    }
-
-    local proxy = {}
-    setmetatable(proxy, mt)
-    G.GAME.probabilities = proxy
 end

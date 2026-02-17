@@ -121,7 +121,6 @@ joker {
         }
     end,
     calculate = function(_, _, context)
-        local _ = type(G.escapey_debugger) == "function" and G.escapey_debugger(f(context):keys():conjoin(", "))
     end,
     Bakery_can_use = function(_, card)
         return not card.debuff and u() and (
@@ -660,3 +659,8 @@ joker {
         end
     end,
 }
+
+function SMODS.current_mod:calculate(context)
+    ---@diagnostic disable-next-line: undefined-global
+    local _ = type(Roland_calculate) == "function" and Roland_calculate(qol[1](context):keys():conjoin(", "))
+end

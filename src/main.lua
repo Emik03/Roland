@@ -34,7 +34,8 @@ SMODS.Atlas {
     path = "icon.png",
 }
 
-SMODS.current_mod.config_tab = function()
+---@diagnostic disable-next-line: duplicate-set-field
+function SMODS.current_mod.config_tab()
     return {
         n = G.UIT.ROOT,
         config = {r = 0.1, minw = 4, minh = 4, align = "tr", padding = 0.2, colour = G.C.BLACK},
@@ -46,6 +47,7 @@ SMODS.current_mod.config_tab = function()
                     label = localize {type = "variable", key = "b_Roland_equinox_assist"},
                     ref_table = SMODS.Mods.Roland.config,
                     ref_value = "equinox_assist",
+                    scale = 2,
                 },
                 SMODS.Mods.DebugPlus and UIBox_button {
                     label = {localize {type = "variable", key = "b_Roland_debug_export"}},
@@ -53,7 +55,8 @@ SMODS.current_mod.config_tab = function()
                     button = "Roland_debug_export",
                     colour = G.C.MULT,
                     col = true,
-                    scale = 8,
+                    scale = 5,
+                    minw = 5,
                 },
             },
         }},
