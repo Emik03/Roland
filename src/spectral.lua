@@ -39,7 +39,7 @@ spectral {
     key = "afterimage",
     pronouns = "he_they",
     artist = "aster",
-    config = {extra = {amount = 1, hand = -1}},
+    config = {extra = {amount = 1, hand = -2}},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_CENTERS.e_negative)
         return {vars = {card.ability.extra.amount, card.ability.extra.hand}}
