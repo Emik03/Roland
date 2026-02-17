@@ -62,18 +62,20 @@ end
 local _ = luaf._proto
 
 --- Creates a non-numerically-indexed query from the given table.
----@param obj table
+---@param obj table?
 ---@param f_pairs? fun(t: table): unknown
 ---@param numeric boolean?
 ---@return Query
----@overload fun(obj: true): (fun(): true)
----@overload fun(obj: false): (fun(): false)
 ---@overload fun(obj: string): (fun(any): any)
+-- ---@overload fun(obj: true): (fun(): true)
+-- ---@overload fun(obj: false): (fun(): false)
 local function f(obj, f_pairs, numeric)
     if obj == true then
         return luaf.tru
     elseif obj == false then
         return luaf.fals
+    elseif obj == nil then
+        return luaf.pairs {}
     elseif type(obj) == "string" then
         return luaf.index(obj)
     elseif type(obj) ~= "table" then

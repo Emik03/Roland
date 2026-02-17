@@ -435,7 +435,7 @@ joker {
         }
     end,
     calculate = function(_, _, context)
-        if not context.forcetrigger and not context.selling_self then
+        if not context.selling_self and not context.forcetrigger then
             return
         end
 
@@ -460,6 +460,38 @@ joker {
 }
 
 joker {
+    key = "sapling",
+    pronouns = "they_them",
+    cost = 4,
+    rarity = 1,
+    config = {extra = {mult = 15, suits = 3}},
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local extra = card.ability.extra
+        return {vars = {extra.mult, extra.suits}}
+    end,
+    calculate = function(_, card, context)
+        local function count(v)
+            return f(context.scoring_hand):any(function(c)
+                return c:is_suit(v)
+            end)
+        end
+
+        if not context.joker_main and not context.forcetrigger then
+            return
+        end
+
+        local extra = card.ability.extra
+
+        if context.forcetrigger or f(SMODS.Suits):count(count) >= card.ability.extra.suits then
+            return {mult = extra.mult}
+        end
+    end,
+}
+
+joker {
     key = "yard",
     pronouns = "he_him",
     config = {extra = {money = 2}},
@@ -472,7 +504,7 @@ joker {
         return {vars = {card.ability.extra.money}}
     end,
     calculate = function(_, card, context)
-        return context.remove_playing_cards and
+        return (context.remove_playing_cards or context.forcetrigger) and
             {dollars = card.ability.extra.money * #context.removed, card = card} or nil
     end,
 }
@@ -551,48 +583,11 @@ joker {
 }
 
 joker {
-    key = "oops",
-    pronouns = "she_they",
-    artist = "char",
-    cost = 7,
-    rarity = 3,
-    config = {extra = {probability = 1, probability_mult = 2, reset = 1}},
-    eternal_compat = true,
-    blueprint_compat = false,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        local extra = card.ability.extra
-        return {vars = {extra.probability_mult, extra.probability}}
-    end,
-    calculate = function(_, card, context)
-        if context.blueprint or not card.ability then
-            return
-        end
-
-        local extra = card.ability.extra
-
-        if context.mod_probability then
-            return {numerator = extra.probability}
-        end
-
-        if context.end_of_round and extra.probability ~= extra.reset then
-            extra.probability = extra.reset
-            return {message = localize "k_reset", colour = G.C.RED}
-        end
-
-        if context.after then
-            extra.probability = extra.probability * extra.probability_mult
-            return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
-        end
-    end,
-}
-
-joker {
     key = "martingale",
     pronouns = "he_him",
     config = {extra = {odds = 2}},
     cost = 8,
-    rarity = 3,
+    rarity = 2,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
@@ -626,5 +621,42 @@ joker {
         end
 
         SMODS.calculate_effect({card = card, xmult = xmult}, card)
+    end,
+}
+
+joker {
+    key = "oops",
+    pronouns = "she_they",
+    artist = "char",
+    cost = 7,
+    rarity = 3,
+    config = {extra = {probability = 1, probability_mult = 2, reset = 1}},
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local extra = card.ability.extra
+        return {vars = {extra.probability_mult, extra.probability}}
+    end,
+    calculate = function(_, card, context)
+        if context.blueprint or not card.ability then
+            return
+        end
+
+        local extra = card.ability.extra
+
+        if context.mod_probability then
+            return {numerator = extra.probability}
+        end
+
+        if context.end_of_round and extra.probability ~= extra.reset then
+            extra.probability = extra.reset
+            return {message = localize "k_reset", colour = G.C.RED}
+        end
+
+        if context.after then
+            extra.probability = extra.probability * extra.probability_mult
+            return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
+        end
     end,
 }
