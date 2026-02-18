@@ -26,10 +26,18 @@ return {
             },
         },
         BakeryCharm = {
+            BakeryCharm_Roland_cocacola = {
+                name = "coca cola phone",
+                text = {"Cards cannot", "be {C:attention}debuffed"},
+            },
+            BakeryCharm_Roland_hand = {
+                name = "hand phone",
+                text = {"{C:attention}Charms {}can", "be {C:attention}debuffed"},
+            },
             BakeryCharm_Roland_fat = {
                 name = "fat i phone",
                 text = {
-                    "{C:attention}+#1# Booster Pack {}slots",
+                    -- "{C:attention}+#1# Booster Pack {}slots",
                     "All {C:attention}Booster Packs {}are {C:attention}Mega",
                     "{C:inactive}(Whenever applicable)",
                 },
