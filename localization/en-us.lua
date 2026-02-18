@@ -30,10 +30,6 @@ return {
                 name = "coca cola phone",
                 text = {"Cards cannot", "be {C:attention}debuffed"},
             },
-            BakeryCharm_Roland_hand = {
-                name = "hand phone",
-                text = {"{C:attention}Charms {}can", "be {C:attention}debuffed"},
-            },
             BakeryCharm_Roland_fat = {
                 name = "fat i phone",
                 text = {
@@ -45,6 +41,10 @@ return {
             BakeryCharm_Roland_flexible = {
                 name = "flexi ble phone",
                 text = {unpack(G.localization.descriptions.Joker.j_ring_master.text)},
+            },
+            BakeryCharm_Roland_hand = {
+                name = "hand phone",
+                text = {"{C:attention}+#1# {}hand size", "Set hands to {C:blue}#2#"},
             },
             BakeryCharm_Roland_wii = {
                 name = "wii phone",
