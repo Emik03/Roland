@@ -141,7 +141,7 @@ joker {
     end,
     calculate = function(self, card, context)
         if context.forcetrigger then
-            return self.level_up(card)
+            return self.proc(card)
         end
     end,
     Bakery_use_joker = function(self, card)
@@ -214,7 +214,7 @@ joker {
             end)
         end
 
-        self.level_up(card, destroyed)
+        self.proc(card, destroyed)
     end,
     ---@param card Card
     ---@param times? integer
