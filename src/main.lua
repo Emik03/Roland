@@ -1,4 +1,4 @@
-local qol = assert(SMODS.load_file "lib/shared.lua")() or require "lib.shared"
+local qol = assert(SMODS.load_file "src/lib/shared.lua")() or require "lib.shared"
 
 qol[1] {"challenge", "spectral", "tweaks", "blind", "charm", "joker", "back", "seal"}:each(function(v)
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
