@@ -1,4 +1,4 @@
-local _, q = unpack(... or require "lib.shared")
+local f, q = unpack(... or require "lib.shared")
 local mod = SMODS.current_mod
 
 SMODS.Atlas {
@@ -32,6 +32,49 @@ local charm = (function()
         end, true)
     end
 end)()
+
+local function add_to_consumable_ability_by(n)
+    local function new(v)
+        return type(v) == "number" and v + n or type(v) == "table" and f(v):map(new):table() or v
+    end
+
+    ---@param card Card
+    return function(card)
+        local ability = card.ability or {}
+
+        local function go(key)
+            ---@type { [string]: number }|number
+            local value = ability[key]
+            --print(key)
+            if not value then
+                return
+            end
+
+            if type(value) == "number" then
+                ability[key] = value + n
+                return
+            end
+
+            if type(value) ~= "table" then
+                return
+            end
+
+            local new_value = f(value):map(new):table()
+
+            f(new_value):each(function(v, k)
+                ability[k] = v
+            end)
+
+            ability[key] = new_value
+        end
+
+        local center_key = (card.config or {}).center_key
+
+        if center_key and center_key:sub(1, 2) == "c_" then
+            f {"extra", "consumeable"}:each(go)
+        end
+    end
+end
 
 charm {
     key = "wii",
@@ -119,15 +162,25 @@ end
 charm {
     key = "cocacola",
     pronouns = "he_they",
+    equip = function()
+        f(G.consumeables.cards):each(add_to_consumable_ability_by(1))
+    end,
+    unequip = function()
+        f(G.consumeables.cards):each(add_to_consumable_ability_by(-1))
+    end,
 }
 
-local orig_debuff_card = SMODS.debuff_card
+local orig_set_ability = Card.set_ability
 
 ---@diagnostic disable-next-line: duplicate-set-field
-function SMODS.debuff_card(...)
-    if G.GAME.Bakery_charm ~= "BakeryCharm_Roland_cocacola" then
-        return orig_debuff_card(...)
+function Card:set_ability(center, initial, delay_sprites, ...)
+    local ret = orig_set_ability(self, center, initial, delay_sprites, ...)
+
+    if G.GAME.Bakery_charm == "BakeryCharm_Roland_cocacola" then
+        add_to_consumable_ability_by(1)(self)
     end
+
+    return ret
 end
 
 charm {

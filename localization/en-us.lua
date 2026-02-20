@@ -28,7 +28,7 @@ return {
         BakeryCharm = {
             BakeryCharm_Roland_cocacola = {
                 name = "coca cola phone",
-                text = {"Cards cannot", "be {C:attention}debuffed"},
+                text = {"Values on consumables", "increase by {C:attention}1"},
             },
             BakeryCharm_Roland_fat = {
                 name = "fat i phone",
