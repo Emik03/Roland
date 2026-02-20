@@ -128,14 +128,21 @@ joker {
         )
     end,
     Bakery_use_button_text = function(_, card)
-        if card.debuff then
-            return "DEBUFFED"
-        end
-
-        return #G.GAME.tags == 0 and not f(G.consumeables.cards):any(destructible) and
-            f(G.jokers.cards):any(is_mergeable_with(card)) and "FUSE" or "ESCAPE"
+        return localize {
+            type = "variable",
+            key = card.debuff and "b_Roland_debuffed" or
+                (#G.GAME.tags == 0 and not
+                    f(G.consumeables.cards):any(destructible) and
+                    f(G.jokers.cards):any(is_mergeable_with(card)) and
+                    "b_Roland_fuse" or "b_Roland_escape"),
+        }
     end,
-    Bakery_use_joker = function(_, card)
+    calculate = function(self, card, context)
+        if context.forcetrigger then
+            return self.level_up(card)
+        end
+    end,
+    Bakery_use_joker = function(self, card)
         if card.debuff then
             return
         end
@@ -184,8 +191,9 @@ joker {
         local destroyed = 0
 
         if consumable_count == 0 then
-            local trigger = #G.GAME.tags >= 30 and "immediate" or "before"
-            local delay = #G.GAME.tags >= 30 and 0 or 1 / #G.GAME.tags
+            local threshold = 30
+            local delay = #G.GAME.tags >= threshold and 0 or 1 / #G.GAME.tags
+            local trigger = #G.GAME.tags >= threshold and "immediate" or "before"
 
             f(G.GAME.tags):each(function(v)
                 q {
@@ -204,10 +212,14 @@ joker {
             end)
         end
 
+        self.level_up(card, destroyed)
+    end,
+    ---@param card Card
+    ---@param times? integer
+    proc = function(card, times)
         local hands = f(G.GAME.hands):where(f "visible"):keys():table()
-
         pseudoshuffle(hands, pseudoseed "RolandEscapey")
-        local levels = destroyed * card.ability.extra.hands
+        local levels = card.ability.extra.hands * (times or 1)
         level_up("all", math.floor(levels / #hands), card)
 
         f(hands):take(levels % #hands):each(function(v)
@@ -229,7 +241,8 @@ joker {
         return {vars = {card.ability.extra.chips}}
     end,
     calculate = function(_, card, context)
-        return context.joker_main and {card = card, chips = card.ability.extra.chips} or nil
+        return (context.joker_main or context.forcetrigger) and
+            {card = card, chips = card.ability.extra.chips} or nil
     end,
 }
 
@@ -246,11 +259,11 @@ joker {
         return {vars = {card.ability.extra.xmult, card.ability.extra.requirement * 100}}
     end,
     calculate = function(_, card, context)
-        if context.blueprint then
+        if context.blueprint and not context.forcetrigger then
             return
         end
 
-        if context.joker_main then
+        if context.joker_main or context.forcetrigger then
             return {xmult = card.ability.extra.xmult}
         end
 
@@ -284,7 +297,7 @@ joker {
         return {vars = {card.ability.extra.xmult}}
     end,
     calculate = function(_, card, context)
-        if not context.joker_main then
+        if not context.joker_main and not context.forcetrigger then
             return
         end
 
@@ -310,7 +323,7 @@ joker {
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
-        if not context.before or context.scoring_name ~= extra.hand_name then
+        if (not context.before or context.scoring_name ~= extra.hand_name) and not context.forcetrigger then
             return
         end
 
@@ -336,7 +349,7 @@ joker {
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
-        if context.joker_main then
+        if context.joker_main or context.forcetrigger then
             return {mult = extra.mult}
         end
 
@@ -365,15 +378,20 @@ joker {
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
-        if not context.before or card.getting_sliced or context.scoring_name ~= extra.hand_name then
+        if (not context.before or card.getting_sliced or context.scoring_name ~= extra.hand_name) and not context.forcetrigger then
             return
         end
 
-        card.getting_sliced = true
+        card.getting_sliced = not context.forcetrigger
 
         q(function()
-            local scored_cards = f(G.play.cards):where(f "highlighted"):each()
+            local scored_cards = f(G.play.cards):where(f "highlighted"):table()
             local copied = {}
+
+            if not next(scored_cards) then
+                card.getting_sliced = nil
+                return
+            end
 
             for _ = 1, extra.times do
                 G.playing_card = (G.playing_card or 0) + 1
@@ -389,7 +407,10 @@ joker {
 
             SMODS.calculate_effect({{message = localize "k_copied_ex", message_card = card}}, card)
             playing_card_joker_effects(copied)
-            card:start_dissolve()
+
+            if not context.forcetrigger then
+                card:start_dissolve()
+            end
         end)
     end,
 }
@@ -482,7 +503,7 @@ joker {
 
         local extra = card.ability.extra
 
-        if context.forcetrigger or f(SMODS.Suits):count(count) >= card.ability.extra.suits then
+        if f(SMODS.Suits):count(count) >= card.ability.extra.suits or context.forcetrigger then
             return {mult = extra.mult}
         end
     end,
@@ -539,11 +560,10 @@ joker {
         return {vars = {card.ability.extra.xmult}}
     end,
     calculate = function(_, card, context)
-        if context.individual and
+        return ((context.individual and
             context.cardarea == "unscored" and
-            SMODS.has_enhancement(context.other_card, "m_wild") then
-            return {xmult = card.ability.extra.xmult}
-        end
+            SMODS.has_enhancement(context.other_card, "m_wild")
+        ) or context.forcetrigger) and {xmult = card.ability.extra.xmult} or nil
     end,
     in_pool = function()
         return f(G.playing_cards):any(function(v)
@@ -564,7 +584,7 @@ joker {
         return {vars = {self.xmult()}}
     end,
     calculate = function(self, card, context)
-        return context.joker_main and {card = card, xmult = self.xmult()} or nil
+        return (context.joker_main or context.forcetrigger) and {card = card, xmult = self.xmult()} or nil
     end,
     xmult = function()
         local function mult(id)
@@ -600,7 +620,7 @@ joker {
         return {vars = vars}
     end,
     calculate = function(self, card, context)
-        if not context.joker_main then
+        if not context.joker_main and not context.forcetrigger then
             return
         end
 
@@ -636,7 +656,7 @@ joker {
         return {vars = {extra.probability_mult, extra.probability}}
     end,
     calculate = function(_, card, context)
-        if context.blueprint or not card.ability then
+        if context.blueprint and not context.forcetrigger or not card.ability then
             return
         end
 

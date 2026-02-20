@@ -356,7 +356,10 @@ return {
         v_dictionary = {
             b_Roland_bye = "Bye!",
             b_Roland_comma = ", ",
+            b_Roland_debuffed = "DEBUFFED",
             b_Roland_entering_shop = "Entering shop!",
+            b_Roland_escape = "ESCAPE",
+            b_Roland_fuse = "FUSE",
             b_Roland_debug_export = "Debug: Import functional.lua",
             b_Roland_equinox_assist = "Assist: Only hide text during Equinox",
             b_Roland_most_common_card = "(Rank)",
