@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "src.functional")
+local f, q = unpack(... or require "lib.shared")
 
 local function save(ret)
     q(save_run)
@@ -47,7 +47,7 @@ local back = (function()
             key = key,
             pos = tbl.pos,
             atlas = "back",
-            config = tbl.config and f(tbl.config):into() or nil,
+            config = tbl.config and f(tbl.config):table() or nil,
             loc_vars = function(self, ...)
                 local ret = tbl.loc_vars and tbl.loc_vars(self, ...) or {}
                 ret.key = self:is_alt() and self.key .. "_alt" or self.key
@@ -102,7 +102,7 @@ back {
             q {
                 delay = 0.4,
                 func = function()
-                    SMODS.calculate_effect({message = localize("ph_boss_disabled")}, card)
+                    SMODS.calculate_effect({message = localize "ph_boss_disabled"}, card)
                     G.GAME.blind:wiggle()
                     play_sound "timpani"
                     delay(0.4)
@@ -140,7 +140,7 @@ back {
         ease_dollars(-G.GAME.dollars)
 
         attention_text {
-            text = localize("k_nope_ex"),
+            text = localize "k_nope_ex",
             backdrop_colour = G.C.MONEY,
             offset = {x = 0, y = 0},
             silent = true,
@@ -176,9 +176,9 @@ function create_card(_type, ...)
         return orig_create_card(swapper[_type] or _type, ...)
     end
 
-    local type = f(SMODS.ConsumableTypes):keys():filter(function(v)
+    local type = f(SMODS.ConsumableTypes):keys():where(function(v)
         return v ~= _type
-    end):into()
+    end):table()
 
     local has_type = SMODS.ConsumableTypes[_type]
     return orig_create_card(has_type and pseudorandom_element(type, pseudoseed "Roland_alt_swapper_deck") or _type, ...)

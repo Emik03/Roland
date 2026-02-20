@@ -1,4 +1,4 @@
-local f = unpack(... or require "src.functional")
+local f = unpack(... or require "lib.shared")
 
 if not Balatest then
     return
@@ -26,7 +26,7 @@ Balatest.TestPlay {
     deck = {cards = {{s = "S", r = "2", e = "m_lucky"}, {s = "S", r = "3"}}},
     execute = function()
         Balatest.play_hand {"2S"}
-        Balatest.next_round("bl_small")
+        Balatest.next_round "bl_small"
         Balatest.play_hand {"2S"}
     end,
     assert = function()
@@ -141,7 +141,7 @@ Balatest.TestPlay {
         Balatest.wait_for_input()
     end,
     assert = function()
-        f(G.hand.cards):foreach(function(v, k)
+        f(G.hand.cards):each(function(v, k)
             local message = v.debuff and
                 "Card " .. k .. " should not be debuffed" or
                 "Card " .. k .. " should be debuffed"
@@ -166,7 +166,7 @@ Balatest.TestPlay {
         Balatest.play_hand {"2S"}
     end,
     assert = function()
-        f(G.hand.cards):foreach(function(v, k)
+        f(G.hand.cards):each(function(v, k)
             local message = v.debuff and
                 "Card " .. k .. " should not be debuffed" or
                 "Card " .. k .. " should be debuffed"
@@ -185,7 +185,7 @@ Balatest.TestPlay {
         Balatest.wait_for_input()
     end,
     assert = function()
-        f(G.hand.cards):foreach(function(v, k)
+        f(G.hand.cards):each(function(v, k)
             Balatest.assert(not v.debuff, "Card " .. k .. " should not be debuffed")
         end)
     end,

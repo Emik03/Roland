@@ -1,11 +1,11 @@
-local qol = assert(SMODS.load_file "src/functional.lua")() or require "src.functional"
+local qol = assert(SMODS.load_file "lib/shared.lua")() or require "lib.shared"
 
-qol[1] {"challenge", "spectral", "tweaks", "blind", "charm", "joker", "back", "seal"}:foreach(function(v)
+qol[1] {"challenge", "spectral", "tweaks", "blind", "charm", "joker", "back", "seal"}:each(function(v)
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
 end)
 
 if Balatest then
-    qol[1] {"joker", "blind", "spectral"}:foreach(function(v)
+    qol[1] {"joker", "blind", "spectral"}:each(function(v)
         assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
     end)
 end

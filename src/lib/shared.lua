@@ -23,10 +23,7 @@ local function protect_ev(fun)
     return fun
 end
 
-local origf = F
-local luaf = assert(SMODS.load_file "src/LuaFunctional/functional.lua")() or require "src.LuaFunctional.functional"
-F = origf -- We do not condone globals as side effects!
-
+-- This exists to remove the @deprecated warning.
 if false then
     ---Returns the elements from the given `list`. This function is equivalent to
     ---```lua
@@ -58,36 +55,7 @@ if false then
     end
 end
 
----@class Query<K, V>: metatable
-local _ = luaf._proto
-
---- Creates a non-numerically-indexed query from the given table.
----@param obj table?
----@param f_pairs? fun(t: table): unknown
----@param numeric boolean?
----@return Query
----@overload fun(obj: string): (fun(any): any)
--- ---@overload fun(obj: true): (fun(): true)
--- ---@overload fun(obj: false): (fun(): false)
-local function f(obj, f_pairs, numeric)
-    if obj == true then
-        return luaf.tru
-    elseif obj == false then
-        return luaf.fals
-    elseif obj == nil then
-        return luaf.pairs {}
-    elseif type(obj) == "string" then
-        return luaf.index(obj)
-    elseif type(obj) ~= "table" then
-        error("Invalid argument type for f's obj: " .. type(obj))
-    elseif f_pairs then
-        return luaf.from(obj, f_pairs, numeric ~= false)
-    elseif obj[#obj] then
-        return luaf.ipairs(obj)
-    else
-        return luaf.pairs(obj)
-    end
-end
+local f = assert(SMODS.load_file "src/lib/funky.lua")() or require "lib.funky"
 
 --- Queues an event to be run.
 --- Note that events added this way implicitly `return true` unless you explicitly `return false`, unlike the vanilla ones.

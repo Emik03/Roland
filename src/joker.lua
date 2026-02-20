@@ -1,4 +1,4 @@
-local f, q, u = unpack(... or require "src.functional")
+local f, q, u = unpack(... or require "lib.shared")
 
 local joker = (function()
     local z = 0
@@ -63,7 +63,7 @@ local function level_up(hand, by, card)
     if hand == "all" or hand == "allhands" or hand == "all_hands" then
         update(localize "k_all_hands", "...", "...", "")
 
-        f(G.GAME.hands):keys():foreach(function(k)
+        f(G.GAME.hands):keys():each(function(k)
             level_up_hand(card, k, nil, by)
         end)
     elseif hand_obj then
@@ -132,15 +132,15 @@ joker {
             return "DEBUFFED"
         end
 
-        return #G.GAME.tags == 0 and not f(G.consumeables.cards):filter(destructible):any() and
-            f(G.jokers.cards):filter(is_mergeable_with(card)):any() and "FUSE" or "ESCAPE"
+        return #G.GAME.tags == 0 and not f(G.consumeables.cards):any(destructible) and
+            f(G.jokers.cards):any(is_mergeable_with(card)) and "FUSE" or "ESCAPE"
     end,
     Bakery_use_joker = function(_, card)
         if card.debuff then
             return
         end
 
-        local consumables = f(G.consumeables.cards):filter(destructible):into()
+        local consumables = f(G.consumeables.cards):where(destructible):table()
         local consumable_count = #consumables
         local tag_count = #G.GAME.tags
 
@@ -148,7 +148,7 @@ joker {
             local level_sum, sell_sum = 0, 0
             local any_carbon = is_carbon(card)
 
-            f(G.jokers.cards):filter(is_mergeable_with(card)):foreach(function(v)
+            f(G.jokers.cards):where(is_mergeable_with(card)):each(function(v)
                 any_carbon = any_carbon or is_carbon(v)
                 level_sum = level_sum + v.ability.extra.hands * (v.getEvalQty and v:getEvalQty() or 1)
                 sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
@@ -187,7 +187,7 @@ joker {
             local trigger = #G.GAME.tags >= 30 and "immediate" or "before"
             local delay = #G.GAME.tags >= 30 and 0 or 1 / #G.GAME.tags
 
-            f(G.GAME.tags):foreach(function(v)
+            f(G.GAME.tags):each(function(v)
                 q {
                     trigger = trigger,
                     blocking = #G.GAME.tags < 30,
@@ -198,19 +198,19 @@ joker {
                 destroyed = destroyed + 1
             end)
         else
-            f(consumables):foreach(function(v)
+            f(consumables):each(function(v)
                 v:start_dissolve({HEX "57ecabff"}, nil, 1.6)
                 destroyed = destroyed + 1
             end)
         end
 
-        local hands = f(G.GAME.hands):filter(f "visible"):keys():into()
+        local hands = f(G.GAME.hands):where(f "visible"):keys():table()
 
         pseudoshuffle(hands, pseudoseed "RolandEscapey")
         local levels = destroyed * card.ability.extra.hands
         level_up("all", math.floor(levels / #hands), card)
 
-        f(hands):take(levels % #hands):foreach(function(v)
+        f(hands):take(levels % #hands):each(function(v)
             level_up(v, 1, card)
         end)
     end,
@@ -372,7 +372,7 @@ joker {
         card.getting_sliced = true
 
         q(function()
-            local scored_cards = f(G.play.cards):filter(f "highlighted"):into()
+            local scored_cards = f(G.play.cards):where(f "highlighted"):each()
             local copied = {}
 
             for _ = 1, extra.times do

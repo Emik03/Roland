@@ -1,4 +1,4 @@
-local f, q, u = unpack(... or require "src.functional")
+local f, q, u = unpack(... or require "lib.shared")
 
 local spectral = (function()
     local x = 0
@@ -47,7 +47,7 @@ spectral {
         return u() and card.ability.extra.amount == #Bakery_API.get_highlighted()
     end,
     use = function(_, card)
-        f(Bakery_API.get_highlighted()):foreach(function(v)
+        f(Bakery_API.get_highlighted()):each(function(v)
             q {
                 delay = 0.1,
                 func = function()
@@ -78,10 +78,10 @@ spectral {
         return u() and #G.hand.cards > 0
     end,
     use = function(_, card, _)
-        local cards = f(G.hand.cards, ipairs):into()
+        local cards = f(G.hand.cards, ipairs):table()
         pseudoshuffle(cards, pseudoseed "RolandDual")
 
-        f(cards):take(card.ability.extra.amount):foreach(function(v)
+        f(cards):take(card.ability.extra.amount):each(function(v)
             local seal
 
             for _ = 1, 31 do
@@ -109,7 +109,7 @@ spectral {
         return u() and #Bakery_API.get_highlighted() == card.ability.extra.amount
     end,
     use = function(_, _, _)
-        f(Bakery_API.get_highlighted()):foreach(function(v)
+        f(Bakery_API.get_highlighted()):each(function(v)
             v:set_seal "Roland_glass"
         end)
     end,
@@ -128,7 +128,7 @@ local void = spectral {
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function()
-        return #G.playing_cards > 1 and u()
+        return #G.playing_cards > 1 and not not u()
     end,
     use = function(_, card)
         local function destructible(v)
@@ -145,14 +145,14 @@ local void = spectral {
         end
 
         local function void()
-            local cards = f(G.playing_cards):filter(destructible):into()
+            local cards = f(G.playing_cards):where(destructible):table()
 
             local function calculate_joker(v)
                 v:calculate_joker {remove_playing_cards = true, removed = cards}
             end
 
-            f(cards):foreach(destroy)
-            f(G.jokers.cards):foreach(calculate_joker)
+            f(cards):each(destroy)
+            f(G.jokers.cards):each(calculate_joker)
 
             for _ = 1, card.ability.extra.amount do
                 local cryptid = create_card(nil, G.consumeables, nil, nil, nil, nil, "c_cryptid", "void")

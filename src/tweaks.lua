@@ -1,4 +1,4 @@
-local _, q = unpack(... or require "src.functional")
+local _, q = unpack(... or require "lib.shared")
 
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 local orig_can_highlight = CardArea.can_highlight

@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "src.functional")
+local f, q = unpack(... or require "lib.shared")
 
 local blind = (function()
     local y = 0
@@ -35,9 +35,9 @@ local function common_rank()
     --- Tallies up a card area's cards.
     ---@param card_area CardArea
     local function tally_up(card_area)
-        f(card_area.cards):filter(function(v)
+        f(card_area.cards):where(function(v)
             return not SMODS.has_no_rank(v)
-        end):foreach(function(v)
+        end):each(function(v)
             local id = v:get_id()
             to_name[id] = v.base.value
             tally[id] = (tally[id] or 0) + 1
@@ -48,7 +48,7 @@ local function common_rank()
     tally_up(G.hand)
     tally_up(G.discard)
 
-    local max_key = f(tally):reduce({-1 / 0, -1 / 0}, function(a, v, k)
+    local max_key = f(tally):fold({-1 / 0, -1 / 0}, function(a, v, k)
         if v > a[1] or k > a[2] and v == a[1] then
             return {v, k}
         end
@@ -124,7 +124,7 @@ blind {
                 return false
             end
 
-            f(G.hand.cards, ipairs):take(self.config.draw):foreach(function(v)
+            f(G.hand.cards, ipairs):take(self.config.draw):each(function(v)
                 G.hand:add_to_highlighted(v, true)
             end)
 
@@ -149,7 +149,7 @@ blind {
     pronouns = "any_all",
     disable = function()
         q(function()
-            f(G.hand.cards):foreach(function(v, i)
+            f(G.hand.cards):each(function(v, i)
                 draw_card(G.hand, G.deck, i / #G.hand.cards * 100, "up", false, v)
             end)
         end)
@@ -191,11 +191,11 @@ blind {
                 return
             end
 
-            f(G.discard.cards):take(count):foreach(function(v, i)
+            f(G.discard.cards):take(count):each(function(v, i)
                 draw_card(G.discard, G.hand, i / count * 100, "up", false, v, nil, nil, true)
             end)
 
-            f(G.discard.cards):take(count):foreach(function(v, i)
+            f(G.discard.cards):take(count):each(function(v, i)
                 draw_card(G.hand, G.deck, i / count * 100, "up", false, v)
             end)
         end)
@@ -231,7 +231,7 @@ blind {
         local cards_added = {}
         local count = #G.hand.highlighted
 
-        f(G.hand.highlighted, ipairs):take(count):foreach(function(v, i)
+        f(G.hand.highlighted, ipairs):take(count):each(function(v, i)
             local copy = copy_card(v)
             copy:add_to_deck()
             table.insert(G.hand, copy)
@@ -277,8 +277,10 @@ blind {
 
         local needs_text_change
 
+        ---comment
+        ---@param card_area CardArea|{cards: Card[]}
         local function process(card_area)
-            f(card_area.cards):foreach(function(v)
+            f(card_area.cards):each(function(v)
                 local debuff = v.debuff
                 v:set_debuff(self:recalc_debuff(v, false))
                 needs_text_change = needs_text_change or debuff ~= v.debuff
@@ -327,7 +329,7 @@ end
 
 function SMODS.current_mod:calculate(context)
     ---@diagnostic disable-next-line: undefined-global
-    local _ = type(G.calc) == "function" and G.calc(f(context):keys():conjoin(", "))
+    local _ = type(G.calc) == "function" and G.calc(f(context):keys():string())
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 
     -- Normally unreachable since we set it to nil ourselves,
@@ -462,7 +464,7 @@ local venerable_visage = blind {
 
         delay(1)
 
-        f(G.playing_cards):foreach(function(v)
+        f(G.playing_cards):each(function(v)
             q {
                 trigger = "before",
                 delay = speed,
@@ -475,7 +477,7 @@ local venerable_visage = blind {
 
         delay(1)
 
-        f(G.P_CARDS):foreach(function(v)
+        f(G.P_CARDS):each(function(v)
             q {
                 delay = speed,
                 func = function()

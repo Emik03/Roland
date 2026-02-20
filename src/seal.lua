@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "src.functional")
+local f, q = unpack(... or require "lib.shared")
 
 SMODS.Atlas {
     px = 71,
@@ -23,7 +23,7 @@ SMODS.Seal {
             local tag = Tag(get_next_tag_key "Roland_glass")
 
             if tag.name == "Orbital Tag" then
-                local hands = f(G.GAME.hands):filter(f "visible"):keys():into()
+                local hands = f(G.GAME.hands):where(f "visible"):keys():table()
                 tag.ability.orbital_hand = pseudorandom_element(hands, pseudoseed "Roland_glass")
             end
 

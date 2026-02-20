@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "src.functional")
+local _, q = unpack(... or require "lib.shared")
 local mod = SMODS.current_mod
 
 SMODS.Atlas {

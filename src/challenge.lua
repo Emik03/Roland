@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "src.functional")
+local f, q = unpack(... or require "lib.shared")
 local jokerful = {banned_cards = {}}
 local pastries = {banned_cards = {}, banned_tags = {}, banned_other = {}}
 -- local surgery = {banned_other = {}}
@@ -58,7 +58,7 @@ q(function()
         {G.P_BLINDS,  is_banned_from_pastry,        pastries.banned_other},
         {G.P_CENTERS, is_center_banned_from_pastry, pastries.banned_cards},
         -- {G.P_BLINDS,  is_blind_banned_from_surgery, surgery.banned_other},
-    }:foreach(function(v)
-        f(v[1]):filter(v[2]):foreach(adder(v[3]))
+    }:each(function(v)
+        f(v[1]):where(v[2]):each(adder(v[3]))
     end)
 end)
