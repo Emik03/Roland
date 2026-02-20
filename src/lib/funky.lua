@@ -153,21 +153,18 @@ end
 ---@return F|{ [K]: V }
 ---@nodiscard
 function f:where(func)
-    local i = 0
-
     return f.new(function()
         local k, v
 
         while true do
             k, v = self:next()
 
-            if k == nil then
+            if k ~= nil then
                 return
             end
 
             if func(v, k) then
-                i = i + 1
-                return i, v
+                return k, v
             end
         end
     end)
@@ -416,7 +413,7 @@ return function(tbl, fpairs, step)
         local stop = not fpairs and tbl or
             (type(fpairs) == "number") and fpairs or error("Invalid argument type for 'fpairs': " .. type(fpairs))
 
-        if step ~= 0 and ((step < 0) == (start < stop)) then
+        if step and step ~= 0 and ((step < 0) == (start < stop)) then
             return none
         end
 
