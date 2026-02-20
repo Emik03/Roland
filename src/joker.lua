@@ -1,5 +1,7 @@
 local f, q, u = unpack(... or require "lib.shared")
 
+local negative = {key = "e_negative_consumable", set = "Edition", config = {extra = 1}}
+
 local joker = (function()
     local z = 0
 
@@ -537,7 +539,7 @@ joker {
     perishable_compat = true,
     loc_vars = function(_, info_queue)
         table.insert(info_queue, G.P_SEALS.Purple)
-        table.insert(info_queue, G.P_CENTERS.e_negative)
+        table.insert(info_queue, negative)
     end,
     in_pool = function()
         return f(G.playing_cards):any(function(v)
