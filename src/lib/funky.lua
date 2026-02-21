@@ -159,7 +159,7 @@ function f:where(func)
         while true do
             k, v = self:next()
 
-            if k ~= nil then
+            if k == nil then
                 return
             end
 
