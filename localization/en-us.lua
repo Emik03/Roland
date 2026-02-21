@@ -44,7 +44,7 @@ return {
             },
             BakeryCharm_Roland_hand = {
                 name = "hand phone",
-                text = {"{C:attention}+#1# {}hand size", "Set hands to {C:blue}#2#"},
+                text = {"{C:attention}+#1# {}hand size", "{C:blue}#2# {}hands"},
             },
             BakeryCharm_Roland_wii = {
                 name = "wii phone",

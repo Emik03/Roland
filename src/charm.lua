@@ -186,23 +186,23 @@ end
 charm {
     key = "hand",
     pronouns = "he_him",
-    config = {extra = {hands = 1, hand_size = 5}},
+    config = {extra = {hands = -2, hand_size = 5}},
     loc_vars = function(_, _, card)
         local extra = card.ability.extra
         return {vars = {extra.hand_size, extra.hands}}
     end,
     equip = function(_, card)
         local extra = card.ability.extra
+        local round = G.GAME.round_resets
+        ease_hands_played(extra.hands)
         G.hand:change_size(extra.hand_size)
-        card.Roland_hands = G.GAME.round_resets.hands - card.ability.extra.hands
-        G.GAME.round_resets.hands = card.ability.extra.hands
-        ease_hands_played(-card.Roland_hands)
+        round.hands = round.hands + extra.hands
     end,
     unequip = function(_, card)
         local extra = card.ability.extra
+        local round = G.GAME.round_resets
+        ease_hands_played(-extra.hands)
         G.hand:change_size(-extra.hand_size)
-        G.GAME.round_resets.hands = G.GAME.round_resets.hands + (card.Roland_hands or 0)
-        ease_hands_played(card.Roland_hands or 0)
-        card.Roland_hands = nil
+        round.hands = round.hands - extra.hands
     end,
 }
