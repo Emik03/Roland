@@ -237,19 +237,19 @@ SMODS.Challenge {
 
 q(function()
     f {
-        {G.P_CENTERS, is_joker,                                         jokerful.banned_cards},
-        {G.P_TAGS,    is_vanilla,                                       vanillas.banned_tags},
-        {G.P_BLINDS,  is_vanilla,                                       vanillas.banned_other},
-        {G.P_CENTERS, is_vanilla,                                       vanillas.banned_cards},
-        {G.P_TAGS,    is_banned_from_pastry,                            pastries.banned_tags},
-        {G.P_BLINDS,  is_banned_from_pastry,                            pastries.banned_other},
-        {G.P_CENTERS, is_center_banned_from_pastry,                     pastries.banned_cards},
-        {G.P_BLINDS,  is_showdown_except "bl_final_acorn",              amber.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_bell",               cerulean.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_heart",              crimson.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_leaf",               verdant.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_vessel",             violet.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_Roland_venerable_visable", final.banned_other},
+        {G.P_CENTERS, is_joker,                                        jokerful.banned_cards},
+        {G.P_TAGS,    is_vanilla,                                      vanillas.banned_tags},
+        {G.P_BLINDS,  is_vanilla,                                      vanillas.banned_other},
+        {G.P_CENTERS, is_vanilla,                                      vanillas.banned_cards},
+        {G.P_TAGS,    is_banned_from_pastry,                           pastries.banned_tags},
+        {G.P_BLINDS,  is_banned_from_pastry,                           pastries.banned_other},
+        {G.P_CENTERS, is_center_banned_from_pastry,                    pastries.banned_cards},
+        {G.P_BLINDS,  is_showdown_except "bl_final_acorn",             amber.banned_other},
+        {G.P_BLINDS,  is_showdown_except "bl_final_bell",              cerulean.banned_other},
+        {G.P_BLINDS,  is_showdown_except "bl_final_heart",             crimson.banned_other},
+        {G.P_BLINDS,  is_showdown_except "bl_final_leaf",              verdant.banned_other},
+        {G.P_BLINDS,  is_showdown_except "bl_final_vessel",            violet.banned_other},
+        {G.P_BLINDS,  is_showdown_except "bl_Roland_venerable_visage", final.banned_other},
     }:each(function(v)
         f(v[1]):where(v[2]):each(adder(v[3]))
     end)
