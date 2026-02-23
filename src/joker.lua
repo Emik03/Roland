@@ -252,19 +252,15 @@ joker {
     key = "mrsbones",
     pronouns = "she_her",
     config = {extra = {xmult = 4, requirement = 4}},
-    cost = 4,
+    cost = G.P_CENTERS.j_mr_bones.cost - 1,
     rarity = 2,
     eternal_compat = false,
-    blueprint_compat = false,
+    blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.xmult, card.ability.extra.requirement * 100}}
     end,
     calculate = function(_, card, context)
-        if context.blueprint and not context.forcetrigger then
-            return
-        end
-
         if context.joker_main or context.forcetrigger then
             return {xmult = card.ability.extra.xmult}
         end
