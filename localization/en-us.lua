@@ -351,7 +351,7 @@ return {
         challenge_names = {
             c_Roland_Jokerful = "Jokerful",
             c_Roland_Pastries = "Sweet Pastries",
-            c_Roland_Surgery = "Surgery",
+            -- c_Roland_Surgery = "Surgery",
         },
         v_dictionary = {
             b_Roland_bye = "Bye!",
@@ -360,7 +360,7 @@ return {
             b_Roland_entering_shop = "Entering shop!",
             b_Roland_escape = "ESCAPE",
             b_Roland_fuse = "FUSE",
-            b_Roland_debug_export = "Debug: Import functional.lua",
+            b_Roland_debug_export = "Debug: Import funky.lua to _G",
             b_Roland_equinox_assist = "Assist: Only hide text during Equinox",
             b_Roland_most_common_card = "(Rank)",
             b_Roland_na = "N/A",
@@ -372,8 +372,8 @@ return {
         v_text = {
             ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
             ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},
-            ch_c_Roland_Oops_All_Tranquilizers = {"Non-showdown blinds are replaced with {C:blue}The Tranquilizer"},
-            ch_c_Roland_Linked_Rank = {"Cards of the same rank share state"},
+            -- ch_c_Roland_Oops_All_Tranquilizers = {"Non-showdown blinds are replaced with {C:blue}The Tranquilizer"},
+            -- ch_c_Roland_Linked_Rank = {"Cards of the same rank share state"},
         },
     },
 }
