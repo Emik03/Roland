@@ -15,6 +15,25 @@ if not f then
     end
 end
 
+---@type F
+local none
+
+---@generic K, V
+---@param tbl table<K, V>
+---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
+---@return fun(tbl: table<K, V>, key: K): K, V
+---@return K
+---@return V
+local function autopairs(tbl, fpairs)
+    return (fpairs or tbl[#tbl] and ipairs or pairs)(tbl)
+end
+
+---@param any any
+---@return boolean
+local function is_f(any)
+    return type(any) == "table" and any.from == f.from and any.new == f.new
+end
+
 --- Always returns nil.
 ---@return nil
 function f.noop()
@@ -74,14 +93,99 @@ function f.new(fnext)
     return ret
 end
 
+--- Creates an enumeration.
 ---@generic K, V
 ---@param tbl table<K, V>
----@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
----@return fun(tbl: table<K, V>, key: K): K, V
----@return K
----@return V
-local function autopairs(tbl, fpairs)
-    return (fpairs or tbl[#tbl] and ipairs or pairs)(tbl)
+---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K?, V?)
+---@param step? nil
+---@return F | { [K]: V }
+---@overload fun(tbl: number, fpairs?: number, step?: number): F | { [number]: number }
+---@overload fun(tbl: string|K): fun(table: { [string|K]: V }): V
+---@overload fun(tbl: false): fun(): false
+---@overload fun(tbl: true): fun(): true
+---@overload fun(tbl: nil): F
+function f.from(tbl, fpairs, step)
+    if tbl == true then
+        return f.tru
+    elseif tbl == false then
+        return f.fals
+    elseif tbl == nil then
+        return none
+    end
+
+    local tbl_type = type(tbl)
+
+    if tbl_type == "string" then
+        return f.index(tbl)
+    elseif tbl_type == "number" then
+        local ik = 0
+        local start = fpairs and tbl or 1
+
+        local stop = not fpairs and tbl or
+            (type(fpairs) == "number") and fpairs or error("Invalid argument type for 'fpairs': " .. type(fpairs))
+
+        if step and step ~= 0 and ((step < 0) == (start < stop)) then
+            return none
+        end
+
+        return f.new(function()
+            local iv = tbl + ik * (step or 1)
+            ik = ik + 1
+
+            if start > stop and iv >= stop or
+                start < stop and iv <= stop or
+                start == stop and iv == stop then
+                return ik, iv
+            end
+        end)
+    elseif tbl_type ~= "table" then
+        error("Invalid argument type for 'tbl': " .. type(tbl))
+    end
+
+    local next, context, k, v = autopairs(tbl, fpairs)
+
+    return f.new(function()
+        k, v = next(context, k)
+        return k, v
+    end)
+end
+
+---@generic K, V
+---@param self F|{ [K]: V }
+---@param ... F|{ [K]: V }
+---@return F|{ [K]: V }
+---@nodiscard
+function f:concat(...)
+    local fsi = 0
+    local fs = {...}
+
+    for i = 1, #fs do
+        if not is_f(fs[i]) then ---@diagnostic disable-next-line: assign-type-mismatch
+            fs[i] = f.from(fs[i])
+        end
+    end
+
+    return f.new(function()
+        if fsi == 0 then
+            local k, v = self:next()
+
+            if k ~= nil then
+                return k, v
+            end
+
+            fsi = 1
+        end
+
+        while fsi <= #fs do
+            local k, v = fs[fsi]:next()
+
+            if k ~= nil then
+                return k, v
+            end
+
+            fsi = fsi + 1
+        end
+    end)
 end
 
 ---@generic K, V, U
@@ -380,61 +484,6 @@ function f:each(func)
     end
 end
 
-local none = f.new()
+none = f.new()
 
---- Creates an enumeration.
----@generic K, V
----@param tbl table<K, V>
----@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K?, V?)
----@param step? nil
----@return F | { [K]: V }
----@overload fun(tbl: number, fpairs?: number, step?: number): F | { [number]: number }
----@overload fun(tbl: string|K): fun(table: { [string|K]: V }): V
----@overload fun(tbl: false): fun(): false
----@overload fun(tbl: true): fun(): true
----@overload fun(tbl: nil): F
-return function(tbl, fpairs, step)
-    if tbl == true then
-        return f.tru
-    elseif tbl == false then
-        return f.fals
-    elseif tbl == nil then
-        return none
-    end
-
-    local tbl_type = type(tbl)
-
-    if tbl_type == "string" then
-        return f.index(tbl)
-    elseif tbl_type == "number" then
-        local ik = 0
-        local start = fpairs and tbl or 1
-
-        local stop = not fpairs and tbl or
-            (type(fpairs) == "number") and fpairs or error("Invalid argument type for 'fpairs': " .. type(fpairs))
-
-        if step and step ~= 0 and ((step < 0) == (start < stop)) then
-            return none
-        end
-
-        return f.new(function()
-            local iv = tbl + ik * (step or 1)
-            ik = ik + 1
-
-            if start > stop and iv >= stop or
-                start < stop and iv <= stop or
-                start == stop and iv == stop then
-                return ik, iv
-            end
-        end)
-    elseif tbl_type ~= "table" then
-        error("Invalid argument type for 'tbl': " .. type(tbl))
-    end
-
-    local next, context, k, v = autopairs(tbl, fpairs)
-
-    return f.new(function()
-        k, v = next(context, k)
-        return k, v
-    end)
-end
+return f.from

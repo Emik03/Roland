@@ -1,7 +1,11 @@
 local f, q = unpack(... or require "lib.shared")
-local jokerful = {banned_cards = {}}
-local pastries = {banned_cards = {}, banned_tags = {}, banned_other = {}}
--- local surgery = {banned_other = {}}
+
+local function bans()
+    return {banned_cards = {}, banned_tags = {}, banned_other = {}}
+end
+
+local jokerful, pastries, vanillas = bans(), bans(), bans()
+-- local surgery = bans()
 local function adder(tbl)
     return function(v)
         table.insert(tbl, {id = v.key})
@@ -24,11 +28,24 @@ local function is_joker(v)
     return v.set == "Joker"
 end
 
+local function is_vanilla(v)
+    return v.set and not v.mod and f(G.P_CENTERS):concat(G.P_CARDS, G.P_TAGS):any(function(c)
+        return c.mod and c.set == v.set
+    end)
+end
+
 SMODS.Challenge {
     key = "Jokerful",
     rules = {custom = {{id = "Roland_Jokerful"}}},
     restrictions = jokerful,
     pronouns = "he_him",
+}
+
+SMODS.Challenge {
+    key = "Ornate",
+    rules = {custom = {{id = "Roland_Ornate"}}},
+    restrictions = vanillas,
+    pronouns = "any_all",
 }
 
 SMODS.Challenge {
@@ -54,6 +71,9 @@ SMODS.Challenge {
 q(function()
     f {
         {G.P_CENTERS, is_joker,                     jokerful.banned_cards},
+        {G.P_TAGS,    is_vanilla,                   vanillas.banned_tags},
+        {G.P_BLINDS,  is_vanilla,                   vanillas.banned_other},
+        {G.P_CENTERS, is_vanilla,                   vanillas.banned_cards},
         {G.P_TAGS,    is_banned_from_pastry,        pastries.banned_tags},
         {G.P_BLINDS,  is_banned_from_pastry,        pastries.banned_other},
         {G.P_CENTERS, is_center_banned_from_pastry, pastries.banned_cards},

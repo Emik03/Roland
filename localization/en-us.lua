@@ -350,6 +350,7 @@ return {
     misc = {
         challenge_names = {
             c_Roland_Jokerful = "Jokerful",
+            c_Roland_Ornate = "Ornate",
             c_Roland_Pastries = "Sweet Pastries",
             -- c_Roland_Surgery = "Surgery",
         },
@@ -371,6 +372,7 @@ return {
         },
         v_text = {
             ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
+            ch_c_Roland_Ornate = {"Anything vanilla is banned"},
             ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},
             -- ch_c_Roland_Oops_All_Tranquilizers = {"Non-showdown blinds are replaced with {C:blue}The Tranquilizer"},
             -- ch_c_Roland_Linked_Rank = {"Cards of the same rank share state"},
