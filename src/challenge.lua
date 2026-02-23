@@ -30,7 +30,7 @@ end
 
 local function is_vanilla(v)
     return v.set and not v.mod and f(G.P_CENTERS):concat(G.P_CARDS, G.P_TAGS):any(function(c)
-        return c.mod and c.set == v.set
+        return c.mod and not c.in_pool and c.set == v.set
     end)
 end
 
