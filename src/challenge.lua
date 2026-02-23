@@ -6,7 +6,7 @@ end
 
 local function adder(tbl)
     return function(v)
-        table.insert(tbl, {id = v.key})
+        table.insert(tbl, {id = v.key, type = "blind"})
     end
 end
 
@@ -245,7 +245,7 @@ q(function()
         {G.P_BLINDS,  is_banned_from_pastry,                            pastries.banned_other},
         {G.P_CENTERS, is_center_banned_from_pastry,                     pastries.banned_cards},
         {G.P_BLINDS,  is_showdown_except "bl_final_acorn",              amber.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_bell ",              cerulean.banned_other},
+        {G.P_BLINDS,  is_showdown_except "bl_final_bell",               cerulean.banned_other},
         {G.P_BLINDS,  is_showdown_except "bl_final_heart",              crimson.banned_other},
         {G.P_BLINDS,  is_showdown_except "bl_final_leaf",               verdant.banned_other},
         {G.P_BLINDS,  is_showdown_except "bl_final_vessel",             violet.banned_other},
