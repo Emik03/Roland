@@ -381,7 +381,7 @@ return {
             ch_c_Roland_Eternally_Crimson = {"{C:attention}Crimson Heart{}'s effect is active every blind"},
             ch_c_Roland_Eternally_Verdant = {"{C:attention}Verdant Leaf{}'s effect is active every blind"},
             ch_c_Roland_Eternally_Violet = {"{C:attention}Violet Vessel{}'s effect is active every blind"},
-            ch_c_Roland_Jokerful = {"Only the {C:common}default Joker{} can appear in shops"},
+            ch_c_Roland_Jokerful = {"The only jokers are {C:mult}Joker{} and {C:chips}Ms. Joker"},
             ch_c_Roland_Ornate = {"Anything vanilla is banned"},
             ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},
             ch_c_Roland_Showdown = {"Showdown blinds are {C:attention}Venerable Visage"},

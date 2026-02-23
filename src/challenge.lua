@@ -11,7 +11,7 @@ local function adder(tbl)
 end
 
 local function is_banned_from_pastry(v)
-    return not ({Bakery = true, Roland = true})[(v.mod or {}).id]
+    return not ({Bakery = true, Roland = true})[(v.mod or {}).key]
 end
 
 local function is_center_banned_from_pastry(v)
@@ -20,7 +20,7 @@ local function is_center_banned_from_pastry(v)
 end
 
 local function is_joker(v)
-    return v.set == "Joker"
+    return v.set == "Joker" and not ({j_joker = true, j_Roland_msjoker = true})[v.id]
 end
 
 local function is_showdown_except(key)
