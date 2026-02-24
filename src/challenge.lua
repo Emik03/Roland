@@ -15,8 +15,19 @@ local function is_banned_from_pastry(v)
 end
 
 local function is_center_banned_from_pastry(v)
+    local arcana_boosters = {
+        p_arcana_normal_1 = true,
+        p_arcana_normal_2 = true,
+        p_arcana_normal_3 = true,
+        p_arcana_normal_4 = true,
+        p_arcana_jumbo_1 = true,
+        p_arcana_jumbo_2 = true,
+        p_arcana_mega_1 = true,
+        p_arcana_mega_2 = true,
+    }
+
     local pastries_targets = {Enhanced = true, Joker = true, Tarot = true, Spectral = true}
-    return pastries_targets[v.set] and is_banned_from_pastry(v)
+    return arcana_boosters[v.key] or pastries_targets[v.set] and is_banned_from_pastry(v)
 end
 
 local function is_joker(v)
