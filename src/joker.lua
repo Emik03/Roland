@@ -462,7 +462,7 @@ joker {
             other_drawn = not facing_blind and {G.deck.cards[1]},
         }
 
-        if facing_blind then
+        if type(facing_blind) == "table" then
             ---@diagnostic disable-next-line: inject-field
             facing_blind.any_hand_drawn = facing_blind.any_hand_drawn or facing_blind
         end

@@ -25,7 +25,7 @@ qol[2](function()
         fg = HEX "f8f8f2ff",
         bg = HEX "ff79c6ff",
     }
-end)
+end, true)
 
 SMODS.Atlas {
     px = 256,
