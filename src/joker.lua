@@ -16,19 +16,13 @@ local joker = (function()
     return function(tbl)
         tbl.pos = inc()
         tbl.atlas = "joker"
+        tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
         tbl.soul_pos = tbl.soul_pos and inc() or nil
         tbl.sinis = tbl.sinis and inc() or nil
-        SMODS.Joker(tbl)
+        local joker = SMODS.Joker(tbl)
 
-        local _ = tbl.artist and q(function()
-            Bakery_API.contributors.Roland_char = Bakery_API.contributors.Roland_char or {
-                name = "char (@irregulester)",
-                fg = HEX "f8f8f2ff",
-                bg = HEX "ff79c6ff",
-            }
-
-            tbl.artist = "Roland_" .. tbl.artist
-            Bakery_API.credit(tbl)
+        q(function()
+            Bakery_API.credit(joker)
         end)
     end
 end)()
