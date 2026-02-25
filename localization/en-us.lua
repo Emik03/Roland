@@ -230,6 +230,10 @@ return {
                     "least {C:attention}#2# suits",
                 },
             },
+            j_Roland_srjoker = {
+                name = "Sr. Joker",
+                text = {"{X:mult,C:white}X#1#{} Mult"},
+            },
             j_Roland_sunny = {
                 name = "Sunny Side Up",
                 text = {

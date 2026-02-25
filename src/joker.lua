@@ -565,6 +565,24 @@ joker {
 }
 
 joker {
+    key = "srjoker",
+    pronouns = "he_him",
+    config = {extra = {xmult = 1.25}},
+    cost = 2,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(_, card, context)
+        return (context.joker_main or context.forcetrigger) and
+            {card = card, xmult = card.ability.extra.xmult} or nil
+    end,
+}
+
+joker {
     key = "bulldozer",
     pronouns = "it_its",
     cost = 6,
