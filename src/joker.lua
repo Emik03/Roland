@@ -619,11 +619,14 @@ joker {
         local extra, numerator, xmult = card.ability.extra, 1, 1
 
         for _ = 1, 64 do
-            if SMODS.pseudorandom_probability(card, self.key, 1, extra.odds, "RolandMartingale") then
+            local g = G.GAME
+            local key = "RolandMartingale" .. (g.modifiers.Roland_martingale_seed or "")
+
+            if SMODS.pseudorandom_probability(card, self.key, 1, extra.odds, key) then
                 break
             end
 
-            numerator = numerator * (extra.odds - G.GAME.probabilities.normal)
+            numerator = numerator * (extra.odds - g.probabilities.normal)
             local message = number_format(numerator) .. "/" .. number_format(xmult)
             SMODS.calculate_effect({card = card, repetitions = 1, message = message}, card)
             xmult = xmult * extra.odds

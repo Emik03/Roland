@@ -328,7 +328,11 @@ if cry_prob then
 end
 
 function SMODS.current_mod:calculate(context)
-    ---@diagnostic disable-next-line: undefined-global
+    if context.setting_blind and G.GAME.blind.name == "bl_mp_nemesis" then
+        local modifiers = G.GAME.modifiers
+        modifiers.Roland_martingale_seed = (modifiers.Roland_martingale_seed or 0) + 1
+    end
+
     local _ = type(G.calc) == "function" and G.calc(f(context):keys():string())
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 
