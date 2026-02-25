@@ -565,7 +565,7 @@ joker {
 }
 
 joker {
-    key = "srjoker",
+    key = "jokersr",
     pronouns = "he_him",
     config = {extra = {xmult = 1.25}},
     cost = 2,

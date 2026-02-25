@@ -120,6 +120,15 @@ return {
                     "{C:inactive}(Currently {X:red,C:white}X#1#{C:inactive})",
                 },
             },
+            j_Roland_domino = {
+                name = "Domino",
+                text = {
+                    "This Joker gains {C:mult}+#1# {}Mult",
+                    "if played hand is a",
+                    "{C:attention}#2#",
+                    "{C:inactive}(Currently {C:red}+#3#{C:inactive} Mult)",
+                },
+            },
             j_Roland_escapey = {
                 name = "Escapey",
                 text = {
@@ -146,45 +155,9 @@ return {
                     },
                 },
             },
-            j_Roland_phytoestrogens = {
-                name = "Phytoestrogens",
-                text = {"{C:mult}+Chips{} Mult", "{X:mult,C:white}X#1#{} Mult"},
-            },
-            j_Roland_monomino = {
-                name = "Monomino",
-                text = {
-                    "Gains {C:money}$#1#{} of",
-                    "{C:attention}sell value{} if",
-                    "played hand is a",
-                    "{C:attention}#2#",
-                },
-            },
-            j_Roland_domino = {
-                name = "Domino",
-                text = {
-                    "This Joker gains {C:mult}+#1# {}Mult",
-                    "if played hand is a",
-                    "{C:attention}#2#",
-                    "{C:inactive}(Currently {C:red}+#3#{C:inactive} Mult)",
-                },
-            },
-            j_Roland_trimino = {
-                name = "Trimino",
-                text = {
-                    "Copies {C:attention}#1# {C:green}random",
-                    "scoring cards and",
-                    "{C:red,E:1}self-destructs {}if",
-                    "played hand is a",
-                    "{C:attention}#2#",
-                },
-            },
-            j_Roland_misfortune = {
-                name = "Misfortune Cookie",
-                text = {
-                    "{C:tarot}Tarot{} cards created",
-                    "by {C:tarot}Purple Seals",
-                    "become {C:dark_edition}Negative",
-                },
+            j_Roland_jokersr = {
+                name = "Joker Sr.",
+                text = {"{X:mult,C:white}X#1#{} Mult"},
             },
             j_Roland_martingale = {
                 name = "Martingale",
@@ -197,6 +170,23 @@ return {
                     "{s:0.1853020188851841}Otherwise, {C:green,s:0.1853020188851841}#1# in #3#{s:0.1853020188851841} chance to give {X:mult,C:white,s:0.1853020188851841}X#7#{s:0.1853020188851841} Mult",
                     "{s:0.0343368382029250877861747139}Otherwise, {C:green,s:0.0343368382029250877861747139}#1# in #3#{s:0.0343368382029250877861747139} chance to give {X:mult,C:white,s:0.0343368382029250877861747139}X#8#{s:0.0343368382029250877861747139} Mult",
                     "{s:0}Otherwise, {C:green,s:0}#1# in #3#{s:0} chance to give {X:mult,C:white,s:0}X#9#{s:0} Mult",
+                },
+            },
+            j_Roland_misfortune = {
+                name = "Misfortune Cookie",
+                text = {
+                    "{C:tarot}Tarot{} cards created",
+                    "by {C:tarot}Purple Seals",
+                    "become {C:dark_edition}Negative",
+                },
+            },
+            j_Roland_monomino = {
+                name = "Monomino",
+                text = {
+                    "Gains {C:money}$#1#{} of",
+                    "{C:attention}sell value{} if",
+                    "played hand is a",
+                    "{C:attention}#2#",
                 },
             },
             j_Roland_mrsbones = {
@@ -221,6 +211,10 @@ return {
                     "{C:inactive}(Currently {X:green,C:white}X#2#{C:inactive})",
                 },
             },
+            j_Roland_phytoestrogens = {
+                name = "Phytoestrogens",
+                text = {"{C:mult}+Chips{} Mult", "{X:mult,C:white}X#1#{} Mult"},
+            },
             j_Roland_sapling = {
                 name = "Sapling",
                 text = {
@@ -229,10 +223,6 @@ return {
                     "contains at",
                     "least {C:attention}#2# suits",
                 },
-            },
-            j_Roland_srjoker = {
-                name = "Sr. Joker",
-                text = {"{X:mult,C:white}X#1#{} Mult"},
             },
             j_Roland_sunny = {
                 name = "Sunny Side Up",
@@ -248,6 +238,16 @@ return {
                 text = {
                     "{C:attention}Unscored Wild{} cards",
                     "give {X:red,C:white}X#1#{} Mult",
+                },
+            },
+            j_Roland_trimino = {
+                name = "Trimino",
+                text = {
+                    "Copies {C:attention}#1# {C:green}random",
+                    "scoring cards and",
+                    "{C:red,E:1}self-destructs {}if",
+                    "played hand is a",
+                    "{C:attention}#2#",
                 },
             },
             j_Roland_yard = {
