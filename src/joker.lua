@@ -279,7 +279,7 @@ joker {
 joker {
     key = "phytoestrogens",
     pronouns = "she_her",
-    config = {extra = {xmult = 0.1}},
+    config = {extra = {xmult = 0.25}},
     cost = 8,
     rarity = 3,
     eternal_compat = true,
@@ -294,7 +294,7 @@ joker {
         end
 
         SMODS.calculate_effect({mult = hand_chips}, card)
-        SMODS.calculate_effect({xmult = card.ability.extra.mult}, card)
+        SMODS.calculate_effect({xmult = card.ability.extra.xmult}, card)
     end,
 }
 
