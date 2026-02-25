@@ -319,8 +319,9 @@ joker {
             return
         end
 
-        card.ability.extra_value = card.ability.extra_value + extra.price
-        card:set_cost()
+        local c = context.blueprint_card or card
+        c.ability.extra_value = c.ability.extra_value + extra.price
+        c:set_cost()
         return {message = localize "k_val_up", colour = G.C.MONEY}
     end,
 }
