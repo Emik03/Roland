@@ -495,7 +495,7 @@ local venerable_visage = blind {
 
                     table.insert(G.playing_cards, card)
                     G.deck:emplace(card)
-                    play_sound("card1")
+                    play_sound "card1"
                     card:add_to_deck()
                 end,
             }

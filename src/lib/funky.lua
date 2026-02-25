@@ -100,7 +100,7 @@ end
 ---@param step? nil
 ---@return F | { [K]: V }
 ---@overload fun(tbl: number, fpairs?: number, step?: number): F | { [number]: number }
----@overload fun(tbl: string|K): fun(table: { [string|K]: V }): V
+---@overload fun(tbl: string): (fun(table: { [string]: V }): V)
 ---@overload fun(tbl: false): fun(): false
 ---@overload fun(tbl: true): fun(): true
 ---@overload fun(tbl: nil): F
@@ -193,7 +193,10 @@ end
 ---@param func F|fun(v: V, k: K): U
 ---@return F|{ [K]: U }
 ---@nodiscard
+---@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: U }
 function f:map(func)
+    func = type(func) == "string" and f.index(func) or func
+
     return f.new(function()
         local k, v = self:next()
 
@@ -209,9 +212,11 @@ end
 ---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
 ---@return F|{ [K]: U }
 ---@nodiscard
+---@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: U }
 function f:flatmap(func, fpairs)
     -- local i = 0
     local vt, vk, vv, vp
+    func = type(func) == "string" and f.index(func) or func
 
     return f.new(function()
         if vk then
@@ -256,7 +261,10 @@ end
 ---@param func F|fun(v: V, k: K): boolean
 ---@return F|{ [K]: V }
 ---@nodiscard
+---@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: V }
 function f:where(func)
+    func = type(func) == "string" and f.index(func) or func
+
     return f.new(function()
         local k, v
 
@@ -393,7 +401,10 @@ end
 ---@param func F|fun(v: V, k: K): boolean
 ---@return boolean|V
 ---@nodiscard
+---@overload fun(self: F|{ [K]: V }, func: string): boolean
 function f:any(func)
+    func = type(func) == "string" and f.index(func) or func
+
     for k, v in self.next do
         if not func or func(v, k) then
             return v or true
@@ -408,7 +419,10 @@ end
 ---@param func F|fun(v: V, k: K): boolean
 ---@return boolean|V
 ---@nodiscard
+---@overload fun(self: F|{ [K]: V }, func: string): boolean
 function f:all(func)
+    func = type(func) == "string" and f.index(func) or func
+
     for k, v in self.next do
         if not func or not func(v, k) then
             return v and false
@@ -423,8 +437,10 @@ end
 ---@param func F|fun(v: V, k: K): boolean
 ---@return integer
 ---@nodiscard
+---@overload fun(self: F|{ [K]: V }, func: string): integer
 function f:count(func)
     local ret = 0
+    func = type(func) == "string" and f.index(func) or func
 
     for k, v in self.next do
         if not func or func(v, k) then
@@ -475,7 +491,7 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func? F|fun(v: V, k: K)
+---@param func? fun(v: V, k: K)
 function f:each(func)
     for k, v in self.next do
         if func then

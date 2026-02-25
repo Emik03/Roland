@@ -213,7 +213,7 @@ joker {
     ---@param card Card
     ---@param times? integer
     proc = function(card, times)
-        local hands = f(G.GAME.hands):where(f "visible"):keys():table()
+        local hands = f(G.GAME.hands):where "visible":keys():table()
         pseudoshuffle(hands, pseudoseed "RolandEscapey")
         local levels = card.ability.extra.hands * (times or 1)
         level_up("all", math.floor(levels / #hands), card)
@@ -270,7 +270,7 @@ joker {
                 G.hand_text_area.blind_chips:juice_up()
                 G.hand_text_area.game_chips:juice_up()
                 card:start_dissolve()
-                play_sound("tarot1")
+                play_sound "tarot1"
             end)
         end
     end,
@@ -377,7 +377,7 @@ joker {
         card.getting_sliced = not context.forcetrigger
 
         q(function()
-            local scored_cards = f(G.play.cards):where(f "highlighted"):table()
+            local scored_cards = f(G.play.cards):where "highlighted":table()
             local copied = {}
 
             if not next(scored_cards) then

@@ -127,7 +127,7 @@ local finalizers = {
             G.hand:unhighlight_all()
 
             local count = (blind.name == "Cerulean Bell" and 2 or 1) -
-                f(G.hand.cards):map(f "ability"):count(f "forced_selection")
+                f(G.hand.cards):map "ability":count "forced_selection"
 
             f(copy):take(count):each(function(v)
                 v.ability.forced_selection = true

@@ -23,7 +23,7 @@ SMODS.Seal {
             local tag = Tag(get_next_tag_key "Roland_glass")
 
             if tag.name == "Orbital Tag" then
-                local hands = f(G.GAME.hands):where(f "visible"):keys():table()
+                local hands = f(G.GAME.hands):where "visible":keys():table()
                 tag.ability.orbital_hand = pseudorandom_element(hands, pseudoseed "Roland_glass")
             end
 
