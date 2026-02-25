@@ -105,7 +105,6 @@ back {
                     SMODS.calculate_effect({message = localize "ph_boss_disabled"}, card)
                     G.GAME.blind:wiggle()
                     play_sound "timpani"
-                    delay(0.4)
                 end,
             }
         end
