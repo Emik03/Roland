@@ -184,35 +184,27 @@ blind {
     pronouns = "he_they",
     disable = function()
         -- Ensures that this runs after 'set_blind' since it also gets added to queue.
-        q(function()
-            local count = #G.discard.cards
-
-            if count == 0 then
-                return
-            end
-
-            f(G.discard.cards):take(count):each(function(v, i)
-                draw_card(G.discard, G.hand, i / count * 100, "up", false, v, nil, nil, true)
-            end)
-
-            f(G.discard.cards):take(count):each(function(v, i)
-                draw_card(G.hand, G.deck, i / count * 100, "up", false, v)
-            end)
-        end)
+        q {
+            delay = 0.8,
+            trigger = "after",
+            func = function()
+                G.FUNCS.draw_from_discard_to_deck()
+            end,
+        }
     end,
     set_blind = function()
         -- Allows the background to ease in first before drawing cards.
         q(function()
-            local length = (#G.deck.cards - 2) / 2
+            local count = (#G.deck.cards - 2) / 2
 
-            for i = 0, length do
+            for i = 0, count do
                 local card = G.deck.cards[#G.deck.cards - i]
-                draw_card(G.deck, G.hand, i / length * 100, "down", false, card, nil, nil, true)
+                draw_card(G.deck, G.hand, i / count * 100, "down", false, card, nil, nil, true)
             end
 
-            for i = 0, length do
+            for i = 0, count do
                 local card = G.deck.cards[#G.deck.cards - i]
-                draw_card(G.hand, G.discard, i / length * 100, "down", false, card, nil, nil, true)
+                draw_card(G.hand, G.discard, i / count * 100, "down", false, card, nil, nil, true)
             end
         end)
     end,
