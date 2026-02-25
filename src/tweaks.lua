@@ -91,3 +91,25 @@ q(function()
         return area == G.consumeables or orig_can_highlight_area(area, ...)
     end
 end)
+
+local orig_create_card_for_shop = create_card_for_shop
+
+---@diagnostic disable-next-line: lowercase-global
+function create_card_for_shop(...)
+    ---@type Card
+    local ret = orig_create_card_for_shop(...)
+
+    if not G.GAME.used_vouchers.v_illusion or
+        not ({Default = true, Enhanced = true})[(((ret or {}).config or {}).center or {}).set] or
+        pseudorandom(pseudoseed "Roland_illusion") <= 0.8 then
+        return ret
+    end
+
+    local seal = SMODS.poll_seal {
+        type_key = "Roland_illusion_seal",
+        guaranteed = true,
+    }
+
+    ret:set_seal(seal, true, true)
+    return ret
+end
