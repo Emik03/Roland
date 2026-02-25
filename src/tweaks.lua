@@ -1,4 +1,4 @@
-local _, q = unpack(... or require "lib.shared")
+local f, q = unpack(... or require "lib.shared")
 
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 local orig_can_highlight = CardArea.can_highlight
@@ -33,6 +33,41 @@ function Card:highlight(is_highlighted, ...)
     if not G.CONTROLLER.HID.controller then
         return orig_highlight(self, is_highlighted, ...)
     end
+end
+
+local orig_use_consumeable = Card.use_consumeable
+
+---@diagnostic disable-next-line: duplicate-set-field
+function Card:use_consumeable(area, copier, ...)
+    local seal_spectrals = {["Deja Vu"] = true, Medium = true, Talisman = true, Trance = true}
+
+    if not seal_spectrals[self.ability.name] then
+        return orig_use_consumeable(self, area, copier, ...)
+    end
+
+    f(Bakery_API.get_highlighted()):each(function(v)
+        q(function()
+            play_sound "tarot1"
+            local card = (copier or self)
+            card:juice_up(0.3, 0.5)
+        end)
+
+        q {
+            delay = 0.1,
+            trigger = "after",
+            func = function()
+                v:set_seal(self.ability.extra, nil, true)
+            end,
+        }
+    end)
+
+    q {
+        delay = 0.7,
+        trigger = "after",
+        func = function()
+            Bakery_API.unhighlight_all()
+        end,
+    }
 end
 
 ---@diagnostic disable-next-line: lowercase-global
