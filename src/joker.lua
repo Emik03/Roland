@@ -620,7 +620,7 @@ joker {
 
         for _ = 1, 64 do
             local g = G.GAME
-            local key = "RolandMartingale" .. (g.modifiers.Roland_martingale_seed or "")
+            local key = "RolandMartingale" .. tostring(g.modifiers.Roland_martingale_seed or "")
 
             if SMODS.pseudorandom_probability(card, self.key, 1, extra.odds, key) then
                 break
