@@ -58,6 +58,7 @@ function SMODS.current_mod.config_tab()
                     toggle "no_wild_debuff",
                     toggle "no_highlight_limit",
                     _G["Talisman"] and toggle "harsh_ante_scaling",
+                    toggle "fusable_escapey",
                     toggle "equinox_assist",
                 },
             },

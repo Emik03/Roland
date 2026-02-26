@@ -8,7 +8,7 @@ local orig_copy_card = copy_card
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function CardArea:can_highlight(...)
-    if self ~= G.consumeables and not SMODS.Mods.Roland.config.no_highlight_limit then
+    if self ~= G.consumeables or not SMODS.Mods.Roland.config.no_highlight_limit then
         return orig_can_highlight(self, ...)
     end
 
@@ -30,13 +30,9 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function Card:highlight(is_highlighted, ...)
-    if not SMODS.Mods.Roland.config.no_highlight_limit then
-        return orig_highlight(self, is_highlighted, ...)
-    end
-
     self.highlighted = is_highlighted
 
-    if not G.CONTROLLER.HID.controller then
+    if not G.CONTROLLER.HID.controller or not SMODS.Mods.Roland.config.no_highlight_limit then
         return orig_highlight(self, is_highlighted, ...)
     end
 end
@@ -83,7 +79,8 @@ function copy_card(other, new_card, ...)
     if new_card and new_card.edition and new_card.edition.key == "e_negative" then
         --- Fixes an issue where using 'c_death' will make negative
         --- cards do the inverse of what they're supposed to do.
-        new_card.ability.card_limit = math.max(new_card.ability.card_limit, 1)
+        local ability = new_card.ability
+        ability.card_limit = math.max(ability.card_limit, 1)
     end
 
     return ret
@@ -107,11 +104,8 @@ function create_card_for_shop(...)
     ---@type Card
     local ret = orig_create_card_for_shop(...)
 
-    if not SMODS.Mods.Roland.config.illusion_seal then
-        return ret
-    end
-
-    if not G.GAME.used_vouchers.v_illusion or
+    if not SMODS.Mods.Roland.config.illusion_seal or
+        not G.GAME.used_vouchers.v_illusion or
         not ({Default = true, Enhanced = true})[(((ret or {}).config or {}).center or {}).set] or
         pseudorandom(pseudoseed "Roland_illusion") <= 0.8 then
         return ret

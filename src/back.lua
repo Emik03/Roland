@@ -34,16 +34,15 @@ local back = (function()
             return false
         end
 
+        local sleeve = (_G["CardSleeves"] or {}).Sleeve
         SMODS.Back(tbl)
         x = x + 1
 
-        ---@diagnostic disable-next-line: undefined-global
-        if not CardSleeves then
+        if not sleeve then
             return
         end
 
-        ---@diagnostic disable-next-line: undefined-global
-        CardSleeves.Sleeve {
+        sleeve {
             key = key,
             pos = tbl.pos,
             atlas = "back",
