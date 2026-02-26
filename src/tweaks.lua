@@ -8,7 +8,7 @@ local orig_copy_card = copy_card
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function CardArea:can_highlight(...)
-    if self ~= G.consumeables then
+    if self ~= G.consumeables and not SMODS.Mods.Roland.config.no_highlight_limit then
         return orig_can_highlight(self, ...)
     end
 
@@ -19,7 +19,9 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function Card:set_debuff(...)
-    if self.config and self.config.center_key == "m_wild" then
+    if self.config and
+        self.config.center_key == "m_wild" and
+        SMODS.Mods.Roland.config.no_wild_debuff then
         self.debuff = false
     else
         orig_set_debuff(self, ...)
@@ -28,6 +30,10 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function Card:highlight(is_highlighted, ...)
+    if not SMODS.Mods.Roland.config.no_highlight_limit then
+        return orig_highlight(self, is_highlighted, ...)
+    end
+
     self.highlighted = is_highlighted
 
     if not G.CONTROLLER.HID.controller then
@@ -88,7 +94,9 @@ q(function()
 
     ---@diagnostic disable-next-line: duplicate-set-field
     function Bakery_API.can_highlight_area(area, ...)
-        return area == G.consumeables or orig_can_highlight_area(area, ...)
+        return (area == G.consumeables and
+                SMODS.Mods.Roland.config.no_highlight_limit) or
+            orig_can_highlight_area(area, ...)
     end
 end)
 
@@ -98,6 +106,10 @@ local orig_create_card_for_shop = create_card_for_shop
 function create_card_for_shop(...)
     ---@type Card
     local ret = orig_create_card_for_shop(...)
+
+    if not SMODS.Mods.Roland.config.illusion_seal then
+        return ret
+    end
 
     if not G.GAME.used_vouchers.v_illusion or
         not ({Default = true, Enhanced = true})[(((ret or {}).config or {}).center or {}).set] or

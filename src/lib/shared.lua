@@ -23,8 +23,11 @@ local function protect_ev(fun)
     return fun
 end
 
--- This exists to remove the @deprecated warning.
 if false then
+    -- This allows for better type inference.
+    SMODS.Mods.Roland.config = require "config"
+
+    -- This exists to remove the @deprecated warning.
     ---Returns the elements from the given `list`. This function is equivalent to
     ---```lua
     ---    return list[i], list[i+1], ···, list[j]

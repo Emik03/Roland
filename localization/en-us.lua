@@ -13,8 +13,8 @@ return {
                 name = "Pass GO Deck",
                 text = {
                     "Start with a {C:attention}Credit Card",
-                    "Set money to {C:money}$0",
-                    "when entering the shop",
+                    "Set money to {C:money}$0 {}when",
+                    "entering the shop",
                 },
             },
             b_Roland_swapper = {
@@ -28,7 +28,11 @@ return {
         BakeryCharm = {
             BakeryCharm_Roland_cocacola = {
                 name = "coca cola phone",
-                text = {"Values on consumables", "increase by {C:attention}1"},
+                text = {
+                    "Values on consumables",
+                    "increase by {C:attention}1",
+                    "{C:inactive}(excluding {C:planet}Planets{C:inactive})",
+                },
             },
             BakeryCharm_Roland_fat = {
                 name = "fat i phone",
@@ -290,8 +294,8 @@ return {
                 name = "Pass GO Sleeve",
                 text = {
                     "Start with a {C:attention}Credit Card",
-                    "Set money to {C:money}$0",
-                    "when entering the shop",
+                    "Set money to {C:money}$0 {}when",
+                    "entering the shop",
                 },
             },
             sleeve_Roland_go_alt = {
@@ -370,9 +374,13 @@ return {
             b_Roland_entering_shop = "Entering shop!",
             b_Roland_escape = "ESCAPE",
             b_Roland_fuse = "FUSE",
-            b_Roland_debug_export = "Debug: Import funky.lua to _G",
-            b_Roland_equinox_assist = "Assist: Only hide text during Equinox",
+            b_Roland_debug_export = "Import funky.lua",
+            b_Roland_equinox_assist = "Assist: Only hide text (Equinox)",
+            b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
+            b_Roland_illusion_seal = "Allow seals from Illusion voucher",
             b_Roland_most_common_card = "(Rank)",
+            b_Roland_no_highlight_limit = "No consumable highlight limit",
+            b_Roland_no_wild_debuff = "No wild card debuffs",
             b_Roland_na = "N/A",
             b_Roland_of = " of ",
         },
