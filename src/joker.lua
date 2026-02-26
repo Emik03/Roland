@@ -63,6 +63,7 @@ local function level_up(hand, by, card)
 
     if hand == true then
         update(localize "k_all_hands", "...", "...", "")
+        delay(2)
 
         f(G.GAME.hands):where "visible":keys():each(function(k)
             level_up_hand(card, k, true, by)
@@ -93,13 +94,11 @@ joker {
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
-    loc_vars = function(_, _, card)
+    loc_vars = function(self, _, card)
         local sinister = (_G["Jen"] or _G["pwx"] or {}).sinister or G.escapey_sinister
         local loc = G.localization.descriptions.Joker.j_Roland_escapey
+        local merge = self.fusable(card) and loc.merge or {}
         local quotes = loc.quotes
-
-        local merge = (G.jokers and f(G.jokers.cards):any(is_mergeable_with(card)))
-            and loc.merge or {}
 
         local normal = (merge[1] or sinister) and "" or
             pseudorandom_element(quotes.normal, pseudoseed "EscapeyQuotes") or ""
@@ -121,20 +120,16 @@ joker {
     Bakery_can_use = function(self, card)
         return not card.debuff and u() and (self.exchangable() or self.fusable(card))
     end,
-    Bakery_use_button_text = function(_, card)
+    Bakery_use_button_text = function(self, card)
         return localize {
             type = "variable",
             key = card.debuff and "b_Roland_debuffed" or
-                (#G.GAME.tags == 0 and not
-                    f(G.consumeables.cards):any(destructible) and
-                    f(G.jokers.cards):any(is_mergeable_with(card)) and
+                ((not self.exchangable() and self.fusable(card)) and
                     "b_Roland_fuse" or "b_Roland_escape"),
         }
     end,
     calculate = function(self, card, context)
-        if context.forcetrigger then
-            return self.proc(card)
-        end
+        return context.forcetrigger and self.proc(card) or nil
     end,
     Bakery_use_joker = function(self, card)
         if card.debuff then
@@ -209,7 +204,7 @@ joker {
     ---@param card Card
     fusable = function(card)
         return SMODS.Mods.Roland.config.fusable_escapey and
-            f(G.jokers.cards):any(is_mergeable_with(card))
+            f((G.jokers or {}).cards):any(is_mergeable_with(card))
     end,
     ---@param card Card
     ---@param times? integer
