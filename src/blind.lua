@@ -29,31 +29,19 @@ SMODS.Sound {
 }
 
 local function common_rank()
-    local tally = {}
-    local to_name = {}
+    ---@type { [integer]: integer }, { [integer]: string }
+    local tally, to_name = {}, {}
 
-    --- Tallies up a card area's cards.
-    ---@param card_area CardArea
-    local function tally_up(card_area)
-        f(card_area.cards):where(function(v)
-            return not SMODS.has_no_rank(v)
-        end):each(function(v)
-            local id = v:get_id()
-            to_name[id] = v.base.value
-            tally[id] = (tally[id] or 0) + 1
-        end)
-    end
+    f(G.playing_cards):where(function(v)
+        return not SMODS.has_no_rank(v)
+    end):each(function(v)
+        local id = v:get_id()
+        to_name[id] = v.base.value
+        tally[id] = (tally[id] or 0) + 1
+    end)
 
-    tally_up(G.deck)
-    tally_up(G.hand)
-    tally_up(G.discard)
-
-    local max_key = f(tally):fold({-1 / 0, -1 / 0}, function(a, v, k)
-        if v > a[1] or k > a[2] and v == a[1] then
-            return {v, k}
-        end
-
-        return a
+    local max_key = f(tally, pairs):fold({-1 / 0, -1 / 0}, function(a, v, k)
+        return (v > a[1] or v == a[1] and k > a[2]) and {v, k} or a
     end)[2]
 
     return max_key, to_name[max_key]
@@ -71,6 +59,10 @@ end
 local function has_enhancement(card)
     local e = SMODS.get_enhancements(card)
     return not not (e and next(e))
+end
+
+local function sort_by_enhancement(v1, v2)
+    return has_enhancement(v1) and not has_enhancement(v2)
 end
 
 local function hsv_to_rgb(h, s, v)
@@ -112,28 +104,23 @@ blind {
     boss_colour = HEX "0291fbff",
     pronouns = "she_her",
     config = {draw = 5},
-    defeat = function()
-        G.GAME.Roland_nimble_disabled = nil
-    end,
-    disable = function()
-        G.GAME.Roland_nimble_disabled = true
-    end,
     drawn_to_hand = function(self)
         local function force_hand()
             if is_locked() then
                 return false
             end
 
-            f(G.hand.cards, ipairs):take(self.config.draw):each(function(v)
+            f(G.hand.cards):take(self.config.draw):each(function(v)
                 G.hand:add_to_highlighted(v, true)
             end)
 
-            G.FUNCS.play_cards_from_highlighted(nil)
-            self:disable()
+            G.FUNCS.play_cards_from_highlighted()
         end
 
-        if not G.GAME.Roland_nimble_disabled then
-            G.GAME.Roland_nimble_disabled = true
+        local g = G.GAME
+
+        if not g.blind.disabled and not g.Roland_nimble_disabled then
+            g.Roland_nimble_disabled = true
             q {func = force_hand, blocking = false}
         end
     end,
@@ -148,29 +135,14 @@ blind {
     boss_colour = HEX "ff7f3dff",
     pronouns = "any_all",
     disable = function()
-        q(function()
-            f(G.hand.cards):each(function(v, i)
-                draw_card(G.hand, G.deck, i / #G.hand.cards * 100, "up", false, v)
-            end)
-        end)
+        G.FUNCS.draw_from_hand_to_deck()
 
         q(function()
             pseudoshuffle(G.deck.cards, pseudoseed "RolandFalseShuffle")
         end)
     end,
     calculate = function(_, b, context)
-        if b.disabled or not context.drawing_cards then
-            return
-        end
-
-        b:wiggle()
-
-        table.sort(
-            G.deck.cards,
-            function(v1, v2)
-                return has_enhancement(v1) and not has_enhancement(v2)
-            end
-        )
+        local _ = not b.disabled and context.drawing_cards and table.sort(G.deck.cards, sort_by_enhancement)
     end,
     in_pool = function()
         return G.playing_cards and f(G.playing_cards):any(has_enhancement)
@@ -223,7 +195,7 @@ blind {
         local cards_added = {}
         local count = #G.hand.highlighted
 
-        f(G.hand.highlighted, ipairs):take(count):each(function(v, i)
+        f(G.hand.highlighted):take(count):each(function(v, i)
             local copy = copy_card(v)
             copy:add_to_deck()
             table.insert(G.hand, copy)
@@ -254,9 +226,6 @@ blind {
     loc_vars = function(_)
         local _, name = common_rank()
         return {vars = {localize(name or "Ace", "ranks")}}
-    end,
-    disable = function(self)
-        self.disabled = true
     end,
     calculate = function(self, b, context)
         if not context.card_added and

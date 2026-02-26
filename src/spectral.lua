@@ -80,7 +80,7 @@ spectral {
         return u() and #G.hand.cards > 0
     end,
     use = function(_, card, _)
-        local cards = f(G.hand.cards, ipairs):table()
+        local cards = f(G.hand.cards):table()
         pseudoshuffle(cards, pseudoseed "RolandDual")
 
         f(cards):take(card.ability.extra.amount):each(function(v)
