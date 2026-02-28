@@ -453,15 +453,12 @@ joker {
         SMODS.calculate_context {drawing_cards = true, draw = {G.deck.cards}}
 
         SMODS.calculate_context {
-            ---@diagnostic disable-next-line: assign-type-mismatch
-            first_hand_drawn = not current_round.any_hand_drawn and facing_blind,
-            ---@diagnostic disable-next-line: assign-type-mismatch
-            hand_drawn = facing_blind and {G.deck.cards[1]},
+            first_hand_drawn = not current_round.any_hand_drawn and facing_blind or nil,
+            hand_drawn = facing_blind and {G.deck.cards[1]} --[[@as true]],
             other_drawn = not facing_blind and {G.deck.cards[1]},
         }
 
         if type(facing_blind) == "table" then
-            ---@diagnostic disable-next-line: inject-field
             facing_blind.any_hand_drawn = facing_blind.any_hand_drawn or facing_blind
         end
     end,

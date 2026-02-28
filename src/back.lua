@@ -15,13 +15,11 @@ local back = (function()
         local calculate = tbl.calculate
 
         function tbl:apply(...)
-            ---@diagnostic disable-next-line: redundant-return-value
-            return apply and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and save(apply(self, ...))
+            local _ = apply and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and save(apply(self, ...))
         end
 
         function tbl:calculate(...)
-            ---@diagnostic disable-next-line: return-type-mismatch
-            return calculate and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key and calculate(self, ...)
+            return (calculate and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key) and calculate(self, ...) or nil
         end
 
         tbl.pos = {x = x, y = 0}
@@ -164,7 +162,6 @@ back {
 local swapper = {Spectral = "Tarot", Tarot = "Spectral"}
 local orig_create_card = create_card
 
----@diagnostic disable-next-line: lowercase-global
 function create_card(_type, ...)
     if not G.GAME.modifiers.Roland_swapper_deck then
         return orig_create_card(_type, ...)

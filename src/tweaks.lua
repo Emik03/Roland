@@ -6,7 +6,6 @@ local orig_set_debuff = Card.set_debuff
 local orig_highlight = Card.highlight
 local orig_copy_card = copy_card
 
----@diagnostic disable-next-line: duplicate-set-field
 function CardArea:can_highlight(...)
     if self ~= G.consumeables or not SMODS.Mods.Roland.config.no_highlight_limit then
         return orig_can_highlight(self, ...)
@@ -17,7 +16,6 @@ function CardArea:can_highlight(...)
     return true
 end
 
----@diagnostic disable-next-line: duplicate-set-field
 function Card:set_debuff(...)
     if self.config and
         self.config.center_key == "m_wild" and
@@ -28,7 +26,6 @@ function Card:set_debuff(...)
     end
 end
 
----@diagnostic disable-next-line: duplicate-set-field
 function Card:highlight(is_highlighted, ...)
     self.highlighted = is_highlighted
 
@@ -39,7 +36,6 @@ end
 
 local orig_use_consumeable = Card.use_consumeable
 
----@diagnostic disable-next-line: duplicate-set-field
 function Card:use_consumeable(area, copier, ...)
     local seal_spectrals = {["Deja Vu"] = true, Medium = true, Talisman = true, Trance = true}
 
@@ -72,7 +68,6 @@ function Card:use_consumeable(area, copier, ...)
     }
 end
 
----@diagnostic disable-next-line: lowercase-global
 function copy_card(other, new_card, ...)
     local ret = orig_copy_card(other, new_card, ...)
 
@@ -89,7 +84,6 @@ end
 q(function()
     local orig_can_highlight_area = Bakery_API.can_highlight_area
 
-    ---@diagnostic disable-next-line: duplicate-set-field
     function Bakery_API.can_highlight_area(area, ...)
         return (area == G.consumeables and
                 SMODS.Mods.Roland.config.no_highlight_limit) or
@@ -99,7 +93,6 @@ end)
 
 local orig_create_card_for_shop = create_card_for_shop
 
----@diagnostic disable-next-line: lowercase-global
 function create_card_for_shop(...)
     ---@type Card
     local ret = orig_create_card_for_shop(...)

@@ -109,7 +109,6 @@ charm {
 
 local orig_showman = SMODS.showman
 
----@diagnostic disable-next-line: duplicate-set-field
 function SMODS.showman(...)
     return G.GAME.Bakery_charm == "BakeryCharm_Roland_flexible" or orig_showman(...)
 end
@@ -131,7 +130,6 @@ charm {
 
 local orig_init = Card.init
 
----@diagnostic disable-next-line: duplicate-set-field
 function Card:init(X, Y, W, H, card, center, params, ...)
     if G.GAME.Bakery_charm ~= "BakeryCharm_Roland_fat" or center.set ~= "Booster" then
         return orig_init(self, X, Y, W, H, card, center, params, ...)
@@ -172,7 +170,6 @@ charm {
 
 local orig_set_ability = Card.set_ability
 
----@diagnostic disable-next-line: duplicate-set-field
 function Card:set_ability(center, initial, delay_sprites, ...)
     local ret = orig_set_ability(self, center, initial, delay_sprites, ...)
 

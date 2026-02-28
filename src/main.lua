@@ -44,7 +44,6 @@ SMODS.Atlas {
     path = "icon.png",
 }
 
----@diagnostic disable-next-line: duplicate-set-field
 function SMODS.current_mod.config_tab()
     return {
         n = G.UIT.ROOT,

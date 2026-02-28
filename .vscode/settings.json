@@ -1,4 +1,8 @@
 {
+    "Lua.diagnostics.disable": [
+        "duplicate-set-field",
+        "lowercase-global",
+    ],
     "Lua.diagnostics.severity": {
         "ambiguity-1": "Error",
         "assign-type-mismatch": "Error",
@@ -18,14 +22,12 @@
         "duplicate-doc-field": "Error",
         "duplicate-doc-param": "Error",
         "duplicate-index": "Error",
-        "duplicate-set-field": "Error",
         "empty-block": "Error",
         "global-element": "Error",
         "global-in-nil-env": "Error",
         "incomplete-signature-doc": "Error",
         "inject-field": "Error",
         "invisible": "Error",
-        "lowercase-global": "Error",
         "missing-fields": "Error",
         "missing-global-doc": "Error",
         "missing-local-export-doc": "Error",
@@ -62,5 +64,5 @@
         "unused-label": "Error",
         "unused-local": "Error",
         "unused-vararg": "Error",
-    }
+    },
 }

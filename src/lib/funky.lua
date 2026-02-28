@@ -160,9 +160,7 @@ function f:concat(...)
     local fs = {...}
 
     for i = 1, #fs do
-        if not is_f(fs[i]) then ---@diagnostic disable-next-line: assign-type-mismatch
-            fs[i] = f.from(fs[i])
-        end
+        fs[i] = is_f(fs[i]) and fs[i] or f.from(fs[i])
     end
 
     return f.new(function()
