@@ -113,15 +113,19 @@ function create_card_for_shop(...)
     return ret
 end
 
-local hundred, orig_get_blind_amount = f().const(100), get_blind_amount
+local tens, orig_get_blind_amount = f().const(10.0001), get_blind_amount
 
 ---@type fun(x: table|number): number
 local function blind(offset)
     return (_G["to_number"] or f().id)(orig_get_blind_amount(offset))
 end
 
+local function no_harsh_ante_scaling()
+    return not _G["Talisman"] or not SMODS.Mods.Roland.config.harsh_ante_scaling
+end
+
 function get_blind_amount(ante, ...)
-    if ante <= 38 or not _G["Talisman"] or not SMODS.Mods.Roland.config.harsh_ante_scaling then
+    if ante <= 38 or no_harsh_ante_scaling() then
         return orig_get_blind_amount(ante, ...)
     end
 
@@ -129,25 +133,32 @@ function get_blind_amount(ante, ...)
         return 1 / 0
     end
 
-    --- @type { new: fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table }
-    local big = _G["Big"]
+    --- @type { new: fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table }, number
+    local big, bump = _G["Big"], 0.0001
 
     if ante >= 91 then
         local offset = ante - 91
-        local table = f(blind(offset)):map(hundred):table()
+        local table = f(blind(offset)):map(tens):table()
         return big:new(table)
     end
 
-    if ante >= 63 then
-        local offset = ante - 63
-        local table = f((offset / 4) + 1):map(hundred):concat {blind((offset % 4) * 8)}:table()
+    if ante >= 70 then
+        local offset = ante - 70
+        local table = f((offset / 3) + 1):map(tens):concat {blind((offset % 3) * 8) + bump}:table()
         return big:new(table)
     end
 
-    if ante >= 42 then
-        local offset = ante - 42
-        return big:new {blind((offset % 3) * 8), math.floor(offset / 3) + 2}
+    if ante >= 49 then
+        local offset = ante - 49
+        return big:new {blind((offset % 3) * 8) + bump, math.floor(offset / 3) + 2 + bump}
     end
 
-    return big:new {ante - 36, 2}
+    local scaling = {3, 4, 5, 6, 7, 8, 9, 10, 20, 50}
+    return big:new {scaling[ante - 38] + bump, 2 + bump}
+end
+
+local orig_number_format = number_format
+
+function number_format(...)
+    return no_harsh_ante_scaling() and orig_number_format(...) or orig_number_format(...):gsub("[.]0+", "")
 end
