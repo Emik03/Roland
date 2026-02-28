@@ -112,3 +112,42 @@ function create_card_for_shop(...)
     ret:set_seal(seal, true, true)
     return ret
 end
+
+local hundred, orig_get_blind_amount = f().const(100), get_blind_amount
+
+---@type fun(x: table|number): number
+local function blind(offset)
+    return (_G["to_number"] or f().id)(orig_get_blind_amount(offset))
+end
+
+function get_blind_amount(ante, ...)
+    if ante <= 38 or not _G["Talisman"] or not SMODS.Mods.Roland.config.harsh_ante_scaling then
+        return orig_get_blind_amount(ante, ...)
+    end
+
+    if ante >= 100 then
+        return 1 / 0
+    end
+
+    --- @type { new: fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table }
+    local big = _G["Big"]
+
+    if ante >= 91 then
+        local offset = ante - 91
+        local table = f(blind(offset)):map(hundred):table()
+        return big:new(table)
+    end
+
+    if ante >= 63 then
+        local offset = ante - 63
+        local table = f((offset / 4) + 1):map(hundred):concat {blind((offset % 4) * 8)}:table()
+        return big:new(table)
+    end
+
+    if ante >= 42 then
+        local offset = ante - 42
+        return big:new {blind((offset % 3) * 8), math.floor(offset / 3) + 2}
+    end
+
+    return big:new {ante - 36, 2}
+end
