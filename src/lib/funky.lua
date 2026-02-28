@@ -126,18 +126,17 @@ function f.from(tbl, fpairs, step)
     if tbl_type == "string" then
         return f.index(tbl)
     elseif tbl_type == "number" then
-        local ik = 0
-        local start = fpairs and tbl or 1
+        local ik, is, start = 0, step or 1, fpairs and tbl or 1
 
         local stop = not fpairs and tbl or
             (type(fpairs) == "number") and fpairs or error("Invalid argument type for 'fpairs': " .. type(fpairs))
 
-        if step and step ~= 0 and ((step < 0) == (start < stop)) then
+        if start ~= stop and (is == 0 or ((is < 0) == (start < stop))) then
             return none
         end
 
         return f.new(function()
-            local iv = start + ik * (step or 1)
+            local iv = start + ik * is
             ik = ik + 1
 
             if start > stop and iv >= stop or
@@ -166,6 +165,7 @@ end
 function f:concat(...)
     local fsi = 0
     local fs = {...}
+    local sum, last = 0, 0
 
     for i = 1, #fs do
         fs[i] = is_f(fs[i]) and fs[i] or f.from(fs[i])
@@ -174,22 +174,24 @@ function f:concat(...)
     return f.new(function()
         if fsi == 0 then
             local k, v = self:next()
+            last = type(k) == "number" and math.max(k, last) or last
 
             if k ~= nil then
                 return k, v
             end
 
-            fsi = 1
+            fsi, sum, last = 1, last, 0
         end
 
         while fsi <= #fs do
             local k, v = fs[fsi]:next()
+            last = type(k) == "number" and math.max(k, last) or last
 
             if k ~= nil then
-                return k, v
+                return type(k) == "number" and k + sum or k, v
             end
 
-            fsi = fsi + 1
+            fsi, sum, last = fsi + 1, sum + last, 0
         end
     end)
 end
