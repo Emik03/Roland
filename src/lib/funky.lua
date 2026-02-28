@@ -137,7 +137,7 @@ function f.from(tbl, fpairs, step)
         end
 
         return f.new(function()
-            local iv = tbl + ik * (step or 1)
+            local iv = start + ik * (step or 1)
             ik = ik + 1
 
             if start > stop and iv >= stop or
