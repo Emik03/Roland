@@ -282,7 +282,6 @@ blind {
 if cry_prob then
     local orig_cry_prob = cry_prob
 
-    ---@diagnostic disable-next-line: lowercase-global
     function cry_prob(...)
         return G.GAME.modifiers.Roland_improbable and 0 or orig_cry_prob(...)
     end
@@ -351,7 +350,6 @@ end
 
 local orig_draw = Card.draw
 
----@diagnostic disable-next-line: duplicate-set-field
 function Card:draw(...)
     if equinox() and
         not SMODS.Mods.Roland.config.equinox_assist and
@@ -365,7 +363,6 @@ end
 
 local orig_draw_self = UIElement.draw_self
 
----@diagnostic disable-next-line: duplicate-set-field
 function UIElement:draw_self(...)
     if equinox() and
         not self.config.button and
@@ -393,7 +390,10 @@ local venerable_visage = blind {
             end)
         end
 
-        if b.Roland_vitriol or not context.end_of_round or not next(G.deck.cards) or not next(G.hand.cards) then
+        if b.Roland_vitriol or
+            not context.end_of_round or
+            G.GAME.chips == G.GAME.blind.chips or
+            not (next(G.deck.cards) or next(G.hand.cards)) then
             return
         end
 
@@ -472,7 +472,6 @@ local venerable_visage = blind {
 
 local orig_game_draw = Game.draw
 
----@diagnostic disable-next-line: duplicate-set-field
 function Game.draw(...)
     orig_game_draw(...)
     local boss_colour = venerable_visage.boss_colour
