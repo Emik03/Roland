@@ -51,6 +51,14 @@ function f.tru()
     return true
 end
 
+--- Returns the arguments.
+---@generic T
+---@param ... T
+---@return T
+function f.id(...)
+    return ...
+end
+
 ---@generic T
 ---@param v T
 ---@return fun(): T
