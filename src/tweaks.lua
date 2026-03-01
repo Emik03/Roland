@@ -113,11 +113,12 @@ function create_card_for_shop(...)
     return ret
 end
 
-local tens, orig_get_blind_amount = f().const(10.0001), get_blind_amount
+local orig_get_blind_amount = get_blind_amount
 
----@type fun(x: table|number): number
-local function blind(offset)
-    return (_G["to_number"] or f().id)(orig_get_blind_amount(offset))
+---@param ante number
+---@return number
+local function blind(ante)
+    return ante == 39 and 1e294 or (_G["to_number"] or f().id)(orig_get_blind_amount(ante))
 end
 
 local function no_harsh_ante_scaling()
@@ -125,40 +126,21 @@ local function no_harsh_ante_scaling()
 end
 
 function get_blind_amount(ante, ...)
-    if ante <= 38 or no_harsh_ante_scaling() then
+    local loop = 39
+
+    if ante < loop or no_harsh_ante_scaling() then
         return orig_get_blind_amount(ante, ...)
     end
 
-    if ante >= 100 then
+    if (ante - 9) / 15 >= loop then
         return 1 / 0
     end
 
-    --- @type { new: fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table }, number
-    local big, bump = _G["Big"], 0.0001
+    --- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
+    local big, rem = _G["Big"], (ante % loop) + 1
 
-    if ante >= 91 then
-        local offset = ante - 91
-        local table = f(blind(offset)):map(tens):table()
-        return big:new(table)
-    end
-
-    if ante >= 70 then
-        local offset = ante - 70
-        local table = f((offset / 3) + 1):map(tens):concat {blind((offset % 3) * 8) + bump}:table()
-        return big:new(table)
-    end
-
-    if ante >= 49 then
-        local offset = ante - 49
-        return big:new {blind((offset % 3) * 8) + bump, math.floor(offset / 3) + 2 + bump}
-    end
-
-    local scaling = {3, 4, 5, 6, 7, 8, 9, 10, 20, 50}
-    return big:new {scaling[ante - 38] + bump, 2 + bump}
-end
-
-local orig_number_format = number_format
-
-function number_format(...)
-    return no_harsh_ante_scaling() and orig_number_format(...) or orig_number_format(...):gsub("[.]0+", "")
+    return ante / 15 >= loop and big:new(f(blind(ante - (loop * 15))):map(f().const(10)):table()) or
+        (ante / 9 >= loop and big:new(f(ante / loop - 8):map(f().const(10)):concat {blind(rem)}:table()) or
+            (ante / 2 >= loop and big:new {blind(rem), ante / loop} or
+                (big.constants and big.constants.TEN or big:new {10}):pow(blind(rem))))
 end

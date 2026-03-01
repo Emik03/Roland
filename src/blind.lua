@@ -378,6 +378,7 @@ local venerable_visage = blind {
     boss = {showdown = true},
     boss_colour = HEX "f6f6f2ff",
     pronouns = "any_all",
+    dollars = 8,
     calculate = function(self, b, context)
         if b.disabled then
             return

@@ -13,7 +13,7 @@ end
 
 q(function()
     ---@type table<string, {name: string, fg: table, bg: table}>
-    local contributors = Bakery_API.contributors
+    local contributors, mods = Bakery_API.contributors, SMODS.Mods
 
     contributors.Roland_aster = {
         name = "asterSSH",
@@ -26,6 +26,10 @@ q(function()
         fg = HEX "f8f8f2ff",
         bg = HEX "ff79c6ff",
     }
+
+    if mods.DebugPlus and mods.Roland.config.import_funky then
+        _G.f, _G.q, _G.u = unpack(qol)
+    end
 end, true)
 
 local function toggle(id)
@@ -48,41 +52,22 @@ function SMODS.current_mod.config_tab()
     return {
         n = G.UIT.ROOT,
         config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.BLACK},
-        nodes = {
-            {
-                n = G.UIT.C,
-                config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.CLEAR},
-                nodes = {
-                    toggle "illusion_seal",
-                    toggle "no_wild_debuff",
-                    toggle "no_highlight_limit",
-                    _G["Talisman"] and toggle "harsh_ante_scaling",
-                    toggle "fusable_escapey",
-                    toggle "equinox_assist",
-                },
+        nodes = {{
+            n = G.UIT.C,
+            config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.CLEAR},
+            nodes = {
+                toggle "illusion_seal",
+                toggle "no_wild_debuff",
+                toggle "no_highlight_limit",
+                _G["Talisman"] and toggle "harsh_ante_scaling",
+                toggle "fusable_escapey",
+                toggle "equinox_assist",
+                SMODS.Mods.DebugPlus and toggle "import_funky",
             },
-            SMODS.Mods.DebugPlus and {
-                n = G.UIT.C,
-                config = {minw = 2, minh = 2, align = "tl", padding = 0.2, colour = G.C.CLEAR},
-                nodes = {
-                    UIBox_button {
-                        label = {localize {type = "variable", key = "b_Roland_debug_export"}},
-                        func = G.P_CENTERS.j_Roland_escapey.debug_export,
-                        button = "Roland_debug_export",
-                        colour = G.C.MULT,
-                        col = true,
-                        scale = 5,
-                    },
-                },
-            }},
+        }},
     }
 end
 
 function SMODS.current_mod.optional_features()
     return {cardareas = {deck = true, unscored = true}}
-end
-
-function G.FUNCS.Roland_debug_export(_, tbl)
-    local to = tbl or _G
-    to.f, to.q, to.u = unpack(qol)
 end
