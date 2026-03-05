@@ -5,10 +5,14 @@ SMODS.Shader {
     path = "frozen.fs",
 }
 
-SMODS.Sound {
-    key = "frozen",
-    path = "frozen.ogg",
-}
+---@param suffix string
+local function frozen_sound(suffix)
+    local key = "frozen" .. suffix
+    return SMODS.Sound {key = key, path = key .. ".ogg"}
+end
+
+frozen_sound "_click"
+local frozen_sounds = f(4):map(frozen_sound):map("key"):table()
 
 local needs_chip_mult_override = {
     Bull = true,
@@ -71,7 +75,7 @@ SMODS.Edition {
     key = "frozen",
     shader = "frozen",
     pools = {Joker = true},
-    sound = {sound = "Roland_frozen", per = 1.6, vol = 0.8},
+    sound = {sound = "Roland_frozen", per = 1, vol = 0.8},
     weight = 8,
     extra_cost = 4,
     in_shop = true,
@@ -80,13 +84,37 @@ SMODS.Edition {
         freeze(card)
     end,
     on_remove = function(card)
-        freeze(card)
         card.Roland_frozen_ability = nil
     end,
     get_weight = function(self)
         return G.GAME.edition_rate * self.weight
     end,
 }
+
+local orig_play_sound = play_sound
+
+function play_sound(sound, pitch, ...)
+    if sound ~= "Roland_frozen" and sound ~= "Roland_frozen_click" then
+        return orig_play_sound(sound, pitch, ...)
+    end
+
+    local overriden_sound = sound == "Roland_frozen" and
+        pseudorandom_element(frozen_sounds, pseudoseed "Roland_frozen") or
+        sound
+
+    local overriden_pitch = pseudorandom(pseudoseed "Roland_frozen_pitch") / 2 + 1.3
+    return orig_play_sound(overriden_sound, overriden_pitch, ...)
+end
+
+local orig_click = Card.click
+
+function Card:click(...)
+    if self.edition and self.edition.Roland_frozen then
+        play_sound("Roland_frozen_click", nil, 0.6)
+    end
+
+    return orig_click(self, ...)
+end
 
 local orig_calculate_joker = Card.calculate_joker
 

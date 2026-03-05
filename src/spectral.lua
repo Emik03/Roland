@@ -54,7 +54,6 @@ spectral {
                 delay = 0.1,
                 func = function()
                     v:set_edition {negative = true}
-                    v:juice_up(0.5, 0.5)
                 end,
             }
         end)
@@ -77,7 +76,9 @@ spectral {
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function(_, card)
-        return u() and card.ability.extra.amount == #G.jokers.highlighted + #Bakery_API.get_highlighted()
+        return u() and f(G.jokers.highlighted):concat(Bakery_API.get_highlighted()):count(function(v)
+            return not v.edition
+        end) == card.ability.extra.amount
     end,
     use = function()
         f(G.jokers.highlighted):concat(Bakery_API.get_highlighted()):each(function(v)
@@ -85,7 +86,6 @@ spectral {
                 delay = 0.1,
                 func = function()
                     v:set_edition {Roland_frozen = true}
-                    v:juice_up(1, 1)
                 end,
             }
         end)
