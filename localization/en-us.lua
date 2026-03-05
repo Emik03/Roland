@@ -109,6 +109,12 @@ return {
                 },
             },
         },
+        Edition = {
+            e_Roland_frozen = {
+                name = "Frozen",
+                text = {"Values on", "this card do", "not change"},
+            },
+        },
         Enhanced = {
             m_wild = {
                 name = "Wild Card",
@@ -337,6 +343,14 @@ return {
                     "cards in {C:hands}hand",
                 },
             },
+            c_Roland_coolheaded = {
+                name = "Coolheaded",
+                text = {
+                    "Add {C:dark_edition}Frozen {}to {C:attention}#1#",
+                    "selected {C:attention}playing",
+                    "{C:attention}card {}or {C:attention}Joker",
+                },
+            },
             c_Roland_mirror = {
                 name = "Mirror",
                 text = {
@@ -386,6 +400,7 @@ return {
             b_Roland_of = " of ",
         },
         labels = {
+            Roland_frozen = "Frozen",
             roland_glass_seal = "Glass Seal",
         },
         v_text = {

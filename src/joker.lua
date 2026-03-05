@@ -585,11 +585,21 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
-    loc_vars = function(self, _, _)
-        return {vars = {self.xmult()}}
+    loc_vars = function(self, card, _)
+        return {vars = {self:xmult_frozen(card)}}
     end,
     calculate = function(self, card, context)
-        return (context.joker_main or context.forcetrigger) and {card = card, xmult = self.xmult()} or nil
+        return (context.joker_main or context.forcetrigger) and {card = card, xmult = self:xmult_frozen(card)} or nil
+    end,
+    xmult_frozen = function(self, card)
+        if not card.edition or not card.edition.Roland_frozen then
+            return self.xmult()
+        end
+
+        local ability = card.Roland_frozen_ability or {}
+        card.Roland_frozen_ability = ability
+        ability.Roland_frozen_xmult = ability.Roland_frozen_xmult or self.xmult()
+        return ability.Roland_frozen_xmult
     end,
     xmult = function()
         local function mult(id)
