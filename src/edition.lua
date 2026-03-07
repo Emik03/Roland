@@ -102,18 +102,21 @@ function play_sound(sound, pitch, ...)
         pseudorandom_element(frozen_sounds, pseudoseed "Roland_frozen") or
         sound
 
-    local overriden_pitch = pseudorandom(pseudoseed "Roland_frozen_pitch") / 2 + 1.3
-    return orig_play_sound(overriden_sound, overriden_pitch, ...)
+    local added_pitch = pseudorandom(pseudoseed "Roland_frozen_pitch") / 4 + 0.8
+    return orig_play_sound(overriden_sound, pitch + added_pitch, ...)
 end
 
 local orig_click = Card.click
 
 function Card:click(...)
-    if self.edition and self.edition.Roland_frozen then
-        play_sound("Roland_frozen_click", nil, 0.6)
+    local highlight = self.highlighted
+    local ret = orig_click(self, ...)
+
+    if self.edition and self.edition.Roland_frozen and highlight ~= self.highlighted then
+        play_sound("Roland_frozen_click", highlight and 0 or 0.5, 0.6)
     end
 
-    return orig_click(self, ...)
+    return ret
 end
 
 local orig_calculate_joker = Card.calculate_joker

@@ -60,6 +60,10 @@ return {
             },
         },
         Blind = {
+            bl_Roland_blizzard = {
+                name = "The Blizzard",
+                text = {"All cards", "are Frozen"},
+            },
             bl_Roland_divide = {
                 name = "The Great Divide",
                 text = {"Half of the deck", "is discarded"},

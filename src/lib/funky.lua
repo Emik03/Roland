@@ -220,7 +220,7 @@ end
 ---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
 ---@return F|{ [K]: U }
 ---@nodiscard
----@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: U }
+---@overload fun(self: F|{ [K]: V }, func: string, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)): F|{ [K]: U }
 function f:flatmap(func, fpairs)
     -- local i = 0
     local vt, vk, vv, vp
@@ -267,10 +267,11 @@ end
 ---@generic K, V
 ---@param self F|{ [K]: V }
 ---@param func F|fun(v: V, k: K): boolean
+---@param is? any
 ---@return F|{ [K]: V }
 ---@nodiscard
----@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: V }
-function f:where(func)
+---@overload fun(self: F|{ [K]: V }, func: string, is?: any): F|{ [K]: V }
+function f:where(func, is)
     func = type(func) == "string" and f.index(func) or func
 
     return f.new(function()
@@ -283,7 +284,15 @@ function f:where(func)
                 return
             end
 
-            if func(v, k) then
+            if is == nil then
+                if func(v, k) then
+                    return k, v
+                end
+            elseif is == false then
+                if not func(v, k) then
+                    return k, v
+                end
+            elseif is == func(v, k) then
                 return k, v
             end
         end

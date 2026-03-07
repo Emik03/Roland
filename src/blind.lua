@@ -61,6 +61,20 @@ local function has_enhancement(card)
     return not not (e and next(e))
 end
 
+local function set_freeze(state)
+    ---@param card Card|{ Roland_blizzard: true|nil }
+    return function(card)
+        card.Roland_blizzard = state
+
+        q {
+            delay = 0.1,
+            func = function()
+                card:set_edition(state and {Roland_frozen = true})
+            end,
+        }
+    end
+end
+
 local function sort_by_enhancement(v1, v2)
     return has_enhancement(v1) and not has_enhancement(v2)
 end
@@ -207,6 +221,29 @@ blind {
         b:wiggle()
         b.triggered = true
         playing_card_joker_effects(cards_added)
+    end,
+}
+
+blind {
+    key = "blizzard",
+    boss = {min = 4},
+    boss_colour = HEX "102a41ff",
+    pronouns = "it_its",
+    defeat = function(self)
+        self.cards():where("Roland_blizzard"):each(set_freeze())
+    end,
+    disable = function(self)
+        self:defeat()
+    end,
+    calculate = function(self, b)
+        return not b.disabled and self.cards():where(function(v)
+            return not v.Roland_blizzard and not v.edition and v.facing == "front"
+        end):each(set_freeze(true)) or nil
+    end,
+    cards = function()
+        return f(G):where(function(v)
+            return type(v) == "table" and type(v.cards) == "table"
+        end):flatmap("cards", ipairs)
     end,
 }
 
