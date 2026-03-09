@@ -103,32 +103,33 @@ end
 
 --- Creates an enumeration.
 ---@generic K, V
----@param tbl table<K, V>
+---@param iter table<K, V>
 ---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K?, V?)
 ---@param step? nil
 ---@return F | { [K]: V }
----@overload fun(tbl: number, fpairs?: number, step?: number): F | { [number]: number }
----@overload fun(tbl: string): (fun(table: { [string]: V }): V)
----@overload fun(tbl: false): fun(): false
----@overload fun(tbl: true): fun(): true
----@overload fun(tbl: nil): F
-function f.from(tbl, fpairs, step)
-    if tbl == true then
+---@overload fun(iter: number, fpairs?: number, step?: number): F | { [number]: number }
+---@overload fun(iter: string): (fun(table: { [string]: V }): V)
+---@overload fun(iter: fun(): K, V): F | { [K]: V }
+---@overload fun(iter: false): fun(): false
+---@overload fun(iter: true): fun(): true
+---@overload fun(iter: nil): F
+function f.from(iter, fpairs, step)
+    if iter == true then
         return f.tru
-    elseif tbl == false then
+    elseif iter == false then
         return f.fals
-    elseif tbl == nil then
+    elseif iter == nil then
         return none
     end
 
-    local tbl_type = type(tbl)
+    local t = type(iter)
 
-    if tbl_type == "string" then
-        return f.index(tbl)
-    elseif tbl_type == "number" then
-        local ik, is, start = 0, step or 1, fpairs and tbl or 1
+    if t == "string" then
+        return f.index(iter)
+    elseif t == "number" then
+        local ik, is, start = 0, step or 1, fpairs and iter or 1
 
-        local stop = not fpairs and tbl or
+        local stop = not fpairs and iter or
             (type(fpairs) == "number") and fpairs or error("Invalid argument type for 'fpairs': " .. type(fpairs))
 
         if start ~= stop and (is == 0 or ((is < 0) == (start < stop))) then
@@ -145,16 +146,24 @@ function f.from(tbl, fpairs, step)
                 return ik, iv
             end
         end)
-    elseif tbl_type ~= "table" then
-        error("Invalid argument type for 'tbl': " .. type(tbl))
+    elseif t == "function" then
+        return f.new(iter)
+    elseif t == "thread" then
+        return f.new(function()
+            local s, k, v = coroutine.resume(iter)
+
+            if s then
+                return k, v
+            end
+        end)
+    else
+        local next, context, k, v = autopairs(iter, fpairs)
+
+        return f.new(function()
+            k, v = next(context, k)
+            return k, v
+        end)
     end
-
-    local next, context, k, v = autopairs(tbl, fpairs)
-
-    return f.new(function()
-        k, v = next(context, k)
-        return k, v
-    end)
 end
 
 ---@generic K, V
