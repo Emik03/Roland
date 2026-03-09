@@ -62,14 +62,20 @@ local function has_enhancement(card)
 end
 
 local function set_freeze(state)
+    local function copy(x)
+        return type(x) == "table" and f(x):map(copy):table() or x
+    end
+
     ---@param card Card|{ Roland_blizzard: true|nil }
     return function(card)
-        card.Roland_blizzard = state
+        local last_edition = card.Roland_blizzard
+        card.Roland_blizzard = state and (copy(card.edition) or true) or nil
 
         q {
             delay = 0.1,
             func = function()
-                card:set_edition(state and {Roland_frozen = true})
+                local edition = state and {Roland_frozen = true} or last_edition or card.Roland_blizzard
+                card:set_edition(edition ~= true and edition or nil)
             end,
         }
     end
@@ -226,18 +232,19 @@ blind {
 
 blind {
     key = "blizzard",
-    boss = {min = 4},
+    boss = {min = 3},
     boss_colour = HEX "102a41ff",
     pronouns = "it_its",
     defeat = function(self)
-        self.cards():where("Roland_blizzard"):each(set_freeze())
+        self.cards():each(set_freeze())
+        G.GAME.blind.disabled = true
     end,
     disable = function(self)
         self:defeat()
     end,
     calculate = function(self, b)
         return not b.disabled and self.cards():where(function(v)
-            return not v.Roland_blizzard and not v.edition and v.facing == "front"
+            return not v.Roland_blizzard and v.facing == "front"
         end):each(set_freeze(true)) or nil
     end,
     cards = function()
@@ -304,7 +311,7 @@ blind {
 
 blind {
     key = "improbable",
-    boss = {min = 4},
+    boss = {min = 3},
     boss_colour = HEX "009966ff",
     pronouns = "it_its",
     mult = 2,
