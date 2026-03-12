@@ -123,9 +123,15 @@ local orig_calculate_joker = Card.calculate_joker
 
 ---@param self Card|{Roland_frozen_ability?: table}
 function Card:calculate_joker(context, ...)
+    local is_frozen = self.edition and self.edition.Roland_frozen
+
+    if is_frozen and self.ability.name == "Turtle Bean" then
+        return
+    end
+
     local ret = {orig_calculate_joker(self, context, ...)}
 
-    if not self.edition or not self.edition.Roland_frozen or not ret[1] then
+    if not is_frozen or not ret[1] then
         return unpack(ret)
     end
 
