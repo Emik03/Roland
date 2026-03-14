@@ -155,7 +155,7 @@ function Card:calculate_joker(context, ...)
             vars = {
                 ability.Roland_frozen_mult_mod or
                 ability.Roland_frozen_chip_mod or
-                ability.Roland.frozen_xmult,
+                ability.Roland_frozen_xmult,
                 (ability.Roland_frozen_mult_mod and ability.Roland_frozen_chip_mod) and
                 ability.Roland_frozen_chip_mod or nil,
             },
