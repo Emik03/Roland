@@ -5,7 +5,7 @@ f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "bac
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
 end)
 
-if Balatest then
+if _G["Balatest"] then
     f {"joker", "blind", "spectral"}:each(function(v)
         assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
     end)
