@@ -126,6 +126,14 @@ return {
             },
         },
         Joker = {
+            j_Roland_basket = {
+                name = "Basket",
+                text = {
+                    "Sell this Joker to",
+                    "create {C:dark_edition}Negative {}copies",
+                    "of every consumable",
+                },
+            },
             j_Roland_bulldozer = {
                 name = "Bulldozer",
                 text = {
@@ -167,6 +175,14 @@ return {
                         "I can't keep looking at this!",
                         "Let me go hide in this corner... Okay?",
                     },
+                },
+            },
+            j_Roland_hardboiled = {
+                name = "Hard-Boiled",
+                text = {
+                    "Sell this Joker to",
+                    "turn all cards in",
+                    "hand {C:dark_edition}Frozen",
                 },
             },
             j_Roland_jokersr = {

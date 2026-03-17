@@ -465,6 +465,53 @@ joker {
 }
 
 joker {
+    key = "hardboiled",
+    pronouns = "they_them",
+    cost = 5,
+    rarity = 2,
+    eternal_compat = false,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+    end,
+    calculate = function(_, _, context)
+        return (context.selling_self or context.forcetrigger) and f(G.hand.cards):each(function(v)
+            q {
+                delay = 0.1,
+                func = function()
+                    v:set_edition {Roland_frozen = true}
+                end,
+            }
+        end) or nil
+    end,
+}
+
+joker {
+    key = "basket",
+    pronouns = "they_them",
+    cost = 8,
+    rarity = 3,
+    eternal_compat = false,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, negative)
+    end,
+    calculate = function(_, _, context)
+        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):each(function(v)
+            q {
+                delay = 1,
+                func = function()
+                    play_sound "timpani"
+                    SMODS.add_card {edition = "e_negative", key = v.config.center.key}
+                end,
+            }
+        end) or nil
+    end,
+}
+
+joker {
     key = "sapling",
     pronouns = "they_them",
     cost = 4,
