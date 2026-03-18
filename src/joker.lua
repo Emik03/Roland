@@ -31,8 +31,14 @@ local function destructible(card)
     return not card.highlighted and not (card.ability or {}).eternal
 end
 
+---@param card Card
 local function is_carbon(card)
-    return card.edition and card.edition.key == "e_Bakery_Carbon"
+    return (card:get_edition() or {}).e_Bakery_Carbon
+end
+
+---@param card Card
+local function is_frozen(card)
+    return (card:get_edition() or {}).e_Roland_frozen
 end
 
 local function is_mergeable_with(x)
@@ -408,8 +414,9 @@ joker {
 }
 
 joker {
-    key = "sunny", -- Cracked egg
+    key = "sunny",
     pronouns = "they_them",
+    artist = "char",
     cost = 2,
     rarity = 1,
     eternal_compat = false,
@@ -516,6 +523,7 @@ joker {
 joker {
     key = "sapling",
     pronouns = "they_them",
+    artist = "char",
     cost = 4,
     rarity = 1,
     config = {extra = {mult = 15, suits = 3}},
@@ -641,7 +649,7 @@ joker {
         return (context.joker_main or context.forcetrigger) and {card = card, xmult = self:xmult_frozen(card)} or nil
     end,
     xmult_frozen = function(self, card)
-        if not card.edition or not card.edition.Roland_frozen then
+        if not is_frozen(card) then
             return self.xmult()
         end
 
@@ -742,5 +750,32 @@ joker {
             extra.probability = extra.probability * extra.probability_mult
             return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
         end
+    end,
+}
+
+joker {
+    key = "arctic",
+    pronouns = "it_its",
+    cost = 10,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+    end,
+    calculate = function(_, card, context)
+        local playing_card = context.repetition and is_frozen(context.other_card) and {repetitions = 1} or nil
+
+        return SMODS.merge_effects(
+            f(G.jokers.cards):where(is_frozen):map(function(v)
+                return SMODS.blueprint_effect(card, v, context)
+            end):concat(playing_card):where(function(v)
+                return type(v) == "table"
+            end):map(function(v)
+                v.colour = G.C.BLACK
+                return v
+            end):table()
+        )
     end,
 }

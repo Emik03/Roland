@@ -126,6 +126,10 @@ return {
             },
         },
         Joker = {
+            j_Roland_arctic = {
+                name = "Arctic Circle",
+                text = {"Retrigger all", "{C:dark_edition}Frozen {}cards"},
+            },
             j_Roland_basket = {
                 name = "Basket",
                 text = {
