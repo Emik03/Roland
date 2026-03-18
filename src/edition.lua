@@ -74,7 +74,6 @@ end
 SMODS.Edition {
     key = "frozen",
     shader = "frozen",
-    pools = {Joker = true},
     sound = {sound = "Roland_frozen", per = 1, vol = 0.8},
     weight = 8,
     extra_cost = 4,
