@@ -326,6 +326,7 @@ joker {
 joker {
     key = "domino",
     pronouns = "it_its",
+    artist = "char",
     config = {extra = {mult_gain = 4, hand_name = "Four of a Kind", mult = 0}},
     cost = 4,
     rarity = 2,
@@ -355,6 +356,7 @@ joker {
 joker {
     key = "trimino",
     pronouns = "it_its",
+    artist = "char",
     config = {extra = {times = 4, hand_name = "Four of a Kind"}},
     cost = 8,
     rarity = 3,
