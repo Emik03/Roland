@@ -604,7 +604,7 @@ function SMODS.get_enhancements(card, ...)
     end
 
     local ret = orig_get_enhancements(card, ...) or {}
-    table.insert(ret, "m_wild")
+    ret.m_wild = true
     return ret
 end
 

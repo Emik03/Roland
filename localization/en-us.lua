@@ -260,7 +260,7 @@ return {
             },
             j_Roland_suitable = {
                 name = "Suitable",
-                text = {"{V:1}#1# {}are {C:attention}Wild", "Suit changes every round"},
+                text = {"{V:1}#1# {}are {C:attention}Wild", "Suit changes", "every round"},
             },
             j_Roland_sunny = {
                 name = "Sunny Side Up",

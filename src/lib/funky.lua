@@ -344,6 +344,20 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
+---@return F|{ [V]: K }
+---@nodiscard
+function f:swap()
+    return f.new(function()
+        local k, v = self:next()
+
+        if k ~= nil then
+            return v, k
+        end
+    end)
+end
+
+---@generic K, V
+---@param self F|{ [K]: V }
 ---@param skip? integer
 ---@param take? integer
 ---@return F|{ [K]: V }

@@ -16,7 +16,6 @@ local frozen_sounds = f(4):map(frozen_sound):map("key"):table()
 
 local needs_chip_mult_override = {
     Bull = true,
-    Estate = true,
     Erosion = true,
     Misprint = true,
     TierList = true,
@@ -36,6 +35,7 @@ local current_round_overrides = {
     Obelisk = "most_played_poker_hand",
     ["Ancient Joker"] = "ancient_card",
     Wherewolf = "Bakery_Wherewolf_card",
+    j_Roland_suitable = "Roland_suitable",
 }
 
 SMODS.current_mod.frozen_chip_mult = needs_chip_mult_override
@@ -83,6 +83,7 @@ SMODS.Edition {
         freeze(card)
     end,
     on_remove = function(card)
+        card.Roland_frozen_estate = nil
         card.Roland_frozen_ability = nil
     end,
     get_weight = function(self)
@@ -155,8 +156,6 @@ function Card:calculate_joker(context, ...)
                 ability.Roland_frozen_mult_mod or
                 ability.Roland_frozen_chip_mod or
                 ability.Roland_frozen_xmult,
-                (ability.Roland_frozen_mult_mod and ability.Roland_frozen_chip_mod) and
-                ability.Roland_frozen_chip_mod or nil,
             },
         },
     }
@@ -181,6 +180,57 @@ function Card:calculate_dollar_bonus(...)
 
     return orig_calculate_dollar_bonus(self, ...)
 end
+
+q(function()
+    local estate = G.P_CENTERS.j_Bakery_Estate
+
+    if not estate then
+        return
+    end
+
+    local function estate_pos(card)
+        if card.area ~= G.jokers and card.area.config.type ~= "title" then
+            return 1
+        end
+
+        card.Roland_frozen_estate = card.Roland_frozen_estate and
+            card.Roland_frozen_estate or
+            (f(card.area.cards):swap():any(function(_, k)
+                return k == card
+            end) or 1)
+
+        return card.Roland_frozen_estate
+    end
+
+    local orig_calculate = estate.calculate
+
+    ---@param card Card|{ Roland_frozen_ability: table, Roland_frozen_estate: integer }
+    function estate:calculate(card, context, ...)
+        if not card or not card.edition or not card.edition.Roland_frozen then
+            return orig_calculate(self, card, context, ...)
+        end
+
+        if not context.joker_main then
+            return
+        end
+
+        local joker_count = estate_pos(card)
+        local extra = card.ability.extra or {}
+        return {chips = extra.chips * joker_count, mult = extra.mult * joker_count}
+    end
+
+    local orig_loc_vars = estate.loc_vars
+
+    function estate:loc_vars(info_queue, card, ...)
+        if not card or not card.edition or not card.edition.Roland_frozen then
+            return orig_loc_vars(self, info_queue, card, ...)
+        end
+
+        local joker_count = estate_pos(card)
+        local extra = card.ability.extra or {}
+        return {vars = {extra.chips * joker_count, extra.mult * joker_count}}
+    end
+end)
 
 q(function()
     local proxy = G.P_CENTERS.j_Bakery_Proxy
