@@ -605,6 +605,7 @@ end
 joker {
     key = "misfortune",
     pronouns = "she_they",
+    artist = "char",
     cost = 6,
     rarity = 2,
     eternal_compat = true,
