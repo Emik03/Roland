@@ -558,8 +558,8 @@ joker {
     key = "yard",
     pronouns = "he_him",
     config = {extra = {money = 2}},
-    cost = 6,
-    rarity = 2,
+    cost = 4,
+    rarity = 1,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
@@ -580,9 +580,10 @@ joker {
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
-    loc_vars = function(_, _)
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_CENTERS.m_wild)
         local suit = (G.GAME.current_round.Roland_suitable or {}).suit or "Spades"
-        return {vars = {localize(suit, "suits_singular"), colours = {G.C.SUITS[suit]}}}
+        return {vars = {localize(suit, "suits_plural"), colours = {G.C.SUITS[suit]}}}
     end,
 }
 
@@ -594,12 +595,17 @@ function SMODS.current_mod.reset_game_globals()
     suitable.suit = card and card.base.suit or suitable.suit
 end
 
-local orig_has_any_suit = SMODS.has_any_suit
+local orig_get_enhancements = SMODS.get_enhancements
 
-function SMODS.has_any_suit(card, ...)
-    return next(SMODS.find_card "j_Roland_suitable") and
-        card.base.suit == G.GAME.current_round.Roland_suitable.suit or
-        orig_has_any_suit(card, ...)
+function SMODS.get_enhancements(card, ...)
+    if not next(SMODS.find_card "j_Roland_suitable") or
+        card.base.suit ~= G.GAME.current_round.Roland_suitable.suit then
+        return orig_get_enhancements(card, ...)
+    end
+
+    local ret = orig_get_enhancements(card, ...) or {}
+    table.insert(ret, "m_wild")
+    return ret
 end
 
 joker {

@@ -258,6 +258,10 @@ return {
                     "least {C:attention}#2# suits",
                 },
             },
+            j_Roland_suitable = {
+                name = "Suitable",
+                text = {"{V:1}#1# {}are {C:attention}Wild", "Suit changes every round"},
+            },
             j_Roland_sunny = {
                 name = "Sunny Side Up",
                 text = {
