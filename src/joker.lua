@@ -33,12 +33,12 @@ end
 
 ---@param card Card
 local function is_carbon(card)
-    return (card:get_edition() or {}).e_Bakery_Carbon
+    return card.edition and card.edition.key == "e_Bakery_Carbon"
 end
 
 ---@param card Card
 local function is_frozen(card)
-    return (card:get_edition() or {}).e_Roland_frozen
+    return card.edition and card.edition.key == "e_Roland_frozen"
 end
 
 local function is_mergeable_with(x)
@@ -248,6 +248,7 @@ joker {
 joker {
     key = "mrsbones",
     pronouns = "she_her",
+    artist = "char",
     config = {extra = {xmult = 4, requirement = 4}},
     cost = G.P_CENTERS.j_mr_bones.cost - 1,
     rarity = 2,
@@ -758,6 +759,7 @@ joker {
     pronouns = "it_its",
     cost = 10,
     rarity = 3,
+    config = {extra = {repetitions = 1}},
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
@@ -765,12 +767,10 @@ joker {
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
     end,
     calculate = function(_, card, context)
-        local playing_card = context.repetition and is_frozen(context.other_card) and {repetitions = 1} or nil
-
-        return SMODS.merge_effects(
+        return (context.repetition and is_frozen(context.other_card)) and {repetitions = 1} or SMODS.merge_effects(
             f(G.jokers.cards):where(is_frozen):map(function(v)
-                return SMODS.blueprint_effect(card, v, context)
-            end):concat(playing_card):where(function(v)
+                return SMODS.blueprint_effect(card, v, context) or true
+            end):where(function(v)
                 return type(v) == "table"
             end):map(function(v)
                 v.colour = G.C.BLACK
