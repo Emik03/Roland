@@ -573,6 +573,36 @@ joker {
 }
 
 joker {
+    key = "suitable",
+    pronouns = "she_they",
+    cost = 4,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, _)
+        local suit = (G.GAME.current_round.Roland_suitable or {}).suit or "Spades"
+        return {vars = {localize(suit, "suits_singular"), colours = {G.C.SUITS[suit]}}}
+    end,
+}
+
+function SMODS.current_mod.reset_game_globals()
+    local suitable = {suit = "Spades"}
+    G.GAME.current_round.Roland_suitable = suitable
+    local suits = f(G.playing_cards):where(SMODS.has_no_suit, false):table()
+    local card = pseudorandom_element(suits, "Roland_suitable" .. G.GAME.round_resets.ante)
+    suitable.suit = card and card.base.suit or suitable.suit
+end
+
+local orig_has_any_suit = SMODS.has_any_suit
+
+function SMODS.has_any_suit(card, ...)
+    return next(SMODS.find_card "j_Roland_suitable") and
+        card.base.suit == G.GAME.current_round.Roland_suitable.suit or
+        orig_has_any_suit(card, ...)
+end
+
+joker {
     key = "misfortune",
     pronouns = "she_they",
     cost = 6,
