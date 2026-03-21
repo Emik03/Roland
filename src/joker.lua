@@ -588,8 +588,16 @@ joker {
 }
 
 function SMODS.current_mod.reset_game_globals()
+    local immutable = f(SMODS.find_card "j_Roland_suitable"):any(is_frozen)
     local suitable = {suit = "Spades"}
-    G.GAME.current_round.Roland_suitable = suitable
+
+    G.GAME.current_round.Roland_suitable = immutable and
+        G.GAME.current_round.Roland_suitable or suitable
+
+    if immutable then
+        return
+    end
+
     local suits = f(G.playing_cards):where(SMODS.has_no_suit, false):table()
     local card = pseudorandom_element(suits, "Roland_suitable" .. G.GAME.round_resets.ante)
     suitable.suit = card and card.base.suit or suitable.suit
@@ -680,7 +688,7 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
-    loc_vars = function(self, card, _)
+    loc_vars = function(self, _, card)
         return {vars = {self:xmult_frozen(card)}}
     end,
     calculate = function(self, card, context)

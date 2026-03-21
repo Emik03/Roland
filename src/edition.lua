@@ -83,6 +83,7 @@ SMODS.Edition {
         freeze(card)
     end,
     on_remove = function(card)
+        card.Roland_frozen_proxy = nil
         card.Roland_frozen_estate = nil
         card.Roland_frozen_ability = nil
     end,
@@ -124,6 +125,11 @@ local orig_calculate_joker = Card.calculate_joker
 ---@param self Card|{Roland_frozen_ability?: table}
 function Card:calculate_joker(context, ...)
     local is_frozen = self.edition and self.edition.Roland_frozen
+
+    if is_frozen and self.ability.name == "Loyalty Card" then
+        return (context.joker_main and self.ability.loyalty_remaining == 0) and
+            {xmult = self.ability.extra.Xmult} or nil
+    end
 
     if is_frozen and self.ability.name == "Turtle Bean" then
         return
@@ -188,6 +194,7 @@ q(function()
         return
     end
 
+    ---@param card Card|{ Roland_frozen_estate: integer }
     local function estate_pos(card)
         if card.area ~= G.jokers and card.area.config.type ~= "title" then
             return 1
@@ -204,7 +211,6 @@ q(function()
 
     local orig_calculate = estate.calculate
 
-    ---@param card Card|{ Roland_frozen_ability: table, Roland_frozen_estate: integer }
     function estate:calculate(card, context, ...)
         if not card or not card.edition or not card.edition.Roland_frozen then
             return orig_calculate(self, card, context, ...)
@@ -239,25 +245,25 @@ q(function()
         return
     end
 
+    ---@param card Card|{ Roland_frozen_proxy: number }
     local function get_proxied_joker(card)
         if not G.jokers or not G.jokers.cards then
             return
         end
 
-        local ability = freeze(card)
+        card.Roland_frozen_proxy = card.Roland_frozen_proxy or
+            (Bakery_API.get_proxied_joker() or card).unique_val
 
         ---@param v Card
         local function eq(v)
-            return v.unique_val == ability.Roland_frozen_proxy
+            return v.unique_val == card.Roland_frozen_proxy
         end
 
-        ability.Roland_frozen_proxy = (Bakery_API.get_proxied_joker() or card).unique_val
         return f(G.jokers.cards):any(eq) ---@type Card?
     end
 
     local orig_calculate = proxy.calculate
 
-    ---@param card Card|{ Roland_frozen_ability: table }
     function proxy:calculate(card, context, ...)
         if not card or not card.edition or not card.edition.Roland_frozen then
             return orig_calculate(self, card, context, ...)
@@ -282,5 +288,19 @@ q(function()
         } or localize "k_none"
 
         return {vars = {var}}
+    end
+end)
+
+q(function()
+    local orig_flip_double_sided = (Bakery_API or {}).flip_double_sided
+
+    if not orig_flip_double_sided then
+        return
+    end
+
+    function Bakery_API.flip_double_sided(card, ...)
+        if not card.edition or not card.edition.Roland_frozen then
+            return orig_flip_double_sided(card, ...)
+        end
     end
 end)
