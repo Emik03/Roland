@@ -585,6 +585,12 @@ joker {
         local suit = (G.GAME.current_round.Roland_suitable or {}).suit or "Spades"
         return {vars = {localize(suit, "suits_plural"), colours = {G.C.SUITS[suit]}}}
     end,
+    add_to_deck = function()
+        G.GAME.modifiers.Roland_suitable = (G.GAME.modifiers.Roland_suitable or 0) + 1
+    end,
+    remove_from_deck = function()
+        G.GAME.modifiers.Roland_suitable = (G.GAME.modifiers.Roland_suitable or 0) - 1
+    end,
 }
 
 function SMODS.current_mod.reset_game_globals()
@@ -606,8 +612,9 @@ end
 local orig_get_enhancements = SMODS.get_enhancements
 
 function SMODS.get_enhancements(card, ...)
-    if not next(SMODS.find_card "j_Roland_suitable") or
-        card.base.suit ~= G.GAME.current_round.Roland_suitable.suit then
+    if (G.GAME.modifiers.Roland_suitable or 0) <= 0 or
+        card.base.suit ~= G.GAME.current_round.Roland_suitable.suit or
+        (card.area ~= G.hand and card.area ~= G.play) then
         return orig_get_enhancements(card, ...)
     end
 
