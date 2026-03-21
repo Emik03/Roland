@@ -17,9 +17,7 @@ function CardArea:can_highlight(...)
 end
 
 function Card:set_debuff(...)
-    if self.config and
-        self.config.center_key == "m_wild" and
-        SMODS.Mods.Roland.config.no_wild_debuff then
+    if SMODS.get_enhancements(self).m_wild and SMODS.Mods.Roland.config.no_wild_debuff then
         self.debuff = false
     else
         orig_set_debuff(self, ...)
