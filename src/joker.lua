@@ -19,6 +19,12 @@ local joker = (function()
         tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
         tbl.soul_pos = tbl.soul_pos and inc() or nil
         tbl.sinis = tbl.sinis and inc() or nil
+
+        if ((tbl.config or {}).extra or {}).flipped ~= nil then
+            tbl.config.extra.front_pos = tbl.pos
+            tbl.config.extra.back_pos = inc()
+        end
+
         local joker = SMODS.Joker(tbl)
 
         q(function()
@@ -89,6 +95,11 @@ SMODS.Atlas {
     py = 95,
 }
 
+SMODS.Sound {
+    key = "nilly",
+    path = "nilly.ogg",
+}
+
 joker {
     key = "escapey",
     pronouns = "they_them",
@@ -123,6 +134,9 @@ joker {
             },
         }
     end,
+    calculate = function(self, card, context)
+        return context.forcetrigger and self.proc(card) or nil
+    end,
     Bakery_can_use = function(self, card)
         return not card.debuff and u() and (self.exchangable() or self.fusable(card))
     end,
@@ -133,9 +147,6 @@ joker {
                 ((not self.exchangable() and self.fusable(card)) and
                     "b_Roland_fuse" or "b_Roland_escape"),
         }
-    end,
-    calculate = function(self, card, context)
-        return context.forcetrigger and self.proc(card) or nil
     end,
     Bakery_use_joker = function(self, card)
         if card.debuff then
@@ -392,7 +403,7 @@ joker {
                 return
             end
 
-            for _ = 1, extra.times do
+            f(extra.times):each(function()
                 G.playing_card = (G.playing_card or 0) + 1
                 G.deck.config.card_limit = G.deck.config.card_limit + 1
                 local chosen = pseudorandom_element(scored_cards, pseudoseed "Roland_trimino")
@@ -402,7 +413,7 @@ joker {
                 copy:start_materialize()
                 table.insert(copied, copy)
                 table.insert(G.playing_cards, copy)
-            end
+            end)
 
             SMODS.calculate_effect({{message = localize "k_copied_ex", message_card = card}}, card)
             playing_card_joker_effects(copied)
@@ -803,6 +814,50 @@ joker {
             extra.probability = extra.probability * extra.probability_mult
             return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
         end
+    end,
+}
+
+joker {
+    key = "nilly",
+    pronouns = "any_all",
+    config = {extra = {flipped = false}},
+    cost = 0,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {
+            vars = {localize {
+                type = "variable",
+                key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled",
+            }},
+        }
+    end,
+    inject = function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.double_sided_jokers.j_Roland_nilly = true
+    end,
+    calculate = function(_, card, context)
+        if (not context.joker_main or not card.ability.extra.flipped) and not context.forcetrigger then
+            return
+        end
+
+        mult = mod_mult(0)
+        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
+        return {sound = "Roland_nilly", message = "0X " .. localize "k_mult", colour = G.C.MULT, card = card}
+    end,
+    Bakery_can_use = function(_, card)
+        return not card.debuff
+    end,
+    Bakery_use_button_text = function(_, card)
+        return localize {
+            type = "variable",
+            key = card.debuff and "b_Roland_debuffed" or "b_Roland_toggle",
+        }
+    end,
+    Bakery_use_joker = function(_, card)
+        local _ = card.debuff or Bakery_API.flip_double_sided(card)
     end,
 }
 

@@ -107,7 +107,7 @@ spectral {
         f(cards):take(card.ability.extra.amount):each(function(v)
             local seal
 
-            for _ = 1, 31 do
+            for _ = 1, 64 do
                 seal = SMODS.poll_seal {guaranteed = true}
 
                 if seal ~= "Roland_glass" then
@@ -177,12 +177,12 @@ local void = spectral {
             f(cards):each(destroy)
             f(G.jokers.cards):each(calculate_joker)
 
-            for _ = 1, card.ability.extra.amount do
+            f(card.ability.extra.amount):each(function()
                 local cryptid = create_card(nil, G.consumeables, nil, nil, nil, nil, "c_cryptid", "void")
                 cryptid:set_edition({negative = true}, true)
                 cryptid:add_to_deck()
                 G.consumeables:emplace(cryptid)
-            end
+            end)
         end
 
         play_sound("Roland_void", 1, 0.7)

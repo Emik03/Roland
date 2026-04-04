@@ -229,6 +229,14 @@ return {
                 name = "Ms. Joker",
                 text = {"{C:chips}+#1#{} Chips"},
             },
+            j_Roland_nilly = {
+                name = "Nilly",
+                text = {
+                    "Toggleable {X:mult,C:white}X0{} Mult",
+                    "{C:inactive}(Currently {C:attention}#1#{C:inactive})",
+                    "{C:inactive,s:0.75,E:1}Wait... what?",
+                },
+            },
             j_Roland_oops = {
                 name = "Oops! All 7s",
                 text = {
@@ -389,6 +397,8 @@ return {
         },
         v_dictionary = {
             b_Roland_bye = "Bye!",
+            b_Roland_disabled = "Disabled",
+            b_Roland_enabled = "Enabled",
             b_Roland_comma = ", ",
             b_Roland_debuffed = "DEBUFFED",
             b_Roland_entering_shop = "Entering shop!",
@@ -404,6 +414,7 @@ return {
             b_Roland_no_wild_debuff = "No wild card debuffs",
             b_Roland_na = "N/A",
             b_Roland_of = " of ",
+            b_Roland_toggle = "TOGGLE",
         },
         labels = {
             Roland_frozen = "Frozen",
