@@ -75,7 +75,7 @@ back {
     pronouns = "any_all",
     config = {extra = {times = 2}},
     loc_vars = function(self, _, _)
-        return {vars = {self.config.extra.times}}
+        return {vars = {self.config.extra.times, self.config.extra.alt_times}}
     end,
     apply = function(_, _)
         G.GAME.modifiers.Roland_blossom_deck = true
@@ -91,9 +91,11 @@ back {
             return
         end
 
-        local count = self:is_alt() and G.GAME.round_resets.ante or self.config.extra.times
+        local count = self:is_alt() and
+            G.GAME.round_resets.ante * self.config.extra.alt_times or
+            self.config.extra.times
 
-        for _ = 1, count do
+        f(count):each(function()
             G.GAME.blind:disable()
 
             q {
@@ -104,47 +106,7 @@ back {
                     play_sound "timpani"
                 end,
             }
-        end
-    end,
-}
-
-back {
-    key = "go",
-    pronouns = "he_him",
-    config = {extra = {times = 1, alt_times = 5}},
-    loc_vars = function(self, info_queue, _)
-        local _ = info_queue and table.insert(info_queue, G.P_CENTERS.j_credit_card)
-        return {vars = {self.config.extra.alt_times - self.config.extra.times}}
-    end,
-    apply = function(self)
-        q(function()
-            local count = self:is_alt() and self.config.extra.alt_times or self.config.extra.times
-
-            for _ = 1, count do
-                local c = create_card("Joker", G.jokers, nil, nil, nil, nil, "j_credit_card", "Roland_go")
-                c:add_to_deck()
-                c:start_materialize()
-                G.jokers:emplace(c)
-            end
         end)
-    end,
-    calculate = function(_, card, context)
-        if not context.starting_shop then
-            return
-        end
-
-        ease_dollars(-G.GAME.dollars)
-
-        attention_text {
-            text = localize "k_nope_ex",
-            backdrop_colour = G.C.MONEY,
-            offset = {x = 0, y = 0},
-            silent = true,
-            major = card,
-            align = "cm",
-            scale = 1.3,
-            hold = 1.4,
-        }
     end,
 }
 

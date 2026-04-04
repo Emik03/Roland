@@ -9,14 +9,6 @@ return {
                     "that are {C:dark_edition}debuffed #1# times",
                 },
             },
-            b_Roland_go = {
-                name = "Pass GO Deck",
-                text = {
-                    "Start with a {C:attention}Credit Card",
-                    "Set money to {C:money}$0 {}when",
-                    "entering the shop",
-                },
-            },
             b_Roland_swapper = {
                 name = "Swapper Deck",
                 text = {
@@ -320,23 +312,8 @@ return {
                 name = "Efflorescent Sleeve",
                 text = {
                     "{C:attention}Blinds{} are {C:dark_edition}debuffed",
-                    "{C:dark_edition}({X:dark_edition,C:white}ante{} {X:dark_edition,C:white}number{C:dark_edition}) times",
+                    "{C:dark_edition}({X:dark_edition,C:white}(ante * #2#){C:dark_edition}) times",
                     "{C:inactive}(Instead of #1#)",
-                },
-            },
-            sleeve_Roland_go = {
-                name = "Pass GO Sleeve",
-                text = {
-                    "Start with a {C:attention}Credit Card",
-                    "Set money to {C:money}$0 {}when",
-                    "entering the shop",
-                },
-            },
-            sleeve_Roland_go_alt = {
-                name = "Free Parking Sleeve",
-                text = {
-                    "Start with an additional",
-                    "{X:attention,C:white}#1#{C:attention} Credit Cards",
                 },
             },
             sleeve_Roland_swapper = {
@@ -404,6 +381,7 @@ return {
             c_Roland_Eternally_Crimson = "Eternally Crimson",
             c_Roland_Eternally_Verdant = "Eternally Verdant",
             c_Roland_Eternally_Violet = "Eternally Violet",
+            c_Roland_Go = "Pass GO",
             c_Roland_Jokerful = "Jokerful",
             c_Roland_Ornate = "Ornate",
             c_Roland_Pastries = "Sweet Pastries",
@@ -437,6 +415,7 @@ return {
             ch_c_Roland_Eternally_Crimson = {"{C:attention}Crimson Heart{}'s effect is active every blind"},
             ch_c_Roland_Eternally_Verdant = {"{C:attention}Verdant Leaf{}'s effect is active every blind"},
             ch_c_Roland_Eternally_Violet = {"{C:attention}Violet Vessel{}'s effect is active every blind"},
+            ch_c_Roland_Go = {"Set money to {C:money}$0 {}when entering the shop"},
             ch_c_Roland_Jokerful = {"The only jokers are {C:mult}Joker{} and {C:chips}Ms. Joker"},
             ch_c_Roland_Ornate = {"Anything vanilla is banned"},
             ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},

@@ -53,6 +53,29 @@ local jokerful, vanillas, pastries, amber, cerulean, crimson, verdant, violet, f
 = bans(), bans(), bans(), bans(), bans(), bans(), bans(), bans(), bans()
 
 SMODS.Challenge {
+    key = "Go",
+    rules = {custom = {{id = "Roland_Go"}}},
+    jokers = {{id = "j_credit_card"}},
+    pronouns = "he_him",
+    calculate = function(self, context)
+        if context.starting_shop then
+            ease_dollars(-G.GAME.dollars)
+
+            attention_text {
+                text = localize "k_nope_ex",
+                backdrop_colour = G.C.MONEY,
+                offset = {x = 0, y = 0},
+                silent = true,
+                major = self,
+                align = "cm",
+                scale = 1.3,
+                hold = 1.4,
+            }
+        end
+    end,
+}
+
+SMODS.Challenge {
     key = "Jokerful",
     rules = {custom = {{id = "Roland_Jokerful"}}},
     restrictions = jokerful,
