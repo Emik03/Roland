@@ -53,10 +53,15 @@ local function freeze(card)
 
     card.Roland_frozen_ability = card.Roland_frozen_ability or copy(card.ability)
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
-    local ret = card.Roland_frozen_ability
-    local ability = card.ability
+    local ability, ret = card.ability, card.Roland_frozen_ability
 
-    if type(ability) ~= "table" or not ability.name or not G.GAME.current_round then
+    if type(ability) ~= "table" then
+        return ret
+    end
+
+    ability.seal = ability.seal or {}
+
+    if not ability.name or not G.GAME.current_round then
         return ret
     end
 

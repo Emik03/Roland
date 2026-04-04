@@ -1,7 +1,5 @@
 local f, q, u = unpack(... or require "lib.shared")
 
-local negative = {key = "e_negative_consumable", set = "Edition", config = {extra = 1}}
-
 local spectral = (function()
     local x = 0
 
@@ -42,7 +40,7 @@ spectral {
     artist = "aster",
     config = {extra = {amount = 1, hand = -2}},
     loc_vars = function(_, info_queue, card)
-        table.insert(info_queue, negative)
+        table.insert(info_queue, {key = "e_negative_playing_card", set = "Edition", config = {extra = 1}})
         return {vars = {card.ability.extra.amount, card.ability.extra.hand}}
     end,
     can_use = function(_, card)
@@ -148,7 +146,7 @@ local void = spectral {
     soul_set = "Spectral",
     config = {extra = {amount = 2}},
     loc_vars = function(_, info_queue, card)
-        table.insert(info_queue, negative)
+        table.insert(info_queue, {key = "e_negative_consumable", set = "Edition", config = {extra = 1}})
         table.insert(info_queue, G.P_CENTERS.c_cryptid)
         return {vars = {card.ability.extra.amount}}
     end,
