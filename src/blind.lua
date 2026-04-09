@@ -337,6 +337,8 @@ function SMODS.current_mod:calculate(context)
         modifiers.Roland_martingale_seed = (modifiers.Roland_martingale_seed or 0) + 1
     end
 
+    local _ = type(G.calccontext) == "function" and G.calccontext(context)
+    local _ = type(G.calckeys) == "function" and G.calckeys(f(context):keys())
     local _ = type(G.calc) == "function" and G.calc(f(context):keys():string())
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 

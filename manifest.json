@@ -6,7 +6,7 @@
     "author": [
         "Emik"
     ],
-    "version": "2.2.7",
+    "version": "2.2.8",
     "badge_colour": "8BE9FD",
     "main_file": "src/main.lua",
     "badge_text_colour": "44475A",
@@ -15,7 +15,7 @@
     "provides": [],
     "conflicts": [],
     "dependencies": [
-        "Steamodded (>=1.*)",
+        "Steamodded (>=1.0~*)",
         "Lovely (>=0.6)",
         "Bakery (>=0.1.26~*)"
     ]
