@@ -142,3 +142,18 @@ function get_blind_amount(ante, ...)
             (ante / 2 >= loop and big:new {blind(rem), ante / loop} or
                 (big.constants and big.constants.TEN or big:new {10}):pow(blind(rem))))
 end
+
+q(function()
+    if not G.P_CENTERS.c_Bakery_Scribe then
+        return
+    end
+
+    local orig_can_use = G.P_CENTERS.c_Bakery_Scribe.can_use
+
+    function G.P_CENTERS.c_Bakery_Scribe.can_use(...)
+        return orig_can_use(...) and
+            (SMODS.Mods.Roland.config.scribable_basket or f(G.jokers.highlighted):all(function(v)
+                return v.config.center.key ~= "j_Roland_basket"
+            end))
+    end
+end)

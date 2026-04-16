@@ -441,7 +441,7 @@ end
 ---@param func F|fun(v: V, k: K): boolean
 ---@return boolean|V
 ---@nodiscard
----@overload fun(self: F|{ [K]: V }, func: string): boolean|V
+---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
 function f:any(func)
     func = type(func) == "string" and f.index(func) or func
 
@@ -459,7 +459,7 @@ end
 ---@param func F|fun(v: V, k: K): boolean
 ---@return boolean|V
 ---@nodiscard
----@overload fun(self: F|{ [K]: V }, func: string): boolean|V
+---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
 function f:all(func)
     func = type(func) == "string" and f.index(func) or func
 

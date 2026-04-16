@@ -406,6 +406,7 @@ return {
             b_Roland_fuse = "FUSE",
             b_Roland_equinox_assist = "Assist: Only hide text (Equinox)",
             b_Roland_fusable_escapey = "Fusable Escapey (overpowered)",
+            b_Roland_scribable_basket = "Scribable Basket (overpowered)",
             b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
             b_Roland_illusion_seal = "Allow seals from Illusion voucher",
             b_Roland_import_funky = "Debug: Import funky.lua",
