@@ -38,6 +38,7 @@ spectral {
     key = "afterimage",
     pronouns = "he_they",
     artist = "aster",
+    attributes = {"editions", "modify_card", "hand_size", "spectral"},
     config = {extra = {amount = 1, hand = -2}},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, {key = "e_negative_playing_card", set = "Edition", config = {extra = 1}})
@@ -69,6 +70,7 @@ spectral {
 spectral {
     key = "coolheaded",
     config = {extra = {amount = 1}},
+    attributes = {"editions", "modify_card", "spectral"},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
         return {vars = {card.ability.extra.amount}}
@@ -94,6 +96,7 @@ spectral {
     key = "dual",
     pronouns = "they_them",
     config = {extra = {amount = 2}},
+    attributes = {"seal", "modify_card", "spectral"},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.amount}}
     end,
@@ -124,6 +127,7 @@ spectral {
     key = "mirror",
     pronouns = "he_him",
     config = {extra = {amount = 1}},
+    attributes = {"seal", "modify_card", "spectral"},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_SEALS.Roland_glass)
         return {vars = {card.ability.extra.amount}}
@@ -145,6 +149,7 @@ local void = spectral {
     soul_rate = 0.003,
     soul_set = "Spectral",
     config = {extra = {amount = 2}},
+    attributes = {"destroy_card", "generation", "spectral"},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, {key = "e_negative_consumable", set = "Edition", config = {extra = 1}})
         table.insert(info_queue, G.P_CENTERS.c_cryptid)

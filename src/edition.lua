@@ -80,6 +80,7 @@ SMODS.Edition {
     key = "frozen",
     shader = "frozen",
     sound = {sound = "Roland_frozen", per = 1, vol = 0.8},
+    attributes = {"passive", "scaling"},
     weight = 8,
     extra_cost = 4,
     in_shop = true,

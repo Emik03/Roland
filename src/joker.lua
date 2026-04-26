@@ -12,7 +12,7 @@ local joker = (function()
         return ret
     end
 
-    ---@param tbl SMODS.Joker|{artist?: string, sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}}
+    ---@param tbl SMODS.Joker|{artist?: string, sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}, attributes?: Attributes[]}
     return function(tbl)
         tbl.pos = inc()
         tbl.atlas = "joker"
@@ -104,6 +104,7 @@ joker {
     key = "escapey",
     pronouns = "they_them",
     config = {extra = {hands = 2}},
+    attributes = {"destroy_card", "tarot", "planet", "spectral", "tag"},
     cost = 4,
     rarity = 2,
     sinis = true,
@@ -247,6 +248,7 @@ joker {
     blueprint_compat = true,
     perishable_compat = true,
     config = {extra = {chips = 30}},
+    attributes = {"chips"},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.chips}}
     end,
@@ -261,6 +263,7 @@ joker {
     pronouns = "she_her",
     artist = "char",
     config = {extra = {xmult = 4, requirement = 4}},
+    attributes = {"xmult"},
     cost = G.P_CENTERS.j_mr_bones.cost - 1,
     rarity = 2,
     eternal_compat = false,
@@ -295,6 +298,7 @@ joker {
     key = "phytoestrogens",
     pronouns = "she_her",
     config = {extra = {xmult = 0.25}},
+    attributes = {"mult", "xmult"},
     cost = 8,
     rarity = 3,
     eternal_compat = true,
@@ -318,6 +322,7 @@ joker {
     pronouns = "it_its",
     artist = "char",
     config = {extra = {price = 4, hand_name = "Four of a Kind"}},
+    attributes = {"sell_value", "scaling", "economy", "hand_type"},
     cost = 4,
     rarity = 1,
     eternal_compat = true,
@@ -346,6 +351,7 @@ joker {
     pronouns = "it_its",
     artist = "char",
     config = {extra = {mult_gain = 4, hand_name = "Four of a Kind", mult = 0}},
+    attributes = {"mult", "scaling", "hand_type"},
     cost = 4,
     rarity = 2,
     eternal_compat = true,
@@ -376,6 +382,7 @@ joker {
     pronouns = "it_its",
     artist = "char",
     config = {extra = {times = 4, hand_name = "Four of a Kind"}},
+    attributes = {"generation", "hand_type"},
     cost = 8,
     rarity = 3,
     eternal_compat = false,
@@ -429,6 +436,7 @@ joker {
     key = "sunny",
     pronouns = "they_them",
     artist = "char",
+    attributes = {"food", "on_sell"},
     cost = 2,
     rarity = 1,
     eternal_compat = false,
@@ -488,6 +496,7 @@ joker {
 joker {
     key = "hardboiled",
     pronouns = "they_them",
+    attributes = {"food", "editions", "modify_card", "on_sell"},
     cost = 5,
     rarity = 2,
     eternal_compat = false,
@@ -511,6 +520,7 @@ joker {
 joker {
     key = "basket",
     pronouns = "they_them",
+    attributes = {"food", "generation", "on_sell"},
     cost = 8,
     rarity = 3,
     eternal_compat = false,
@@ -536,6 +546,7 @@ joker {
     key = "sapling",
     pronouns = "they_them",
     artist = "char",
+    attributes = {"mult", "suit"},
     cost = 4,
     rarity = 1,
     config = {extra = {mult = 15, suits = 3}},
@@ -569,6 +580,7 @@ joker {
     key = "yard",
     pronouns = "he_him",
     config = {extra = {money = 2}},
+    attributes = {"economy"},
     cost = 4,
     rarity = 1,
     eternal_compat = true,
@@ -586,6 +598,7 @@ joker {
 joker {
     key = "suitable",
     pronouns = "she_they",
+    attributes = {"suit", "passive", "hearts", "diamonds", "spades", "clubs"},
     cost = 4,
     rarity = 2,
     eternal_compat = true,
@@ -638,6 +651,7 @@ joker {
     key = "misfortune",
     pronouns = "she_they",
     artist = "char",
+    attributes = {"discard", "generation", "seals"},
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -657,7 +671,8 @@ joker {
 joker {
     key = "temple",
     pronouns = "any_all",
-    config = {extra = {xmult = 1.5}},
+    config = {extra = {xmult = 2}},
+    attributes = {"xmult", "enhancements"},
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -684,6 +699,7 @@ joker {
     key = "jokersr",
     pronouns = "he_him",
     config = {extra = {xmult = 1.25}},
+    attributes = {"xmult"},
     cost = 2,
     rarity = 2,
     eternal_compat = true,
@@ -701,6 +717,7 @@ joker {
 joker {
     key = "bulldozer",
     pronouns = "it_its",
+    attributes = {"xmult"},
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -739,6 +756,7 @@ joker {
     key = "martingale",
     pronouns = "he_him",
     config = {extra = {odds = 2}},
+    attributes = {"xmult", "chance"},
     cost = 8,
     rarity = 2,
     eternal_compat = true,
@@ -787,6 +805,7 @@ joker {
     cost = 7,
     rarity = 3,
     config = {extra = {probability = 1, probability_mult = 2, reset = 1}},
+    attributes = {"hands", "mod_chance", "scaling"},
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
@@ -821,6 +840,7 @@ joker {
     key = "nilly",
     pronouns = "any_all",
     config = {extra = {flipped = false}},
+    attributes = {"xmult"},
     cost = 0,
     rarity = 3,
     eternal_compat = true,
@@ -867,6 +887,7 @@ joker {
     cost = 10,
     rarity = 3,
     config = {extra = {repetitions = 1}},
+    attributes = {"retrigger", "editions"},
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,

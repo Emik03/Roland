@@ -74,6 +74,7 @@ back {
     key = "blossom",
     pronouns = "any_all",
     config = {extra = {times = 2}},
+    attributes = {"boss_blind"},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.times, self.config.extra.alt_times}}
     end,
@@ -113,12 +114,13 @@ back {
 back {
     key = "swapper",
     pronouns = "he_him",
+    attributes = {"spectral", "tarot"},
     apply = function(self)
         local modifiers = G.GAME.modifiers
         modifiers.Roland_swapper_deck = true
         modifiers.Roland_alt_swapper_deck = modifiers.Roland_alt_swapper_deck or self:is_alt()
     end,
-    calculate = function() end,
+    calculate = f().noop,
 }
 
 local swapper = {Spectral = "Tarot", Tarot = "Spectral"}

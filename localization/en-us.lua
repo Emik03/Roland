@@ -29,7 +29,7 @@ return {
             BakeryCharm_Roland_fat = {
                 name = "fat i phone",
                 text = {
-                    -- "{C:attention}+#1# Booster Pack {}slots",
+                    "{C:attention}+#1# Booster Pack {}slots",
                     "All {C:attention}Booster Packs {}are {C:attention}Mega",
                     "{C:inactive}(Whenever applicable)",
                 },

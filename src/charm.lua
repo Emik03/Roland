@@ -79,6 +79,7 @@ end
 charm {
     key = "wii",
     pronouns = "they_them",
+    attributes = {"skip"},
     calculate = function(_, card, context)
         if not context.skip_blind then
             return
@@ -116,16 +117,17 @@ end
 charm {
     key = "fat",
     pronouns = "he_they",
-    -- config = {extra = {mod = 1}},
-    -- loc_vars = function(_, _, card)
-    --     return {vars = {card.ability.extra.mod}}
-    -- end,
-    -- equip = function(_, card)
-    --     SMODS.change_booster_limit(card.ability.extra.mod)
-    -- end,
-    -- unequip = function(card)
-    --     SMODS.change_booster_limit(-card.ability.extra.mod)
-    -- end,
+    attributes = {"passive"},
+    config = {extra = {mod = 1}},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.mod}}
+    end,
+    equip = function(_, card)
+        SMODS.change_booster_limit(card.ability.extra.mod)
+    end,
+    unequip = function(card)
+        SMODS.change_booster_limit(-card.ability.extra.mod)
+    end,
 }
 
 local orig_init = Card.init
@@ -160,6 +162,7 @@ end
 charm {
     key = "cocacola",
     pronouns = "he_they",
+    attributes = {"passive", "tarot", "spectral"},
     equip = function()
         f(G.consumeables.cards):each(add_to_consumable_ability_by(1))
     end,
@@ -184,6 +187,7 @@ charm {
     key = "hand",
     pronouns = "he_him",
     config = {extra = {hands = -2, hand_size = 5}},
+    attributes = {"hands", "hand_size", "passive"},
     loc_vars = function(_, _, card)
         local extra = card.ability.extra
         return {vars = {extra.hand_size, extra.hands}}

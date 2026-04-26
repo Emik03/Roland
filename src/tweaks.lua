@@ -114,7 +114,7 @@ end
 local orig_get_blind_amount = get_blind_amount
 
 ---@param ante number
----@return number
+---@return table|number
 local function blind(ante)
     return ante == 39 and 1e294 or (_G["to_number"] or f().id)(orig_get_blind_amount(ante))
 end
@@ -135,12 +135,12 @@ function get_blind_amount(ante, ...)
     end
 
     --- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
-    local big, rem = _G["Big"], (ante % loop) + 1
+    local big, rem = _G["Big"], tonumber(blind((ante % loop) + 1))
 
     return ante / 15 >= loop and big:new(f(blind(ante - (loop * 15))):map(f().const(10)):table()) or
-        (ante / 9 >= loop and big:new(f(ante / loop - 8):map(f().const(10)):concat {blind(rem)}:table()) or
-            (ante / 2 >= loop and big:new {blind(rem), ante / loop} or
-                (big.constants and big.constants.TEN or big:new {10}):pow(blind(rem))))
+        (ante / 9 >= loop and big:new(f(ante / loop - 8):map(f().const(10)):concat {rem}:table()) or
+            (ante / 2 >= loop and big:new {rem, ante / loop} or
+                (big.constants and big.constants.TEN or big:new {10}):pow(rem)))
 end
 
 q(function()
