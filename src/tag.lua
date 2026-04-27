@@ -1,5 +1,3 @@
-local _, q = unpack(... or require "lib.shared")
-
 SMODS.Atlas {
     px = 34,
     py = 34,
@@ -24,7 +22,7 @@ SMODS.Tag {
         tag.triggered = true
         modifiers.Roland_invisible = (modifiers.Roland_invisible or 0) + 1
 
-        tag:yep(localize "k_duplicated_ex", G.C.GREY, function()
+        tag:yep("!", G.C.GREY, function()
             local copied = pseudorandom_element(G.jokers.cards, pseudoseed "Roland_invisible")
             local copy = copy_card(copied)
             G.jokers:emplace(copy)
