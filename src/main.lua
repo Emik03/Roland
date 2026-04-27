@@ -1,7 +1,7 @@
 local qol = assert(SMODS.load_file "src/lib/shared.lua")() or require "lib.shared"
 local f, q = unpack(qol)
 
-f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "back", "seal"}:each(function(v)
+f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "back", "seal", "tag"}:each(function(v)
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
 end)
 

@@ -381,6 +381,12 @@ return {
                 },
             },
         },
+        Tag = {
+            tag_Roland_invisible = {
+                name = "Invisible Tag",
+                text = {"{C:attention}Duplicate {}a random Joker", "{C:inactive}(Must have room)"},
+            },
+        },
     },
     misc = {
         challenge_names = {
