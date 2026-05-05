@@ -778,10 +778,13 @@ joker {
             return
         end
 
-        local extra, numerator, xmult = card.ability.extra, 1, 1
+        local g, extra, numerator, xmult = G.GAME, card.ability.extra, 1, 1
+
+        if g.blind.name == "bl_mp_nemesis" then
+            return {card = card, xmult = extra}
+        end
 
         for _ = 1, 64 do
-            local g = G.GAME
             local key = "RolandMartingale" .. tostring(g.modifiers.Roland_martingale_seed or "")
 
             if SMODS.pseudorandom_probability(card, self.key, 1, extra.odds, key) then
