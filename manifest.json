@@ -6,7 +6,7 @@
     "author": [
         "Emik"
     ],
-    "version": "2.3.0",
+    "version": "2.3.1",
     "badge_colour": "8BE9FD",
     "main_file": "src/main.lua",
     "badge_text_colour": "44475A",

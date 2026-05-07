@@ -70,10 +70,16 @@ joker {
         return {vars = {card.ability.extra.xmoney, card.ability.extra.money}}
     end,
     Bakery_can_use = function(_, card)
-        return not card.debuff and u() and (next(G.GAME.tags) or f(G.consumeables.cards):any(destructible))
+        return u() and
+            not card.debuff and
+            not G.GAME.modifiers.Roland_debuff_escapey and
+            (next(G.GAME.tags) or f(G.consumeables.cards):any(destructible))
     end,
     Bakery_use_button_text = function(_, card)
-        return localize {type = "variable", key = card.debuff and "b_Roland_debuffed" or "b_Roland_escape"}
+        return localize {
+            type = "variable",
+            key = (card.debuff or G.GAME.modifiers.Roland_debuff_escapey) and "b_Roland_debuffed" or "b_Roland_escape"
+        }
     end,
     Bakery_use_joker = function(self, card)
         if card.debuff then
