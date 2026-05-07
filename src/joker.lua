@@ -38,54 +38,8 @@ local function destructible(card)
 end
 
 ---@param card Card
-local function is_carbon(card)
-    return card.edition and card.edition.key == "e_Bakery_Carbon"
-end
-
----@param card Card
 local function is_frozen(card)
     return card.edition and card.edition.key == "e_Roland_frozen"
-end
-
-local function is_mergeable_with(x)
-    return function(y)
-        return x.rank ~= y.rank and
-            y.label == "j_Roland_escapey" and
-            not (y.ability or {}).eternal
-    end
-end
-
----@param hand? string|true
----@param by integer
----@param card Card
-local function level_up(hand, by, card)
-    local function update(handname, chips, mult, level, pitch)
-        update_hand_text(
-            {sound = "button", volume = 0.7, pitch = pitch or 0.8, delay = 0.3},
-            {handname = handname, chips = chips, level = level, mult = mult}
-        )
-    end
-
-    if by <= 0 then
-        return
-    end
-
-    hand = hand or "NO_HAND_SPECIFIED"
-    local hand_obj = G.GAME.hands[hand]
-
-    if hand == true then
-        update(localize "k_all_hands", "...", "...", "")
-        delay(2)
-
-        f(G.GAME.hands):where "visible":keys():each(function(k)
-            level_up_hand(card, k, true, by)
-        end)
-    elseif hand_obj then
-        update(localize(hand, "poker_hands"), hand_obj.chips, hand_obj.mult, hand_obj.level)
-        level_up_hand(card, hand, nil, by)
-    end
-
-    update("", 0, 0, "", 1.1)
 end
 
 SMODS.Atlas {
@@ -103,8 +57,8 @@ SMODS.Sound {
 joker {
     key = "escapey",
     pronouns = "they_them",
-    config = {extra = {hands = 2}},
-    attributes = {"destroy_card", "tarot", "planet", "spectral", "tag"},
+    config = {extra = {money = 2, xmoney = 1.5}},
+    attributes = {"destroy_card", "economy", "tag"},
     cost = 4,
     rarity = 2,
     sinis = true,
@@ -112,129 +66,59 @@ joker {
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
-    loc_vars = function(self, _, card)
-        local sinister = (_G["Jen"] or _G["pwx"] or {}).sinister or G.escapey_sinister
-        local loc = G.localization.descriptions.Joker.j_Roland_escapey
-        local merge = self.fusable(card) and loc.merge or {}
-        local quotes = loc.quotes
-
-        local normal = (merge[1] or sinister) and "" or
-            pseudorandom_element(quotes.normal, pseudoseed "EscapeyQuotes") or ""
-
-        local scared = (merge[1] or not sinister) and "" or
-            pseudorandom_element(quotes.scared, pseudoseed "EscapeyQuotes") or ""
-
-        return {
-            vars = {
-                card.ability.extra.hands,
-                normal,
-                scared,
-                merge[1] or "",
-                merge[1] and loc.name or "",
-                merge[2] or "",
-            },
-        }
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmoney, card.ability.extra.money}}
     end,
-    calculate = function(self, card, context)
-        return context.forcetrigger and self.proc(card) or nil
+    Bakery_can_use = function(_, card)
+        return not card.debuff and u() and (next(G.GAME.tags) or f(G.consumeables.cards):any(destructible))
     end,
-    Bakery_can_use = function(self, card)
-        return not card.debuff and u() and (self.exchangable() or self.fusable(card))
-    end,
-    Bakery_use_button_text = function(self, card)
-        return localize {
-            type = "variable",
-            key = card.debuff and "b_Roland_debuffed" or
-                ((not self.exchangable() and self.fusable(card)) and
-                    "b_Roland_fuse" or "b_Roland_escape"),
-        }
+    Bakery_use_button_text = function(_, card)
+        return localize {type = "variable", key = card.debuff and "b_Roland_debuffed" or "b_Roland_escape"}
     end,
     Bakery_use_joker = function(self, card)
         if card.debuff then
             return
         end
 
-        if not self.exchangable() then
-            local level_sum, sell_sum = 0, 0
-            local any_carbon = is_carbon(card)
-
-            f(G.jokers.cards):where(is_mergeable_with(card)):each(function(v)
-                any_carbon = any_carbon or is_carbon(v)
-                level_sum = level_sum + v.ability.extra.hands * (v.getEvalQty and v:getEvalQty() or 1)
-                sell_sum = sell_sum + v.sell_cost * (v.getEvalQty and v:getEvalQty() or 1)
-                v:start_dissolve({HEX "57ecabff"}, nil, 1.6)
-            end)
-
-            if not any_carbon then
-                card.ability.extra.hands = card.ability.extra.hands + level_sum
-            end
-
-            card.sell_cost = card.sell_cost + sell_sum
-            return
-        end
-
-        local function fast_delete(tag)
-            return function()
-                attention_text {
-                    scale = 0.7,
-                    align = "cm",
-                    text = "ESC",
-                    cover = tag.HUD_tag,
-                    colour = G.C.WHITE,
-                    cover_colour = G.C.BLACK,
-                    hold = 0.3 / G.SETTINGS.GAMESPEED,
-                }
-
-                play_sound("cancel", 1.66, 0.5)
-                tag.HUD_tag.states.visible = false
-                tag:remove()
-            end
-        end
-
-        local destroyed = 0
+        local times, xtimes = 0, 0
+        local extra = card.ability.extra
 
         f(G.consumeables.cards):where(destructible):each(function(v)
             v:start_dissolve({HEX "57ecabff"}, nil, 1.6)
-            destroyed = destroyed + 1
+            times = times + 1
         end)
 
-        if destroyed == 0 then
+        if times == 0 then
             local delay = #G.GAME.tags >= self.tag_threshold and 0 or 1 / #G.GAME.tags
-            local trigger = #G.GAME.tags >= self.tag_threshold and "immediate" or "before"
+            local trigger = delay == 0 and "immediate" or "before"
 
             f(G.GAME.tags):each(function(v)
                 q {
-                    trigger = trigger,
-                    blocking = #G.GAME.tags < 30,
+                    blocking = delay ~= 0,
                     delay = delay,
-                    func = fast_delete(v),
+                    trigger = trigger,
+                    func = function()
+                        attention_text {
+                            scale = 0.7,
+                            align = "cm",
+                            text = "ESC",
+                            cover = v.HUD_tag,
+                            colour = G.C.WHITE,
+                            cover_colour = G.C.BLACK,
+                            hold = 0.3 / G.SETTINGS.GAMESPEED,
+                        }
+
+                        play_sound("cancel", 1.66, 0.5)
+                        v.HUD_tag.states.visible = false
+                        v:remove()
+                    end,
                 }
 
-                destroyed = destroyed + 1
+                xtimes = xtimes + 1
             end)
         end
 
-        self.proc(card, destroyed)
-    end,
-    exchangable = function()
-        return next(G.GAME.tags) or f(G.consumeables.cards):any(destructible)
-    end,
-    ---@param card Card
-    fusable = function(card)
-        return SMODS.Mods.Roland.config.fusable_escapey and
-            f((G.jokers or {}).cards):any(is_mergeable_with(card))
-    end,
-    ---@param card Card
-    ---@param times? integer
-    proc = function(card, times)
-        local hands = f(G.GAME.hands):where "visible":keys():table()
-        local levels = card.ability.extra.hands * (times or 1)
-        pseudoshuffle(hands, pseudoseed "RolandEscapey")
-        level_up(true, math.floor(levels / #hands), card)
-
-        f(hands):take(levels % #hands):each(function(v)
-            level_up(v, 1, card)
-        end)
+        ease_dollars(math.ceil(times * extra.money + G.GAME.dollars * (math.pow(extra.xmoney, xtimes) - 1)))
     end,
     tag_threshold = 30,
 }

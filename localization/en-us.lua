@@ -150,27 +150,11 @@ return {
             j_Roland_escapey = {
                 name = "Escapey",
                 text = {
-                    "Use to {C:attention}destroy tags{} or {C:attention}unselected consumables",
-                    "in exchange for {C:planet}leveling up {X:planet,C:white}#1#{C:planet} random hands",
-                    "{C:inactive,s:0.75,E:1}#2#{C:red,s:1.5,E:1}#3#{s:0.9}#4#{C:blue,E:1,s:0.9}#5#{s:0.9}#6#",
-                },
-                merge = {"Since none apply, fuse with other ", " jokers"},
-                quotes = {
-                    marble = {"there is no escape..."},
-                    normal = {
-                        "I can't wait to work with you!",
-                        "Did you need something from me?",
-                        "Oh! I'm just so happy to see you!",
-                        "Can I say something irrelevant? I promise it won't be long.",
-                        "Tell me about your buddies! Assuming you have them, anyway.",
-                    },
-                    scared = {
-                        "What am I going to do?!",
-                        "I'm not scared, you are!",
-                        "Tell me when this is over...",
-                        "I can't keep looking at this!",
-                        "Let me go hide in this corner... Okay?",
-                    },
+                    "Use to sell {C:attention}tags",
+                    "for {X:money,C:white}$#1#X{} each",
+                    "{s:0.75}If any {C:attention,s:0.75}consumables",
+                    "{s:0.75}are unselected, sell",
+                    "{s:0.75}those for {C:money,s:0.75}$#2# {s:0.75}instead",
                 },
             },
             j_Roland_hardboiled = {
@@ -409,9 +393,7 @@ return {
             b_Roland_debuffed = "DEBUFFED",
             b_Roland_entering_shop = "Entering shop!",
             b_Roland_escape = "ESCAPE",
-            b_Roland_fuse = "FUSE",
             b_Roland_equinox_assist = "Assist: Only hide text (Equinox)",
-            b_Roland_fusable_escapey = "Fusable Escapey (overpowered)",
             b_Roland_scribable_basket = "Scribable Basket (overpowered)",
             b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
             b_Roland_illusion_seal = "Allow seals from Illusion voucher",

@@ -60,7 +60,6 @@ function SMODS.current_mod.config_tab()
                 toggle "no_wild_debuff",
                 toggle "no_highlight_limit",
                 _G["Talisman"] and toggle "harsh_ante_scaling",
-                toggle "fusable_escapey",
                 G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
                 toggle "equinox_assist",
                 SMODS.Mods.DebugPlus and toggle "import_funky",
