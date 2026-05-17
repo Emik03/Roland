@@ -1,4 +1,4 @@
-local f, q, u = unpack(... or require "lib.shared")
+local f, q = unpack(... or require "lib.shared")
 
 local negative = {key = "e_negative_consumable", set = "Edition", config = {extra = 1}}
 
@@ -33,10 +33,6 @@ local joker = (function()
     end
 end)()
 
-local function destructible(card)
-    return not card.highlighted and not (card.ability or {}).eternal
-end
-
 ---@param card Card
 local function is_frozen(card)
     return card.edition and card.edition.key == "e_Roland_frozen"
@@ -55,82 +51,7 @@ SMODS.Sound {
 }
 
 joker {
-    key = "escapey",
-    pronouns = "they_them",
-    config = {extra = {money = 2, xmoney = 1.5}},
-    attributes = {"destroy_card", "economy", "tag"},
-    cost = 4,
-    rarity = 2,
-    sinis = true,
-    soul_pos = true,
-    eternal_compat = true,
-    blueprint_compat = false,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.xmoney, card.ability.extra.money}}
-    end,
-    Bakery_can_use = function(_, card)
-        return u() and
-            not card.debuff and
-            not G.GAME.modifiers.Roland_debuff_escapey and
-            (next(G.GAME.tags) or f(G.consumeables.cards):any(destructible))
-    end,
-    Bakery_use_button_text = function(_, card)
-        return localize {
-            type = "variable",
-            key = (card.debuff or G.GAME.modifiers.Roland_debuff_escapey) and "b_Roland_debuffed" or "b_Roland_escape"
-        }
-    end,
-    Bakery_use_joker = function(self, card)
-        if card.debuff then
-            return
-        end
-
-        local times, xtimes = 0, 0
-        local extra = card.ability.extra
-
-        f(G.consumeables.cards):where(destructible):each(function(v)
-            v:start_dissolve({HEX "57ecabff"}, nil, 1.6)
-            times = times + 1
-        end)
-
-        if times == 0 then
-            local delay = #G.GAME.tags >= self.tag_threshold and 0 or 1 / #G.GAME.tags
-            local trigger = delay == 0 and "immediate" or "before"
-
-            f(G.GAME.tags):each(function(v)
-                q {
-                    blocking = delay ~= 0,
-                    delay = delay,
-                    trigger = trigger,
-                    func = function()
-                        attention_text {
-                            scale = 0.7,
-                            align = "cm",
-                            text = "ESC",
-                            cover = v.HUD_tag,
-                            colour = G.C.WHITE,
-                            cover_colour = G.C.BLACK,
-                            hold = 0.3 / G.SETTINGS.GAMESPEED,
-                        }
-
-                        play_sound("cancel", 1.66, 0.5)
-                        v.HUD_tag.states.visible = false
-                        v:remove()
-                    end,
-                }
-
-                xtimes = xtimes + 1
-            end)
-        end
-
-        ease_dollars(math.ceil(times * extra.money + G.GAME.dollars * (math.pow(extra.xmoney, xtimes) - 1)))
-    end,
-    tag_threshold = 30,
-}
-
-joker {
-    key = "msjoker", -- Blue bow
+    key = "msjoker",
     pronouns = "she_her",
     cost = 1,
     rarity = 1,
@@ -735,7 +656,7 @@ joker {
     config = {extra = {flipped = false}},
     attributes = {"xmult"},
     cost = 0,
-    rarity = 3,
+    rarity = 2,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
@@ -779,7 +700,7 @@ joker {
     pronouns = "it_its",
     cost = 10,
     rarity = 3,
-    config = {extra = {repetitions = 1}},
+    config = {extra = {[false] = 1, [true] = 2}},
     attributes = {"retrigger", "editions"},
     eternal_compat = true,
     blueprint_compat = true,
@@ -788,15 +709,19 @@ joker {
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
     end,
     calculate = function(_, card, context)
-        return (context.repetition and is_frozen(context.other_card)) and {repetitions = 1} or SMODS.merge_effects(
-            f(G.jokers.cards):where(is_frozen):map(function(v)
-                return SMODS.blueprint_effect(card, v, context) or true
-            end):where(function(v)
-                return type(v) == "table"
-            end):map(function(v)
-                v.colour = G.C.BLACK
-                return v
-            end):table()
-        )
+        return context.repetition and {repetitions = card.ability.extra[is_frozen(context.other_card)]} or
+            SMODS.merge_effects(
+                f(G.jokers.cards):where(is_frozen):map(function(v)
+                    return SMODS.blueprint_effect(card, v, context) or true
+                end):where(function(v)
+                    return type(v) == "table"
+                end):map(function(v)
+                    v.colour = G.C.DARK_EDITION
+                    return v
+                end):values():table()
+            )
+    end,
+    in_pool = function()
+        return not not f(G.playing_cards):concat(G.jokers.cards):any(is_frozen)
     end,
 }

@@ -48,6 +48,8 @@ SMODS.Atlas {
     path = "icon.png",
 }
 
+SMODS.current_mod.qol = qol
+
 function SMODS.current_mod.config_tab()
     return {
         n = G.UIT.ROOT,
@@ -58,7 +60,6 @@ function SMODS.current_mod.config_tab()
             nodes = {
                 toggle "illusion_seal",
                 toggle "no_wild_debuff",
-                toggle "no_highlight_limit",
                 _G["Talisman"] and toggle "harsh_ante_scaling",
                 G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
                 toggle "equinox_assist",

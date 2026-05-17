@@ -120,7 +120,7 @@ return {
         Joker = {
             j_Roland_arctic = {
                 name = "Arctic Circle",
-                text = {"Retrigger all", "{C:dark_edition}Frozen {}cards"},
+                text = {"Retrigger {C:dark_edition}Frozen {}cards", "Retrigger playing cards"},
             },
             j_Roland_basket = {
                 name = "Basket",
@@ -145,16 +145,6 @@ return {
                     "if played hand is a",
                     "{C:attention}#2#",
                     "{C:inactive}(Currently {C:red}+#3#{C:inactive} Mult)",
-                },
-            },
-            j_Roland_escapey = {
-                name = "Escapey",
-                text = {
-                    "Use to sell {C:attention}tags",
-                    "for {X:money,C:white}$#1#X{} each",
-                    "{s:0.75}If any {C:attention,s:0.75}consumables",
-                    "{s:0.75}are unselected, sell",
-                    "{s:0.75}those for {C:money,s:0.75}$#2# {s:0.75}instead",
                 },
             },
             j_Roland_hardboiled = {
@@ -390,16 +380,13 @@ return {
             b_Roland_disabled = "Disabled",
             b_Roland_enabled = "Enabled",
             b_Roland_comma = ", ",
-            b_Roland_debuffed = "DEBUFFED",
             b_Roland_entering_shop = "Entering shop!",
-            b_Roland_escape = "ESCAPE",
             b_Roland_equinox_assist = "Assist: Only hide text (Equinox)",
             b_Roland_scribable_basket = "Scribable Basket (overpowered)",
             b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
             b_Roland_illusion_seal = "Allow seals from Illusion voucher",
             b_Roland_import_funky = "Debug: Import funky.lua",
             b_Roland_most_common_card = "(Rank)",
-            b_Roland_no_highlight_limit = "No consumable highlight limit",
             b_Roland_no_wild_debuff = "No wild card debuffs",
             b_Roland_na = "N/A",
             b_Roland_of = " of ",

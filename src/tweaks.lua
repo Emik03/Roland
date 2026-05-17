@@ -1,34 +1,14 @@
 local f, q = unpack(... or require "lib.shared")
 
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
-local orig_can_highlight = CardArea.can_highlight
 local orig_set_debuff = Card.set_debuff
-local orig_highlight = Card.highlight
 local orig_copy_card = copy_card
-
-function CardArea:can_highlight(...)
-    if self ~= G.consumeables or not SMODS.Mods.Roland.config.no_highlight_limit then
-        return orig_can_highlight(self, ...)
-    end
-
-    --- Allows more flexibility when using the Escapey joker to delete specific consumables.
-    self.config.highlighted_limit = 1 / 0
-    return true
-end
 
 function Card:set_debuff(...)
     if SMODS.get_enhancements(self).m_wild and SMODS.Mods.Roland.config.no_wild_debuff then
         self.debuff = false
     else
         orig_set_debuff(self, ...)
-    end
-end
-
-function Card:highlight(is_highlighted, ...)
-    self.highlighted = is_highlighted
-
-    if not G.CONTROLLER.HID.controller or not SMODS.Mods.Roland.config.no_highlight_limit then
-        return orig_highlight(self, is_highlighted, ...)
     end
 end
 
