@@ -330,18 +330,10 @@ return {
                     "cards in {C:hands}hand",
                 },
             },
-            c_Roland_coolheaded = {
-                name = "Coolheaded",
-                text = {
-                    "Add {C:dark_edition}Frozen {}to {C:attention}#1#",
-                    "selected {C:attention}playing",
-                    "{C:attention}card {}or {C:attention}Joker",
-                },
-            },
             c_Roland_mirror = {
                 name = "Mirror",
                 text = {
-                    "Add a {C:dark_edition}Glass Tag",
+                    "Add a {C:dark_edition}Glass Seal",
                     "to {C:attention}#1#{} selected",
                     "card in {C:hands}hand",
                 },
@@ -359,6 +351,16 @@ return {
             tag_Roland_invisible = {
                 name = "Invisible Tag",
                 text = {"{C:attention}Duplicate {}a random Joker", "{C:inactive}(Must have room)"},
+            },
+        },
+        Tarot = {
+            c_Roland_coolheaded = {
+                name = "Coolheaded",
+                text = {
+                    "Add {C:dark_edition}Frozen {}to {C:attention}#1#",
+                    "selected {C:attention}playing",
+                    "{C:attention}card {}or {C:attention}Joker",
+                },
             },
         },
     },
