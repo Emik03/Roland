@@ -32,9 +32,7 @@ local function common_rank()
     ---@type { [integer]: integer }, { [integer]: string }
     local tally, to_name = {}, {}
 
-    f(G.playing_cards):where(function(v)
-        return not SMODS.has_no_rank(v)
-    end):each(function(v)
+    f(G.playing_cards):where(SMODS.has_no_rank, false):each(function(v)
         local id = v:get_id()
         to_name[id] = v.base.value
         tally[id] = (tally[id] or 0) + 1
@@ -236,16 +234,17 @@ blind {
     boss_colour = HEX "102a41ff",
     pronouns = "it_its",
     defeat = function(self)
-        self.cards():each(set_freeze())
+        self.cards():where "Roland_blizzard":each(set_freeze())
         G.GAME.blind.disabled = true
     end,
     disable = function(self)
         self:defeat()
     end,
     calculate = function(self, b)
-        return not b.disabled and self.cards():where(function(v)
-            return not v.Roland_blizzard and v.facing == "front"
-        end):each(set_freeze(true)) or nil
+        return not b.disabled and self.cards()
+            :where("Roland_blizzard", false)
+            :where("facing", "front")
+            :each(set_freeze(true)) or nil
     end,
     cards = function()
         return f(G):where(function(v)

@@ -198,9 +198,7 @@ local finalizers = {
                     local _ = v.debuff and SMODS.recalc_debuff(v)
                 end)
 
-                jokers = next(jokers) and jokers or f(cards):where(function(v)
-                    return not v.debuff
-                end):map(function(v)
+                jokers = next(jokers) and jokers or f(cards):where("debuff", false):map(function(v)
                     local _ = not prev[v] and table.insert(jokers, v)
                     return v
                 end):table()
