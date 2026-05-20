@@ -1,3 +1,5 @@
+local f, q, u = unpack(... or require "lib.shared")
+
 SMODS.Atlas {
     px = 71,
     py = 95,
