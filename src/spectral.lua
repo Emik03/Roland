@@ -38,38 +38,6 @@ spectral {
     key = "afterimage",
     pronouns = "he_they",
     artist = "aster",
-    attributes = {"editions", "modify_card", "hand_size", "spectral"},
-    config = {extra = {amount = 1, hand = -2}},
-    loc_vars = function(_, info_queue, card)
-        table.insert(info_queue, {key = "e_negative_playing_card", set = "Edition", config = {extra = 1}})
-        return {vars = {card.ability.extra.amount, card.ability.extra.hand}}
-    end,
-    can_use = function(_, card)
-        return u() and card.ability.extra.amount == #Bakery_API.get_highlighted()
-    end,
-    use = function(_, card)
-        f(Bakery_API.get_highlighted()):each(function(v)
-            q {
-                delay = 0.1,
-                func = function()
-                    v:set_edition {negative = true}
-                end,
-            }
-        end)
-
-        q {
-            delay = 0.1,
-            func = function()
-                G.hand:change_size(card.ability.extra.hand)
-                Bakery_API.unhighlight_all()
-            end,
-        }
-    end,
-}
-
-spectral {
-    key = "dual",
-    pronouns = "they_them",
     config = {extra = {amount = 2}},
     attributes = {"seal", "modify_card", "spectral"},
     loc_vars = function(_, _, card)
@@ -99,9 +67,9 @@ spectral {
 }
 
 spectral {
-    key = "mirror",
+    key = "refract",
     pronouns = "he_him",
-    config = {extra = {amount = 1}},
+    config = {extra = {amount = 2}},
     attributes = {"seal", "modify_card", "spectral"},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_SEALS.Roland_glass)

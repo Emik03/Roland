@@ -70,6 +70,25 @@ joker {
 }
 
 joker {
+    key = "jokersr",
+    pronouns = "he_him",
+    config = {extra = {xmult = 1.25}},
+    attributes = {"xmult"},
+    cost = 2,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(_, card, context)
+        return (context.joker_main or context.forcetrigger) and
+            {card = card, xmult = card.ability.extra.xmult} or nil
+    end,
+}
+
+joker {
     key = "mrsbones",
     pronouns = "she_her",
     artist = "char",
@@ -106,25 +125,112 @@ joker {
 }
 
 joker {
-    key = "phytoestrogens",
-    pronouns = "she_her",
-    config = {extra = {xmult = 0.25}},
-    attributes = {"mult", "xmult"},
-    cost = 8,
-    rarity = 3,
-    eternal_compat = true,
+    key = "sunny",
+    pronouns = "they_them",
+    artist = "char",
+    attributes = {"food", "on_sell"},
+    cost = 2,
+    rarity = 1,
+    eternal_compat = false,
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.xmult}}
+        local last = ((G.deck or {}).cards or {})[1]
+
+        if not last or card.area ~= G.jokers then
+            return {
+                vars = {
+                    "",
+                    localize {type = "variable", key = "b_Roland_na"},
+                    "",
+                    colours = {G.C.JOKER_GREY, G.C.JOKER_GREY},
+                },
+            }
+        end
+
+        local suit = last.base.suit
+        local value = last.base.value
+        local name = last.ability.name or ""
+        local no_rank = SMODS.has_no_rank(last)
+        local no_suit = SMODS.has_no_suit(last)
+
+        return {
+            vars = {
+                value and not no_rank and localize(value or 14, "ranks") or name,
+                not no_rank and not no_suit and localize {type = "variable", key = "b_Roland_of"} or "",
+                no_suit and "" or localize(suit, "suits_plural"),
+                colours = {G.C.IMPORTANT, G.C.SUITS[suit] or G.C.JOKER_GREY},
+            },
+        }
     end,
-    calculate = function(_, card, context)
-        if not context.joker_main and not context.forcetrigger then
+    calculate = function(_, _, context)
+        if not context.selling_self and not context.forcetrigger then
             return
         end
 
-        SMODS.calculate_effect({mult = hand_chips}, card)
-        SMODS.calculate_effect({xmult = card.ability.extra.xmult}, card)
+        draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
+        local current_round = G.GAME.current_round
+        local facing_blind = G.GAME.facing_blind
+        SMODS.calculate_context {drawing_cards = true, draw = {G.deck.cards}}
+
+        SMODS.calculate_context {
+            first_hand_drawn = not current_round.any_hand_drawn and facing_blind or nil,
+            hand_drawn = facing_blind and {G.deck.cards[1]} --[[@as true]],
+            other_drawn = not facing_blind and {G.deck.cards[1]},
+        }
+
+        if type(facing_blind) == "table" then
+            facing_blind.any_hand_drawn = facing_blind.any_hand_drawn or facing_blind
+        end
+    end,
+}
+
+joker {
+    key = "hardboiled",
+    pronouns = "they_them",
+    attributes = {"food", "editions", "modify_card", "on_sell"},
+    cost = 5,
+    rarity = 2,
+    eternal_compat = false,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+    end,
+    calculate = function(_, _, context)
+        return (context.selling_self or context.forcetrigger) and f(G.hand.cards):each(function(v)
+            q {
+                delay = 0.1,
+                func = function()
+                    v:set_edition {Roland_frozen = true}
+                end,
+            }
+        end) or nil
+    end,
+}
+
+joker {
+    key = "basket",
+    pronouns = "they_them",
+    attributes = {"food", "generation", "on_sell"},
+    cost = 8,
+    rarity = 3,
+    eternal_compat = false,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, negative)
+    end,
+    calculate = function(_, _, context)
+        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):each(function(v)
+            q {
+                delay = 1,
+                func = function()
+                    play_sound "timpani"
+                    SMODS.add_card {edition = "e_negative", key = v.config.center.key}
+                end,
+            }
+        end) or nil
     end,
 }
 
@@ -244,112 +350,90 @@ joker {
 }
 
 joker {
-    key = "sunny",
-    pronouns = "they_them",
-    artist = "char",
-    attributes = {"food", "on_sell"},
-    cost = 2,
+    key = "coldturkey",
+    pronouns = "he_him",
+    config = {extra = {xmult = 2}},
+    attributes = {"xmult"},
+    cost = 4,
     rarity = 1,
-    eternal_compat = false,
+    eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
-    loc_vars = function(_, _, card)
-        local last = ((G.deck or {}).cards or {})[1]
-
-        if not last or card.area ~= G.jokers then
-            return {
-                vars = {
-                    "",
-                    localize {type = "variable", key = "b_Roland_na"},
-                    "",
-                    colours = {G.C.JOKER_GREY, G.C.JOKER_GREY},
-                },
-            }
-        end
-
-        local suit = last.base.suit
-        local value = last.base.value
-        local name = last.ability.name or ""
-        local no_rank = SMODS.has_no_rank(last)
-        local no_suit = SMODS.has_no_suit(last)
-
-        return {
-            vars = {
-                value and not no_rank and localize(value or 14, "ranks") or name,
-                not no_rank and not no_suit and localize {type = "variable", key = "b_Roland_of"} or "",
-                no_suit and "" or localize(suit, "suits_plural"),
-                colours = {G.C.IMPORTANT, G.C.SUITS[suit] or G.C.JOKER_GREY},
-            },
-        }
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+        return {vars = {card.ability.extra.xmult}}
     end,
-    calculate = function(_, _, context)
-        if not context.selling_self and not context.forcetrigger then
-            return
-        end
+    calculate = function(_, card, context)
+        local target = (context.scoring_hand or {})[3]
 
-        draw_card(G.deck, G.hand, 100, "up", false, G.deck.cards[1])
-        local current_round = G.GAME.current_round
-        local facing_blind = G.GAME.facing_blind
-        SMODS.calculate_context {drawing_cards = true, draw = {G.deck.cards}}
-
-        SMODS.calculate_context {
-            first_hand_drawn = not current_round.any_hand_drawn and facing_blind or nil,
-            hand_drawn = facing_blind and {G.deck.cards[1]} --[[@as true]],
-            other_drawn = not facing_blind and {G.deck.cards[1]},
-        }
-
-        if type(facing_blind) == "table" then
-            facing_blind.any_hand_drawn = facing_blind.any_hand_drawn or facing_blind
-        end
+        return (context.individual and
+                context.cardarea == G.play and
+                context.other_card == target and
+                is_frozen(context.other_card) or
+                context.forcetrigger) and
+            {xmult = card.ability.extra.xmult} or nil
     end,
 }
 
 joker {
-    key = "hardboiled",
+    key = "snowsquall",
     pronouns = "they_them",
-    attributes = {"food", "editions", "modify_card", "on_sell"},
-    cost = 5,
+    config = {extra = {mult_gain = 1, mult = 0}},
+    attributes = {"mult", "scaling", "hand_type"},
+    cost = 6,
     rarity = 2,
-    eternal_compat = false,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = false,
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+        local extra = card.ability.extra
+        return {vars = {extra.mult_gain, extra.mult}}
+    end,
+    calculate = function(_, card, context)
+        local extra = card.ability.extra
+
+        if context.joker_main or context.forcetrigger then
+            return {mult = extra.mult}
+        end
+
+        if context.blueprint or
+            not context.individual or
+            context.cardarea ~= G.play or
+            not is_frozen(context.other_card) then
+            return
+        end
+
+        extra.mult = extra.mult + extra.mult_gain
+        return {message = localize "k_upgrade_ex", colour = G.C.RED, message_card = card}
+    end,
+}
+
+joker {
+    key = "arctic",
+    pronouns = "it_its",
+    cost = 10,
+    rarity = 3,
+    config = {extra = {[false] = 1, [true] = 2}},
+    attributes = {"retrigger", "editions"},
+    eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, info_queue)
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
     end,
-    calculate = function(_, _, context)
-        return (context.selling_self or context.forcetrigger) and f(G.hand.cards):each(function(v)
-            q {
-                delay = 0.1,
-                func = function()
-                    v:set_edition {Roland_frozen = true}
-                end,
-            }
-        end) or nil
-    end,
-}
-
-joker {
-    key = "basket",
-    pronouns = "they_them",
-    attributes = {"food", "generation", "on_sell"},
-    cost = 8,
-    rarity = 3,
-    eternal_compat = false,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, info_queue)
-        table.insert(info_queue, negative)
-    end,
-    calculate = function(_, _, context)
-        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):each(function(v)
-            q {
-                delay = 1,
-                func = function()
-                    play_sound "timpani"
-                    SMODS.add_card {edition = "e_negative", key = v.config.center.key}
-                end,
-            }
-        end) or nil
+    calculate = function(_, card, context)
+        return context.repetition and {repetitions = card.ability.extra[is_frozen(context.other_card)]} or
+            SMODS.merge_effects(
+                f(G.jokers.cards):where(is_frozen):map(function(v)
+                    return SMODS.blueprint_effect(card, v, context) or true
+                end):where(function(v)
+                    return type(v) == "table"
+                end):map(function(v)
+                    v.colour = G.C.DARK_EDITION
+                    return v
+                end):values():table()
+            )
     end,
 }
 
@@ -407,58 +491,6 @@ joker {
 }
 
 joker {
-    key = "suitable",
-    pronouns = "she_they",
-    attributes = {"suit", "passive", "hearts", "diamonds", "spades", "clubs"},
-    cost = 4,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = false,
-    perishable_compat = true,
-    loc_vars = function(_, info_queue)
-        table.insert(info_queue, G.P_CENTERS.m_wild)
-        local suit = (G.GAME.current_round.Roland_suitable or {}).suit or "Spades"
-        return {vars = {localize(suit, "suits_plural"), colours = {G.C.SUITS[suit]}}}
-    end,
-    add_to_deck = function()
-        G.GAME.modifiers.Roland_suitable = (G.GAME.modifiers.Roland_suitable or 0) + 1
-    end,
-    remove_from_deck = function()
-        G.GAME.modifiers.Roland_suitable = (G.GAME.modifiers.Roland_suitable or 0) - 1
-    end,
-}
-
-function SMODS.current_mod.reset_game_globals()
-    local immutable = f(SMODS.find_card "j_Roland_suitable"):any(is_frozen)
-    local suitable = {suit = "Spades"}
-
-    G.GAME.current_round.Roland_suitable = immutable and
-        G.GAME.current_round.Roland_suitable or suitable
-
-    if immutable then
-        return
-    end
-
-    local suits = f(G.playing_cards):where(SMODS.has_no_suit, false):table()
-    local card = pseudorandom_element(suits, "Roland_suitable" .. G.GAME.round_resets.ante)
-    suitable.suit = card and card.base.suit or suitable.suit
-end
-
-local orig_get_enhancements = SMODS.get_enhancements
-
-function SMODS.get_enhancements(card, ...)
-    if (G.GAME.modifiers.Roland_suitable or 0) <= 0 or
-        card.base.suit ~= G.GAME.current_round.Roland_suitable.suit or
-        (card.area ~= G.hand and card.area ~= G.play) then
-        return orig_get_enhancements(card, ...)
-    end
-
-    local ret = orig_get_enhancements(card, ...) or {}
-    ret.m_wild = true
-    return ret
-end
-
-joker {
     key = "misfortune",
     pronouns = "she_they",
     artist = "char",
@@ -507,25 +539,6 @@ joker {
 }
 
 joker {
-    key = "jokersr",
-    pronouns = "he_him",
-    config = {extra = {xmult = 1.25}},
-    attributes = {"xmult"},
-    cost = 2,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.xmult}}
-    end,
-    calculate = function(_, card, context)
-        return (context.joker_main or context.forcetrigger) and
-            {card = card, xmult = card.ability.extra.xmult} or nil
-    end,
-}
-
-joker {
     key = "bulldozer",
     pronouns = "it_its",
     attributes = {"xmult"},
@@ -560,6 +573,104 @@ joker {
 
         local m = ((G.GAME or {}).blind or {}).mult
         return m and m ~= 0 and m or mult "Small" or mult "Big" or mult "Boss" or 1
+    end,
+}
+
+joker {
+    key = "phytoestrogens",
+    pronouns = "she_her",
+    config = {extra = {xmult = 0.25}},
+    attributes = {"mult", "xmult"},
+    cost = 8,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(_, card, context)
+        if not context.joker_main and not context.forcetrigger then
+            return
+        end
+
+        SMODS.calculate_effect({mult = hand_chips}, card)
+        SMODS.calculate_effect({xmult = card.ability.extra.xmult}, card)
+    end,
+}
+
+joker {
+    key = "nilly",
+    pronouns = "any_all",
+    config = {extra = {flipped = false}},
+    attributes = {"xmult"},
+    cost = 0,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {
+            vars = {localize {
+                type = "variable",
+                key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled",
+            }},
+        }
+    end,
+    inject = function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.double_sided_jokers.j_Roland_nilly = true
+    end,
+    calculate = function(_, card, context)
+        if (not context.joker_main or not card.ability.extra.flipped) and not context.forcetrigger then
+            return
+        end
+
+        mult = mod_mult(0)
+        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
+        return {sound = "Roland_nilly", message = "0X " .. localize "k_mult", colour = G.C.MULT, card = card}
+    end,
+    Bakery_can_use = function(_, card)
+        return not card.debuff
+    end,
+    Bakery_use_button_text = function(_, card)
+        return localize {
+            type = "variable",
+            key = card.debuff and "b_Roland_debuffed" or "b_Roland_toggle",
+        }
+    end,
+    Bakery_use_joker = function(_, card)
+        local _ = card.debuff or Bakery_API.flip_double_sided(card)
+    end,
+}
+
+joker {
+    key = "amberacorn",
+    pronouns = "he_they",
+    config = {extra = {xmult = 3}},
+    attributes = {"xmult"},
+    cost = 9,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = false,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(_, card, context)
+        if context.joker_main or context.forcetrigger then
+            return {card = card, xmult = card.ability.extra.xmult}
+        end
+
+        if not context.press_play then
+            return
+        end
+
+        local keys = f(card.area.cards):where(f().nq(card)):keys():table()
+        local k = pseudorandom_element(keys, pseudoseed "Roland_stubborn") or card.rank
+
+        card.area.cards[k], card.area.cards[card.rank] =
+            card.area.cards[card.rank], card.area.cards[k]
     end,
 }
 
@@ -613,6 +724,112 @@ joker {
 }
 
 joker {
+    key = "suitable",
+    pronouns = "she_they",
+    attributes = {"suit", "passive", "hearts", "diamonds", "spades", "clubs"},
+    cost = 4,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_CENTERS.m_wild)
+        local suit = (G.GAME.current_round.Roland_suitable or {}).suit or "Spades"
+        return {vars = {localize(suit, "suits_plural"), colours = {G.C.SUITS[suit]}}}
+    end,
+    add_to_deck = function()
+        G.GAME.modifiers.Roland_suitable = (G.GAME.modifiers.Roland_suitable or 0) + 1
+    end,
+    remove_from_deck = function()
+        G.GAME.modifiers.Roland_suitable = (G.GAME.modifiers.Roland_suitable or 0) - 1
+    end,
+}
+
+function SMODS.current_mod.reset_game_globals()
+    local immutable = f(SMODS.find_card "j_Roland_suitable"):any(is_frozen)
+    local suitable = {suit = "Spades"}
+
+    G.GAME.current_round.Roland_suitable = immutable and
+        G.GAME.current_round.Roland_suitable or suitable
+
+    if immutable then
+        return
+    end
+
+    local suits = f(G.playing_cards):where(SMODS.has_no_suit, false):table()
+    local card = pseudorandom_element(suits, "Roland_suitable" .. G.GAME.round_resets.ante)
+    suitable.suit = card and card.base.suit or suitable.suit
+end
+
+local orig_get_enhancements = SMODS.get_enhancements
+
+function SMODS.get_enhancements(card, ...)
+    if (G.GAME.modifiers.Roland_suitable or 0) <= 0 or
+        card.base.suit ~= G.GAME.current_round.Roland_suitable.suit or
+        (card.area ~= G.hand and card.area ~= G.play) then
+        return orig_get_enhancements(card, ...)
+    end
+
+    local ret = orig_get_enhancements(card, ...) or {}
+    ret.m_wild = true
+    return ret
+end
+
+joker {
+    key = "artemis",
+    pronouns = "she_they",
+    cost = 6,
+    rarity = 2,
+    config = {extra = {
+        dollars = 1,
+        increase = 2,
+        progress = 0,
+        flipped = false,
+        sequence = {"c_earth", "c_mars", "c_earth"},
+    }},
+    calc_dollar_bonus = function(_, card)
+        return card.ability.extra.dollars
+    end,
+    inject = function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.double_sided_jokers.j_Roland_artemis = true
+    end,
+    loc_vars = function(_, info_queue, card)
+        local extra = card.ability.extra
+
+        local function color(i)
+            return i == extra.progress + 1 and (i == 2 and G.C.ORANGE or G.C.BLUE) or G.C.JOKER_GREY
+        end
+
+        f(extra.sequence):each(function(v)
+            table.insert(info_queue, G.P_CENTERS[v])
+        end)
+
+        return {vars = {extra.dollars, extra.increase, colours = f(#extra.sequence):map(color):table()}}
+    end,
+    calculate = function(_, card, context)
+        local extra = card.ability.extra
+
+        if context.blueprint or
+            not context.using_consumeable or
+            context.consumeable.config.center.key ~= extra.sequence[extra.progress + 1] then
+            return
+        end
+
+        extra.progress = extra.progress + 1
+        _ = (extra.progress == 1) ~= extra.flipped and Bakery_API.flip_double_sided(card)
+
+        if extra.sequence[extra.progress + 1] then
+            return {message = localize "k_progress", colour = extra.progress == 2 and G.C.ORANGE or G.C.BLUE}
+        end
+
+        extra.progress = 0
+        extra.dollars = extra.dollars + extra.increase
+        return {message = localize "k_upgrade_ex", colour = G.C.MONEY}
+    end,
+}
+
+joker {
     key = "oops",
     pronouns = "she_they",
     artist = "char",
@@ -647,167 +864,5 @@ joker {
             extra.probability = extra.probability * extra.probability_mult
             return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
         end
-    end,
-}
-
-joker {
-    key = "nilly",
-    pronouns = "any_all",
-    config = {extra = {flipped = false}},
-    attributes = {"xmult"},
-    cost = 0,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        return {
-            vars = {localize {
-                type = "variable",
-                key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled",
-            }},
-        }
-    end,
-    inject = function(...)
-        SMODS.Joker.inject(...)
-        Bakery_API.double_sided_jokers.j_Roland_nilly = true
-    end,
-    calculate = function(_, card, context)
-        if (not context.joker_main or not card.ability.extra.flipped) and not context.forcetrigger then
-            return
-        end
-
-        mult = mod_mult(0)
-        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
-        return {sound = "Roland_nilly", message = "0X " .. localize "k_mult", colour = G.C.MULT, card = card}
-    end,
-    Bakery_can_use = function(_, card)
-        return not card.debuff
-    end,
-    Bakery_use_button_text = function(_, card)
-        return localize {
-            type = "variable",
-            key = card.debuff and "b_Roland_debuffed" or "b_Roland_toggle",
-        }
-    end,
-    Bakery_use_joker = function(_, card)
-        local _ = card.debuff or Bakery_API.flip_double_sided(card)
-    end,
-}
-
-joker {
-    key = "arctic",
-    pronouns = "it_its",
-    cost = 10,
-    rarity = 3,
-    config = {extra = {[false] = 1, [true] = 2}},
-    attributes = {"retrigger", "editions"},
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, info_queue)
-        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
-    end,
-    calculate = function(_, card, context)
-        return context.repetition and {repetitions = card.ability.extra[is_frozen(context.other_card)]} or
-            SMODS.merge_effects(
-                f(G.jokers.cards):where(is_frozen):map(function(v)
-                    return SMODS.blueprint_effect(card, v, context) or true
-                end):where(function(v)
-                    return type(v) == "table"
-                end):map(function(v)
-                    v.colour = G.C.DARK_EDITION
-                    return v
-                end):values():table()
-            )
-    end,
-}
-
-joker {
-    key = "snowsquall",
-    pronouns = "they_them",
-    config = {extra = {mult_gain = 1, mult = 0}},
-    attributes = {"mult", "scaling", "hand_type"},
-    cost = 6,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = false,
-    loc_vars = function(_, info_queue, card)
-        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
-        local extra = card.ability.extra
-        return {vars = {extra.mult_gain, extra.mult}}
-    end,
-    calculate = function(_, card, context)
-        local extra = card.ability.extra
-
-        if context.joker_main or context.forcetrigger then
-            return {mult = extra.mult}
-        end
-
-        if context.blueprint or
-            not context.individual or
-            context.cardarea ~= G.play or
-            not is_frozen(context.other_card) then
-            return
-        end
-
-        extra.mult = extra.mult + extra.mult_gain
-        return {message = localize "k_upgrade_ex", colour = G.C.RED, message_card = card}
-    end,
-}
-
-joker {
-    key = "stubborn",
-    pronouns = "he_they",
-    config = {extra = {xmult = 3}},
-    attributes = {"xmult"},
-    cost = 9,
-    rarity = 3,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = false,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.xmult}}
-    end,
-    calculate = function(_, card, context)
-        if context.joker_main or context.forcetrigger then
-            return {card = card, xmult = card.ability.extra.xmult}
-        end
-
-        if not context.press_play then
-            return
-        end
-
-        local keys = f(card.area.cards):where(f().nq(card)):keys():table()
-        local k = pseudorandom_element(keys, pseudoseed "Roland_stubborn") or card.rank
-
-        card.area.cards[k], card.area.cards[card.rank] =
-            card.area.cards[card.rank], card.area.cards[k]
-    end,
-}
-
-joker {
-    key = "blight",
-    pronouns = "he_him",
-    config = {extra = {xmult = 2}},
-    attributes = {"xmult"},
-    cost = 4,
-    rarity = 1,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = false,
-    loc_vars = function(_, info_queue, card)
-        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
-        return {vars = {card.ability.extra.xmult}}
-    end,
-    calculate = function(_, card, context)
-        local target = (context.scoring_hand or {})[3]
-
-        return context.individual and
-            context.cardarea == G.play and
-            context.other_card == target and
-            is_frozen(context.other_card) and
-            {xmult = card.ability.extra.xmult} or nil
     end,
 }

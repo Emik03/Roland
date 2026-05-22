@@ -118,9 +118,23 @@ return {
             },
         },
         Joker = {
+            j_Roland_amberacorn = {
+                name = "Amber Acorn",
+                text = {"{X:mult,C:white}X#1#{} Mult", "Moves before", "hand is played"},
+            },
             j_Roland_arctic = {
                 name = "Arctic Circle",
                 text = {"Retrigger {C:dark_edition}Frozen {}cards", "Retrigger playing cards"},
+            },
+            j_Roland_artemis = {
+                name = "Artemis X",
+                text = {
+                    "Earn {C:money}$#1# {}at end of round",
+                    "Payout increases by {C:money}$#2#",
+                    "when these {C:planet}Planet {}cards",
+                    "are used in order:",
+                    "{V:1}Earth{C:inactive} - {V:2}Mars{C:inactive} - {V:3}Earth",
+                },
             },
             j_Roland_basket = {
                 name = "Basket",
@@ -130,20 +144,20 @@ return {
                     "of every consumable",
                 },
             },
-            j_Roland_blight = {
-                name = "Blight",
-                text = {
-                    "Third played card",
-                    "gives {X:red,C:white}X#1#{} Mult",
-                    "if it is {C:dark_edition}Frozen",
-                },
-            },
             j_Roland_bulldozer = {
                 name = "Bulldozer",
                 text = {
                     "Give {X:red,C:white}XMult{} equal to",
                     "the current {C:attention}Blind Size{C:attention}",
                     "{C:inactive}(Currently {X:red,C:white}X#1#{C:inactive})",
+                },
+            },
+            j_Roland_coldturkey = {
+                name = "Cold Turkey",
+                text = {
+                    "Third scored card",
+                    "gives {X:red,C:white}X#1#{} Mult",
+                    "if it is {C:dark_edition}Frozen",
                 },
             },
             j_Roland_domino = {
@@ -249,10 +263,6 @@ return {
                     "{C:inactive}(Currently {C:red}+#2#{C:inactive} Mult)",
                 },
             },
-            j_Roland_stubborn = {
-                name = "Stubborn",
-                text = {"{X:mult,C:white}X#1#{} Mult", "Moves before", "hand is played"},
-            },
             j_Roland_suitable = {
                 name = "Suitable",
                 text = {"{V:1}#1# {}are {C:attention}Wild", "Suit changes", "every round"},
@@ -338,25 +348,17 @@ return {
             c_Roland_afterimage = {
                 name = "Afterimage",
                 text = {
-                    "Add {C:dark_edition}Negative {}to {C:attention}#1#",
-                    "selected card in hand",
-                    "{C:red}#2#{} hand size",
-                },
-            },
-            c_Roland_dual = {
-                name = "Dual",
-                text = {
                     "Add random seals",
                     "to {C:attention}#1#{} random",
                     "cards in {C:hands}hand",
                 },
             },
-            c_Roland_mirror = {
-                name = "Mirror",
+            c_Roland_refract = {
+                name = "Refract",
                 text = {
                     "Add a {C:dark_edition}Glass Seal",
                     "to {C:attention}#1#{} selected",
-                    "card in {C:hands}hand",
+                    "cards in {C:hands}hand",
                 },
             },
             c_Roland_void = {
