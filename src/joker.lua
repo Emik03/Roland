@@ -414,7 +414,7 @@ joker {
     pronouns = "it_its",
     cost = 10,
     rarity = 3,
-    config = {extra = {[false] = 1, [true] = 2}},
+    config = {extra = {frozen = 2, non_frozen = 1}},
     attributes = {"retrigger", "editions"},
     eternal_compat = true,
     blueprint_compat = true,
@@ -423,7 +423,10 @@ joker {
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
     end,
     calculate = function(_, card, context)
-        return context.repetition and {repetitions = card.ability.extra[is_frozen(context.other_card)]} or
+        local extra = card.ability.extra
+
+        return (context.repetition and context.other_card) and
+            {repetitions = is_frozen(context.other_card) and extra.frozen or extra.non_frozen} or
             SMODS.merge_effects(
                 f(G.jokers.cards):where(is_frozen):map(function(v)
                     return SMODS.blueprint_effect(card, v, context) or true
