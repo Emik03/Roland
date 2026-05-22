@@ -706,7 +706,7 @@ joker {
         local g, extra, numerator, xmult = G.GAME, card.ability.extra, 1, 1
 
         if g.blind.name == "bl_mp_nemesis" then
-            return {card = card, xmult = extra}
+            return {card = card, xmult = extra.odds}
         end
 
         for _ = 1, 64 do
