@@ -721,7 +721,93 @@ joker {
                 end):values():table()
             )
     end,
-    in_pool = function()
-        return not not f(G.playing_cards):concat(G.jokers.cards):any(is_frozen)
+}
+
+joker {
+    key = "snowsquall",
+    pronouns = "they_them",
+    config = {extra = {mult_gain = 1, mult = 0}},
+    attributes = {"mult", "scaling", "hand_type"},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = false,
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+        local extra = card.ability.extra
+        return {vars = {extra.mult_gain, extra.mult}}
+    end,
+    calculate = function(_, card, context)
+        local extra = card.ability.extra
+
+        if context.joker_main or context.forcetrigger then
+            return {mult = extra.mult}
+        end
+
+        if context.blueprint or
+            not context.individual or
+            context.cardarea ~= G.play or
+            not is_frozen(context.other_card) then
+            return
+        end
+
+        extra.mult = extra.mult + extra.mult_gain
+        return {message = localize "k_upgrade_ex", colour = G.C.RED, message_card = card}
+    end,
+}
+
+joker {
+    key = "stubborn",
+    pronouns = "he_they",
+    config = {extra = {xmult = 3}},
+    attributes = {"xmult"},
+    cost = 9,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = false,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(_, card, context)
+        if context.joker_main or context.forcetrigger then
+            return {card = card, xmult = card.ability.extra.xmult}
+        end
+
+        if not context.press_play then
+            return
+        end
+
+        local keys = f(card.area.cards):where(f().nq(card)):keys():table()
+        local k = pseudorandom_element(keys, pseudoseed "Roland_stubborn") or card.rank
+
+        card.area.cards[k], card.area.cards[card.rank] =
+            card.area.cards[card.rank], card.area.cards[k]
+    end,
+}
+
+joker {
+    key = "blight",
+    pronouns = "he_him",
+    config = {extra = {xmult = 2}},
+    attributes = {"xmult"},
+    cost = 4,
+    rarity = 1,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = false,
+    loc_vars = function(_, info_queue, card)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(_, card, context)
+        local target = (context.scoring_hand or {})[3]
+
+        return context.individual and
+            context.cardarea == G.play and
+            context.other_card == target and
+            is_frozen(context.other_card) and
+            {xmult = card.ability.extra.xmult} or nil
     end,
 }

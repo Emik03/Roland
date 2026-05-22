@@ -130,6 +130,14 @@ return {
                     "of every consumable",
                 },
             },
+            j_Roland_blight = {
+                name = "Blight",
+                text = {
+                    "Third played card",
+                    "gives {X:red,C:white}X#1#{} Mult",
+                    "if it is {C:dark_edition}Frozen",
+                },
+            },
             j_Roland_bulldozer = {
                 name = "Bulldozer",
                 text = {
@@ -231,6 +239,19 @@ return {
                     "contains at",
                     "least {C:attention}#2# suits",
                 },
+            },
+            j_Roland_snowsquall = {
+                name = "Snowsquall",
+                text = {
+                    "This Joker gains",
+                    "{C:mult}+#1# {}Mult for every",
+                    "played {C:dark_edition}Frozen {}card",
+                    "{C:inactive}(Currently {C:red}+#2#{C:inactive} Mult)",
+                },
+            },
+            j_Roland_stubborn = {
+                name = "Stubborn",
+                text = {"{X:mult,C:white}X#1#{} Mult", "Moves before", "hand is played"},
             },
             j_Roland_suitable = {
                 name = "Suitable",

@@ -24,29 +24,34 @@ local none
 ---@return fun(tbl: table<K, V>, key: K): K, V
 ---@return K
 ---@return V
+---@nodiscard
 local function autopairs(tbl, fpairs)
     return (fpairs or tbl[#tbl] and ipairs or pairs)(tbl)
 end
 
 ---@param any any
 ---@return boolean
+---@nodiscard
 local function is_f(any)
     return type(any) == "table" and any.from == f.from and any.new == f.new
 end
 
 --- Always returns nil.
 ---@return nil
+---@nodiscard
 function f.noop()
 end
 
 --- Always returns false.
 ---@return false
+---@nodiscard
 function f.fals()
     return false
 end
 
 --- Always returns true.
 ---@return true
+---@nodiscard
 function f.tru()
     return true
 end
@@ -55,8 +60,27 @@ end
 ---@generic T
 ---@param ... T
 ---@return T
+---@nodiscard
 function f.id(...)
     return ...
+end
+
+---@generic T
+---@param value T
+---@return fun(T): boolean
+function f.eq(value)
+    return function(v)
+        return value == v
+    end
+end
+
+---@generic T
+---@param value T
+---@return fun(T): boolean
+function f.nq(value)
+    return function(v)
+        return value ~= v
+    end
 end
 
 ---@generic T
@@ -489,6 +513,15 @@ function f:count(func)
     end
 
     return ret
+end
+
+---@generic K, V, T
+---@param self F|{ [K]: V }
+---@param _ `T`
+---@return F|{ [K]: `T` }
+---@nodiscard
+function f:pun(_)
+    return self
 end
 
 ---@generic K, V
