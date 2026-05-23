@@ -871,9 +871,9 @@ joker {
 joker {
     key = "idle",
     pronouns = "they_them",
-    cost = 9,
-    rarity = 3,
+    rarity = 2,
     Roland_idle_capacity = 6,
+    cost = G.P_CENTERS.j_idol.cost,
     config = {extra = {cards = {}, xmult = 2}},
     attributes = {"rank", "suit", "xmult"},
     eternal_compat = true,
