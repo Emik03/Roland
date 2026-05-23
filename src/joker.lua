@@ -524,33 +524,6 @@ joker {
 }
 
 joker {
-    key = "temple",
-    pronouns = "any_all",
-    config = {extra = {xmult = 2}},
-    attributes = {"xmult", "enhancements"},
-    cost = 6,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, info_queue, card)
-        table.insert(info_queue, G.P_CENTERS.m_wild)
-        return {vars = {card.ability.extra.xmult}}
-    end,
-    calculate = function(_, card, context)
-        return ((context.individual and
-            context.cardarea == "unscored" and
-            SMODS.has_enhancement(context.other_card, "m_wild")
-        ) or context.forcetrigger) and {xmult = card.ability.extra.xmult} or nil
-    end,
-    in_pool = function()
-        return f(G.playing_cards):any(function(v)
-            return SMODS.has_enhancement(v, "m_wild")
-        end)
-    end,
-}
-
-joker {
     key = "bulldozer",
     pronouns = "it_its",
     attributes = {"xmult"},

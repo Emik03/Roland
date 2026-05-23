@@ -70,7 +70,3 @@ function SMODS.current_mod.config_tab()
         }},
     }
 end
-
-function SMODS.current_mod.optional_features()
-    return {cardareas = {deck = true, unscored = true}}
-end
