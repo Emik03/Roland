@@ -118,7 +118,7 @@ return {
             },
         },
         Joker = {
-            j_Roland_amberacorn = {
+            j_Roland_amber = {
                 name = "Amber Acorn",
                 text = {"{X:mult,C:white}X#1#{} Mult", "Moves before", "hand is played"},
             },
@@ -152,7 +152,7 @@ return {
                     "{C:inactive}(Currently {X:red,C:white}X#1#{C:inactive})",
                 },
             },
-            j_Roland_coldturkey = {
+            j_Roland_cold = {
                 name = "Cold Turkey",
                 text = {
                     "Third scored card",
@@ -175,6 +175,23 @@ return {
                     "Sell this Joker to",
                     "turn all cards in",
                     "hand {C:dark_edition}Frozen",
+                },
+            },
+            j_Roland_idle = {
+                name = "The Idle",
+                text = {
+                    "Use to add card's",
+                    "rank and suit",
+                    "First {C:attention}scoring {}card",
+                    "of each entry",
+                    "gives {X:mult,C:white}X#19#{} Mult",
+                    "{C:inactive}(Must be distinct)",
+                    "{V:1,s:0.75}#1#{C:inactive,s:0.75}#2#{V:2,s:0.75}#3#{C:inactive,s:0.75}, " ..
+                    "{V:3,s:0.75}#4#{C:inactive,s:0.75}#5#{V:4,s:0.75}#6#{C:inactive,s:0.75}",
+                    "{V:5,s:0.75}#7#{C:inactive,s:0.75}#8#{V:6,s:0.75}#9#, " ..
+                    "{V:7,s:0.75}#10#{C:inactive,s:0.75}#11#{V:8,s:0.75}#12#{C:inactive,s:0.75}",
+                    "{V:9,s:0.75}#13#{C:inactive,s:0.75}#14#{V:10,s:0.75}#15#{C:inactive,s:0.75}, " ..
+                    "{V:11,s:0.75}#16#{C:inactive,s:0.75}#17#{V:12,s:0.75}#18#",
                 },
             },
             j_Roland_jokersr = {
@@ -401,12 +418,15 @@ return {
             c_Roland_Showdown = "Showdown",
         },
         v_dictionary = {
+            b_Roland_add = "ADD",
             b_Roland_bye = "Bye!",
+            b_Roland_comma = ", ",
+            b_Roland_debuffed = "DEBUFFED",
             b_Roland_disabled = "Disabled",
             b_Roland_enabled = "Enabled",
-            b_Roland_comma = ", ",
             b_Roland_entering_shop = "Entering shop!",
             b_Roland_equinox_assist = "Assist: Only hide text (Equinox)",
+            b_Roland_full = "FULL",
             b_Roland_scribable_basket = "Scribable Basket (overpowered)",
             b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
             b_Roland_illusion_seal = "Allow seals from Illusion voucher",
@@ -416,6 +436,7 @@ return {
             b_Roland_na = "N/A",
             b_Roland_of = " of ",
             b_Roland_toggle = "TOGGLE",
+            b_Roland_unassigned = "(Unassigned)",
         },
         labels = {
             Roland_frozen = "Frozen",

@@ -22,7 +22,7 @@ local none
 ---@param tbl table<K, V>
 ---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
 ---@return fun(tbl: table<K, V>, key: K): K, V
----@return K
+---@return table<K, V>
 ---@return V
 ---@nodiscard
 local function autopairs(tbl, fpairs)
@@ -243,6 +243,56 @@ function f:map(func)
 
         if k ~= nil then
             return k, func(v, k)
+        end
+    end)
+end
+
+---@generic K, V, U
+---@param self F|{ [K]: V }
+---@param func F|fun(v: V, k: K): { [any]: U }
+---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
+---@return F|{ [K]: U }
+---@nodiscard
+---@overload fun(self: F|{ [K]: V }, func: string, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)): F|{ [K]: U }
+function f:flatmap(func, fpairs)
+    -- local i = 0
+    local vt, vk, vv, vp
+    func = type(func) == "string" and f.index(func) or func
+
+    return f.new(function()
+        if vk then
+            vk, vv = vp(vt, vk)
+
+            if vk ~= nil then
+                -- i = i + 1
+                -- return i, vv
+                return vk, vv
+            end
+        end
+
+        while true do
+            local k, v = self:next()
+
+            if k == nil then
+                return
+            end
+
+            v = func(v, k)
+
+            if type(v) ~= "table" then
+                -- i = i + 1
+                -- return i, v
+                return k, v
+            end
+
+            vp, vt, vk = autopairs(v, fpairs)
+            vk, vv = vp(vt, vk)
+
+            if vk ~= nil then
+                -- i = i + 1
+                -- return i, vv
+                return vk, vv
+            end
         end
     end)
 end

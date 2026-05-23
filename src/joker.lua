@@ -12,7 +12,7 @@ local joker = (function()
         return ret
     end
 
-    ---@param tbl SMODS.Joker|{artist?: string, sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}, attributes?: Attributes[]}
+    ---@param tbl SMODS.Joker|{artist?: string, Bakery_can_use: (fun(self: self, card: Card): boolean?), Bakery_use_button_text: (fun(self: self, card: Card): string|table|nil), Bakery_use_joker: fun(self: self, card: Card), sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}, attributes?: Attributes[]}
     return function(tbl)
         tbl.pos = inc()
         tbl.atlas = "joker"
@@ -36,6 +36,37 @@ end)()
 ---@param card Card
 local function is_frozen(card)
     return card.edition and card.edition.key == "e_Roland_frozen"
+end
+
+---@param card? Card|false|{suit: string, value: string}
+---@param fallback? string
+---@return {vars: {[number]: string|table|nil}|{colours: {[number]: {[1]: number, [2]: number, [3]: number, [4]: number}}}}
+local function localize_card(card, fallback)
+    if not card then
+        return {
+            vars = {
+                "",
+                localize {type = "variable", key = fallback or "b_Roland_na"},
+                "",
+                colours = {G.C.JOKER_GREY, G.C.JOKER_GREY},
+            },
+        }
+    end
+
+    local suit = (card.base or card).suit
+    local value = (card.base or card).value
+    local name = (card.ability or card).name or ""
+    local no_suit = card.base and SMODS.has_no_suit(card) or not suit
+    local no_rank = card.base and SMODS.has_no_rank(card) or not value
+
+    return {
+        vars = {
+            (value and not no_rank) and localize(value or 14, "ranks") or name,
+            (not no_rank and not no_suit) and localize {type = "variable", key = "b_Roland_of"} or "",
+            no_suit and "" or localize(suit, "suits_plural"),
+            colours = {G.C.IMPORTANT, G.C.SUITS[suit] or G.C.JOKER_GREY},
+        },
+    }
 end
 
 SMODS.Atlas {
@@ -135,33 +166,7 @@ joker {
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        local last = ((G.deck or {}).cards or {})[1]
-
-        if not last or card.area ~= G.jokers then
-            return {
-                vars = {
-                    "",
-                    localize {type = "variable", key = "b_Roland_na"},
-                    "",
-                    colours = {G.C.JOKER_GREY, G.C.JOKER_GREY},
-                },
-            }
-        end
-
-        local suit = last.base.suit
-        local value = last.base.value
-        local name = last.ability.name or ""
-        local no_rank = SMODS.has_no_rank(last)
-        local no_suit = SMODS.has_no_suit(last)
-
-        return {
-            vars = {
-                value and not no_rank and localize(value or 14, "ranks") or name,
-                not no_rank and not no_suit and localize {type = "variable", key = "b_Roland_of"} or "",
-                no_suit and "" or localize(suit, "suits_plural"),
-                colours = {G.C.IMPORTANT, G.C.SUITS[suit] or G.C.JOKER_GREY},
-            },
-        }
+        return localize_card(card.area == G.jokers and ((G.deck or {}).cards or {})[1])
     end,
     calculate = function(_, _, context)
         if not context.selling_self and not context.forcetrigger then
@@ -350,7 +355,7 @@ joker {
 }
 
 joker {
-    key = "coldturkey",
+    key = "cold",
     pronouns = "he_him",
     config = {extra = {xmult = 2}},
     attributes = {"xmult"},
@@ -613,12 +618,8 @@ joker {
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        return {
-            vars = {localize {
-                type = "variable",
-                key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled",
-            }},
-        }
+        local key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled"
+        return {vars = {localize {type = "variable", key = key}}}
     end,
     inject = function(...)
         SMODS.Joker.inject(...)
@@ -637,10 +638,7 @@ joker {
         return not card.debuff
     end,
     Bakery_use_button_text = function(_, card)
-        return localize {
-            type = "variable",
-            key = card.debuff and "b_Roland_debuffed" or "b_Roland_toggle",
-        }
+        return localize {type = "variable", key = card.debuff and "b_Roland_debuffed" or "b_Roland_toggle"}
     end,
     Bakery_use_joker = function(_, card)
         local _ = card.debuff or Bakery_API.flip_double_sided(card)
@@ -648,7 +646,7 @@ joker {
 }
 
 joker {
-    key = "amberacorn",
+    key = "amber",
     pronouns = "he_they",
     config = {extra = {xmult = 3}},
     attributes = {"xmult"},
@@ -670,7 +668,7 @@ joker {
         end
 
         local keys = f(card.area.cards):where(f().nq(card)):keys():table()
-        local k = pseudorandom_element(keys, pseudoseed "Roland_stubborn") or card.rank
+        local k = pseudorandom_element(keys, pseudoseed "Roland_amber") or card.rank
 
         card.area.cards[k], card.area.cards[card.rank] =
             card.area.cards[card.rank], card.area.cards[k]
@@ -867,5 +865,71 @@ joker {
             extra.probability = extra.probability * extra.probability_mult
             return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
         end
+    end,
+}
+
+joker {
+    key = "idle",
+    pronouns = "they_them",
+    cost = 9,
+    rarity = 3,
+    Roland_idle_capacity = 6,
+    config = {extra = {cards = {}, xmult = 2}},
+    attributes = {"rank", "suit", "xmult"},
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(self, _, card)
+        local extra = card.ability.extra
+        local col = {}
+
+        ---@type { [number]: string|table|nil }|{colours: {[number]: {[1]: number, [2]: number, [3]: number, [4]: number}}}
+        local vars = f(self.Roland_idle_capacity):flatmap(function(v)
+            local l = localize_card(extra.cards[v], "b_Roland_unassigned").vars
+
+            f(l.colours):each(function(c)
+                col[#col + 1] = c
+            end)
+
+            l.colours = nil
+            return l
+        end):values():table()
+
+        table.insert(vars, extra.xmult)
+        vars.colours = col
+        return {vars = vars}
+    end,
+    calculate = function(_, card, context)
+        return context.forcetrigger or
+            context.individual and
+            context.cardarea == G.play and
+            f(card.ability.extra.cards or {}):map(function(v)
+                return f(context.scoring_hand):any(function(x)
+                    return x:is_suit(v.suit) and x.base.value == v.value
+                end) or {}
+            end):any(f().eq(context.other_card)) and {xmult = card.ability.extra.xmult} or nil
+    end,
+    Bakery_can_use = function(self, card)
+        return not card.debuff and
+            next(G.hand.highlighted) and
+            self.Roland_idle_capacity - #card.ability.extra.cards - #G.hand.highlighted >= 0 and
+            f(G.hand.highlighted):all(function(v)
+                return not SMODS.has_no_rank(v) and
+                    not SMODS.has_no_suit(v) and
+                    f(card.ability.extra.cards or {}):all(function(o)
+                        return v.base.suit ~= o.suit or v.base.value ~= o.value
+                    end)
+            end)
+    end,
+    Bakery_use_button_text = function(self, card)
+        local key = card.debuff and "b_Roland_debuffed" or
+            (self.Roland_idle_capacity - #card.ability.extra.cards > 0 and "b_Roland_add" or "b_Roland_full")
+
+        return localize {type = "variable", key = key}
+    end,
+    Bakery_use_joker = function(_, card)
+        f(G.hand.highlighted):each(function(v)
+            table.insert(card.ability.extra.cards, {suit = v.base.suit, value = v.base.value})
+        end)
     end,
 }
