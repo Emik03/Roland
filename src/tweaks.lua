@@ -2,7 +2,6 @@ local f, q = unpack(... or require "lib.shared")
 
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 local orig_set_debuff = Card.set_debuff
-local orig_copy_card = copy_card
 
 function Card:set_debuff(...)
     if SMODS.get_enhancements(self).m_wild and SMODS.Mods.Roland.config.no_wild_debuff then
@@ -46,29 +45,6 @@ function Card:use_consumeable(area, copier, ...)
     }
 end
 
-function copy_card(other, new_card, ...)
-    local ret = orig_copy_card(other, new_card, ...)
-
-    if new_card and new_card.edition and new_card.edition.key == "e_negative" then
-        --- Fixes an issue where using 'c_death' will make negative
-        --- cards do the inverse of what they're supposed to do.
-        local ability = new_card.ability
-        ability.card_limit = math.max(ability.card_limit, 1)
-    end
-
-    return ret
-end
-
-q(function()
-    local orig_can_highlight_area = Bakery_API.can_highlight_area
-
-    function Bakery_API.can_highlight_area(area, ...)
-        return (area == G.consumeables and
-                SMODS.Mods.Roland.config.no_highlight_limit) or
-            orig_can_highlight_area(area, ...)
-    end
-end)
-
 local orig_create_card_for_shop = create_card_for_shop
 
 function create_card_for_shop(...)
@@ -82,11 +58,7 @@ function create_card_for_shop(...)
         return ret
     end
 
-    local seal = SMODS.poll_seal {
-        type_key = "Roland_illusion_seal",
-        guaranteed = true,
-    }
-
+    local seal = SMODS.poll_seal {type_key = "Roland_illusion_seal", guaranteed = true}
     ret:set_seal(seal, true, true)
     return ret
 end
