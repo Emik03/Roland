@@ -725,6 +725,72 @@ joker {
 }
 
 joker {
+    key = "idle",
+    pronouns = "they_them",
+    rarity = 2,
+    Roland_idle_capacity = 6,
+    cost = G.P_CENTERS.j_idol.cost,
+    config = {extra = {cards = {}, xmult = 2}},
+    attributes = {"rank", "suit", "xmult"},
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(self, _, card)
+        local extra = card.ability.extra
+        local col = {}
+
+        ---@type { [number]: string|table|nil }|{colours: {[number]: {[1]: number, [2]: number, [3]: number, [4]: number}}}
+        local vars = f(self.Roland_idle_capacity):flatmap(function(v)
+            local l = localize_card(extra.cards[v], "b_Roland_unassigned").vars
+
+            f(l.colours):each(function(c)
+                col[#col + 1] = c
+            end)
+
+            l.colours = nil
+            return l
+        end):values():table()
+
+        table.insert(vars, extra.xmult)
+        vars.colours = col
+        return {vars = vars}
+    end,
+    calculate = function(_, card, context)
+        return context.forcetrigger or
+            context.individual and
+            context.cardarea == G.play and
+            f(card.ability.extra.cards or {}):map(function(v)
+                return f(context.scoring_hand):any(function(x)
+                    return x:is_suit(v.suit) and x.base.value == v.value
+                end) or {}
+            end):any(f().eq(context.other_card)) and {xmult = card.ability.extra.xmult} or nil
+    end,
+    Bakery_can_use = function(self, card)
+        return not card.debuff and
+            next(G.hand.highlighted) and
+            self.Roland_idle_capacity - #card.ability.extra.cards - #G.hand.highlighted >= 0 and
+            f(G.hand.highlighted):all(function(v)
+                return not SMODS.has_no_rank(v) and
+                    not SMODS.has_no_suit(v) and
+                    f(card.ability.extra.cards or {}):all(function(o)
+                        return v.base.suit ~= o.suit or v.base.value ~= o.value
+                    end)
+            end)
+    end,
+    Bakery_use_button_text = function(self, card)
+        local key = card.debuff and "b_Roland_debuffed" or
+            (self.Roland_idle_capacity - #card.ability.extra.cards > 0 and "b_Roland_add" or "b_Roland_full")
+
+        return localize {type = "variable", key = key}
+    end,
+    Bakery_use_joker = function(_, card)
+        f(G.hand.highlighted):each(function(v)
+            table.insert(card.ability.extra.cards, {suit = v.base.suit, value = v.base.value})
+        end)
+    end,
+}
+
+joker {
     key = "suitable",
     pronouns = "she_they",
     attributes = {"suit", "passive", "hearts", "diamonds", "spades", "clubs"},
@@ -865,71 +931,5 @@ joker {
             extra.probability = extra.probability * extra.probability_mult
             return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
         end
-    end,
-}
-
-joker {
-    key = "idle",
-    pronouns = "they_them",
-    rarity = 2,
-    Roland_idle_capacity = 6,
-    cost = G.P_CENTERS.j_idol.cost,
-    config = {extra = {cards = {}, xmult = 2}},
-    attributes = {"rank", "suit", "xmult"},
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(self, _, card)
-        local extra = card.ability.extra
-        local col = {}
-
-        ---@type { [number]: string|table|nil }|{colours: {[number]: {[1]: number, [2]: number, [3]: number, [4]: number}}}
-        local vars = f(self.Roland_idle_capacity):flatmap(function(v)
-            local l = localize_card(extra.cards[v], "b_Roland_unassigned").vars
-
-            f(l.colours):each(function(c)
-                col[#col + 1] = c
-            end)
-
-            l.colours = nil
-            return l
-        end):values():table()
-
-        table.insert(vars, extra.xmult)
-        vars.colours = col
-        return {vars = vars}
-    end,
-    calculate = function(_, card, context)
-        return context.forcetrigger or
-            context.individual and
-            context.cardarea == G.play and
-            f(card.ability.extra.cards or {}):map(function(v)
-                return f(context.scoring_hand):any(function(x)
-                    return x:is_suit(v.suit) and x.base.value == v.value
-                end) or {}
-            end):any(f().eq(context.other_card)) and {xmult = card.ability.extra.xmult} or nil
-    end,
-    Bakery_can_use = function(self, card)
-        return not card.debuff and
-            next(G.hand.highlighted) and
-            self.Roland_idle_capacity - #card.ability.extra.cards - #G.hand.highlighted >= 0 and
-            f(G.hand.highlighted):all(function(v)
-                return not SMODS.has_no_rank(v) and
-                    not SMODS.has_no_suit(v) and
-                    f(card.ability.extra.cards or {}):all(function(o)
-                        return v.base.suit ~= o.suit or v.base.value ~= o.value
-                    end)
-            end)
-    end,
-    Bakery_use_button_text = function(self, card)
-        local key = card.debuff and "b_Roland_debuffed" or
-            (self.Roland_idle_capacity - #card.ability.extra.cards > 0 and "b_Roland_add" or "b_Roland_full")
-
-        return localize {type = "variable", key = key}
-    end,
-    Bakery_use_joker = function(_, card)
-        f(G.hand.highlighted):each(function(v)
-            table.insert(card.ability.extra.cards, {suit = v.base.suit, value = v.base.value})
-        end)
     end,
 }
