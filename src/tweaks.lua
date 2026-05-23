@@ -14,6 +14,13 @@ end
 local orig_use_consumeable = Card.use_consumeable
 
 function Card:use_consumeable(area, copier, ...)
+    if SMODS.Mods.Roland.config.faster_planets and self.ability.consumeable.hand_type then
+        set_consumeable_usage(self)
+        level_up_hand(copier or self, self.ability.consumeable.hand_type, true)
+        self:remove()
+        return
+    end
+
     local seal_spectrals = {["Deja Vu"] = true, Medium = true, Talisman = true, Trance = true}
 
     if not seal_spectrals[self.ability.name] then

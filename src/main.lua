@@ -59,6 +59,7 @@ function SMODS.current_mod.config_tab()
             n = G.UIT.C,
             config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.CLEAR},
             nodes = {
+                toggle "faster_planets",
                 toggle "illusion_seal",
                 toggle "no_wild_debuff",
                 _G["Talisman"] and toggle "harsh_ante_scaling",

@@ -426,6 +426,7 @@ return {
             b_Roland_enabled = "Enabled",
             b_Roland_entering_shop = "Entering shop!",
             b_Roland_equinox_assist = "Assist: Only hide text (Equinox)",
+            b_Roland_faster_planets = "Faster Planets",
             b_Roland_full = "FULL",
             b_Roland_scribable_basket = "Scribable Basket (overpowered)",
             b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
