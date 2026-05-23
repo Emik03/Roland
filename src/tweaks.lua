@@ -17,7 +17,6 @@ function Card:use_consumeable(area, copier, ...)
     if SMODS.Mods.Roland.config.faster_planets and self.ability.consumeable.hand_type then
         set_consumeable_usage(self)
         level_up_hand(copier or self, self.ability.consumeable.hand_type, true)
-        self:remove()
         return
     end
 
@@ -50,6 +49,35 @@ function Card:use_consumeable(area, copier, ...)
             Bakery_API.unhighlight_all()
         end,
     }
+end
+
+local orig_use_card = G.FUNCS.use_card
+
+function G.FUNCS.use_card(e, ...)
+    if not SMODS.Mods.Roland.config.faster_planets or
+        not (((e.config.ref_table or {}).ability or {}).consumeable or {}).hand_type then
+        return orig_use_card(e, ...)
+    end
+
+    play_sound("tarot1", percent, 0.6)
+    e.config.ref_table:use_consumeable(e.config.ref_table.area)
+
+    SMODS.calculate_context {
+        using_consumeable = true,
+        consumeable = e.config.ref_table,
+        area = e.config.ref_table.from_area,
+    }
+
+    local normal = e.config.ref_table.area ~= G.pack_cards
+    e.config.ref_table:remove()
+
+    if normal then
+        return
+    end
+
+    e.config.ref_table:remove()
+    G.GAME.pack_choices = G.GAME.pack_choices - 1
+    local _ = G.GAME.pack_choices <= 0 and G.FUNCS.end_consumeable()
 end
 
 local orig_create_card_for_shop = create_card_for_shop

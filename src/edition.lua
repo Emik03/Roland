@@ -258,11 +258,11 @@ q(function()
         end
 
         card.Roland_frozen_proxy = card.Roland_frozen_proxy or
-            (Bakery_API.get_proxied_joker() or card).unique_val
+            (Bakery_API.get_proxied_joker() or card).config.center.key
 
         ---@param v Card
         local function eq(v)
-            return v.unique_val == card.Roland_frozen_proxy
+            return v.config.center.key == card.Roland_frozen_proxy
         end
 
         return f(G.jokers.cards):any(eq) ---@type Card?
