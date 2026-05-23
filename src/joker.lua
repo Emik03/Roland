@@ -849,8 +849,8 @@ joker {
     cost = 6,
     rarity = 2,
     config = {extra = {
-        dollars = 1,
-        increase = 2,
+        dollars = 2,
+        increase = 3,
         progress = 0,
         flipped = false,
         sequence = {"c_earth", "c_mars", "c_earth"},
