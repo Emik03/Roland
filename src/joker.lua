@@ -649,6 +649,7 @@ joker {
     key = "amber",
     pronouns = "he_they",
     config = {extra = {xmult = 3}},
+    pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
     cost = 9,
     rarity = 3,
