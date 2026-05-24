@@ -39,14 +39,8 @@ local function is_showdown_except(key)
     end
 end
 
-local function is_vanilla(v)
-    return v.set and not v.mod and f(G.P_CENTERS):concat(G.P_CARDS, G.P_TAGS):any(function(c)
-        return c.mod and not c.in_pool and c.set == v.set
-    end)
-end
-
-local vanillas, pastries, amber, cerulean, crimson, verdant, violet
-= bans(), bans(), bans(), bans(), bans(), bans(), bans()
+local pastries, amber, cerulean, crimson, verdant, violet =
+    bans(), bans(), bans(), bans(), bans(), bans()
 
 SMODS.Challenge {
     key = "Go",
@@ -88,13 +82,6 @@ local spin_to_win = SMODS.Challenge {
         self.rotation = self.rotation + 1
     end,
     rotation = 0,
-}
-
-SMODS.Challenge {
-    key = "Ornate",
-    rules = {custom = {{id = "Roland_Ornate"}}},
-    restrictions = vanillas,
-    pronouns = "any_all",
 }
 
 SMODS.Challenge {
@@ -264,9 +251,6 @@ q(function()
     end
 
     f {
-        {G.P_TAGS,    is_vanilla,                           vanillas.banned_tags},
-        {G.P_BLINDS,  is_vanilla,                           vanillas.banned_other},
-        {G.P_CENTERS, is_vanilla,                           vanillas.banned_cards},
         {G.P_TAGS,    is_banned_from_pastry,                pastries.banned_tags},
         {G.P_BLINDS,  is_banned_from_pastry,                pastries.banned_other},
         {G.P_CENTERS, is_center_banned_from_pastry,         pastries.banned_cards},
