@@ -135,7 +135,7 @@ joker {
     end,
     calculate = function(_, card, context)
         if context.joker_main or context.forcetrigger then
-            return {xmult = card.ability.extra.xmult}
+            return {card = card, xmult = card.ability.extra.xmult}
         end
 
         if not card.getting_sliced and
@@ -143,7 +143,7 @@ joker {
             G.GAME.chips / card.ability.extra.requirement < G.GAME.blind.chips then
             card.getting_sliced = true
             local message = localize {type = "variable", key = "b_Roland_bye"}
-            SMODS.calculate_effect({message = message, colour = G.C.RED}, card)
+            SMODS.calculate_effect({message = message, colour = G.C.RED, message_card = card}, card)
 
             q(function()
                 G.hand_text_area.blind_chips:juice_up()
@@ -264,7 +264,7 @@ joker {
         local c = context.blueprint_card or card
         c.ability.extra_value = c.ability.extra_value + extra.price
         c:set_cost()
-        return {message = localize "k_val_up", colour = G.C.MONEY}
+        return {message = localize "k_val_up", colour = G.C.MONEY, message_card = card}
     end,
 }
 
@@ -287,7 +287,7 @@ joker {
         local extra = card.ability.extra
 
         if context.joker_main or context.forcetrigger then
-            return {mult = extra.mult}
+            return {card = card, mult = extra.mult}
         end
 
         if not context.before or context.scoring_name ~= extra.hand_name then
@@ -399,7 +399,7 @@ joker {
         local extra = card.ability.extra
 
         if context.joker_main or context.forcetrigger then
-            return {mult = extra.mult}
+            return {card = card, mult = extra.mult}
         end
 
         if context.blueprint or
@@ -435,7 +435,7 @@ joker {
         local extra = card.ability.extra
 
         return (context.repetition and context.other_card) and
-            {repetitions = is_frozen(context.other_card) and extra.frozen or extra.non_frozen} or
+            {card = card, repetitions = is_frozen(context.other_card) and extra.frozen or extra.non_frozen} or
             SMODS.merge_effects(
                 f(G.jokers.cards):where(is_frozen):map(function(v)
                     return SMODS.blueprint_effect(card, v, context) or true
@@ -478,7 +478,7 @@ joker {
         local extra = card.ability.extra
 
         if f(SMODS.Suits):count(count) >= card.ability.extra.suits or context.forcetrigger then
-            return {mult = extra.mult}
+            return {card = card, mult = extra.mult}
         end
     end,
 }
@@ -609,7 +609,7 @@ joker {
 
         mult = mod_mult(0)
         update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
-        return {sound = "Roland_nilly", message = "0X " .. localize "k_mult", colour = G.C.MULT, card = card}
+        return {sound = "Roland_nilly", message = "0X " .. localize "k_mult", colour = G.C.MULT, message_card = card}
     end,
     Bakery_can_use = function(_, card)
         return not card.debuff
@@ -694,7 +694,7 @@ joker {
 
             numerator = numerator * (extra.odds - g.probabilities.normal)
             local message = number_format(numerator) .. "/" .. number_format(xmult)
-            SMODS.calculate_effect({card = card, repetitions = 1, message = message}, card)
+            SMODS.calculate_effect({card = card, repetitions = 1, message = message, message_card = card}, card)
             xmult = xmult * extra.odds
         end
 
@@ -865,12 +865,21 @@ joker {
         _ = (extra.progress == 1) ~= extra.flipped and Bakery_API.flip_double_sided(card)
 
         if extra.sequence[extra.progress + 1] then
-            return {message = localize "k_progress", colour = extra.progress == 2 and G.C.ORANGE or G.C.BLUE}
+            return {
+                message = localize "k_progress",
+                colour = extra.progress == 2 and G.C.ORANGE or G.C.BLUE,
+                message_card = card,
+            }
         end
 
         extra.progress = 0
         extra.dollars = extra.dollars + extra.increase
-        return {message = localize "k_upgrade_ex", colour = G.C.MONEY}
+
+        return {
+            message = localize "k_upgrade_ex",
+            colour = G.C.MONEY,
+            message_card = card,
+        }
     end,
 }
 
@@ -897,17 +906,17 @@ joker {
         local extra = card.ability.extra
 
         if context.mod_probability then
-            return {numerator = extra.probability}
+            return {card = card, numerator = extra.probability}
         end
 
         if context.end_of_round and extra.probability ~= extra.reset then
             extra.probability = extra.reset
-            return {message = localize "k_reset", colour = G.C.RED}
+            return {message = localize "k_reset", colour = G.C.RED, message_card = card}
         end
 
         if context.after then
             extra.probability = extra.probability * extra.probability_mult
-            return {message = localize "k_upgrade_ex", colour = G.C.GREEN}
+            return {message = localize "k_upgrade_ex", colour = G.C.GREEN, message_card = card}
         end
     end,
 }
