@@ -69,6 +69,7 @@ spectral {
 spectral {
     key = "refract",
     pronouns = "he_him",
+    artist = "aster",
     config = {extra = {amount = 2}},
     attributes = {"seal", "modify_card", "spectral"},
     loc_vars = function(_, info_queue, card)
