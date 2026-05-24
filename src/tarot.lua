@@ -7,13 +7,14 @@ SMODS.Atlas {
     path = "tarot.png",
 }
 
-SMODS.Consumable {
+local coolheaded = SMODS.Consumable {
     key = "coolheaded",
     pos = {x = 0, y = 0},
     config = {extra = {amount = 1}},
     cost = 3,
     set = "Tarot",
     atlas = "tarot",
+    artist = "Roland_aster",
     attributes = {"editions", "modify_card", "spectral"},
     loc_vars = function(_, info_queue, card)
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
@@ -35,3 +36,7 @@ SMODS.Consumable {
         end)
     end,
 }
+
+q(function()
+    Bakery_API.credit(coolheaded)
+end)
