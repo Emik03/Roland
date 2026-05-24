@@ -415,7 +415,6 @@ return {
             c_Roland_Jokerful = "Jokerful",
             c_Roland_Ornate = "Ornate",
             c_Roland_Pastries = "Sweet Pastries",
-            c_Roland_Showdown = "Showdown",
             c_Roland_Spin_To_Win = "Spin to Win",
         },
         v_dictionary = {
@@ -454,7 +453,6 @@ return {
             ch_c_Roland_Jokerful = {"The only jokers are {C:mult}Joker{} and {C:chips}Ms. Joker"},
             ch_c_Roland_Ornate = {"Anything vanilla is banned"},
             ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},
-            ch_c_Roland_Showdown = {"Showdown blinds are {C:attention}Venerable Visage"},
             ch_c_Roland_Showdown_Amber = {"Showdown blinds are {C:attention}Amber Acorn {}(stacks with above)"},
             ch_c_Roland_Showdown_Cerulean = {"Showdown blinds are {C:attention}Cerulean Bell {}(stacks with above)"},
             ch_c_Roland_Showdown_Crimson = {"Showdown blinds are {C:attention}Crimson Heart {}(stacks with above)"},

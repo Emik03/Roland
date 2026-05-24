@@ -6,12 +6,12 @@
     "author": [
         "Emik"
     ],
-    "version": "2.6.5",
+    "version": "2.6.6",
     "badge_colour": "8BE9FD",
     "main_file": "src/main.lua",
     "badge_text_colour": "44475A",
     "display_name": "Roland",
-    "description": "Adds several disconnected funny ideas I had in my head that I couldn't resist implementing in the game.",
+    "description": "Adds mechanics that are meant to have interesting interactions with the base game. Not meant to be balanced, but not entirely broken either.",
     "provides": [],
     "conflicts": [],
     "dependencies": [
