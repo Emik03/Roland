@@ -13,6 +13,7 @@ if _G["Balatest"] then
 end
 
 q(function()
+    -- Special shoutout to all contributors. <3
     ---@type table<string, {name: string, fg: table, bg: table}>
     local contributors, mods = Bakery_API.contributors, SMODS.Mods
 
@@ -20,6 +21,12 @@ q(function()
         name = "asterSSH",
         fg = HEX "f8f8f2ff",
         bg = HEX "bd93f9ff",
+    }
+
+    contributors.Roland_bakersdozenbagels = {
+        name = "BakersDozenBagels",
+        fg = HEX "362708",
+        bg = HEX "EDD198",
     }
 
     contributors.Roland_char = {

@@ -33,17 +33,21 @@ local back = (function()
         end
 
         local sleeve = (_G["CardSleeves"] or {}).Sleeve
-        SMODS.Back(tbl)
+        local b = SMODS.Back(tbl)
         x = x + 1
 
+        q(function()
+            Bakery_API.credit(b)
+        end)
+
         if not sleeve then
-            return
+            return b
         end
 
-        sleeve {
+        local s = sleeve {
             key = key,
             pos = tbl.pos,
-            atlas = "back",
+            atlas = "sleeve",
             config = tbl.config and f(tbl.config):table() or nil,
             loc_vars = function(self, ...)
                 local ret = tbl.loc_vars and tbl.loc_vars(self, ...) or {}
@@ -60,6 +64,12 @@ local back = (function()
                 return self.get_current_deck_key() == "b_Roland_" .. key
             end,
         }
+
+        q(function()
+            Bakery_API.credit(s)
+        end)
+
+        return b
     end
 end)()
 
@@ -70,9 +80,17 @@ SMODS.Atlas {
     py = 95,
 }
 
+local _ = _G["CardSleeves"] and SMODS.Atlas {
+    key = "sleeve",
+    path = "sleeve.png",
+    px = 73,
+    py = 95,
+}
+
 back {
     key = "blossom",
     pronouns = "any_all",
+    artist = "Roland_bakersdozenbagels",
     config = {extra = {alt_times = 8, times = 2}},
     attributes = {"boss_blind"},
     loc_vars = function(self, _, _)
@@ -114,6 +132,7 @@ back {
 back {
     key = "swapper",
     pronouns = "he_him",
+    artist = "Roland_bakersdozenbagels",
     attributes = {"spectral", "tarot"},
     apply = function(self)
         local modifiers = G.GAME.modifiers
