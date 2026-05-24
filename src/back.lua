@@ -73,7 +73,7 @@ SMODS.Atlas {
 back {
     key = "blossom",
     pronouns = "any_all",
-    config = {extra = {times = 2}},
+    config = {extra = {alt_times = 8, times = 2}},
     attributes = {"boss_blind"},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.times, self.config.extra.alt_times}}
