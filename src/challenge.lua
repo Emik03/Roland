@@ -30,10 +30,6 @@ local function is_center_banned_from_pastry(v)
     return arcana_boosters[v.key] or pastries_targets[v.set] and is_banned_from_pastry(v)
 end
 
-local function is_joker(v)
-    return v.set == "Joker" and not ({j_joker = true, j_Roland_msjoker = true})[v.key]
-end
-
 local function is_showdown_except(key)
     ---@param v SMODS.Blind
     ---@param k string
@@ -49,8 +45,8 @@ local function is_vanilla(v)
     end)
 end
 
-local jokerful, vanillas, pastries, amber, cerulean, crimson, verdant, violet, final
-= bans(), bans(), bans(), bans(), bans(), bans(), bans(), bans(), bans()
+local vanillas, pastries, amber, cerulean, crimson, verdant, violet, final
+= bans(), bans(), bans(), bans(), bans(), bans(), bans(), bans()
 
 SMODS.Challenge {
     key = "Go",
@@ -75,7 +71,7 @@ SMODS.Challenge {
     end,
 }
 
-SMODS.Challenge {
+local spin_to_win = SMODS.Challenge {
     key = "Spin_To_Win",
     jokers = f(4):map(f().const {id = "j_Bakery_Spinner", eternal = true}):table(),
     restrictions = {banned_cards = {{id = "c_Roland_coolheaded"}}},
@@ -95,24 +91,10 @@ SMODS.Challenge {
 }
 
 SMODS.Challenge {
-    key = "Jokerful",
-    rules = {custom = {{id = "Roland_Jokerful"}}},
-    restrictions = jokerful,
-    pronouns = "he_him",
-}
-
-SMODS.Challenge {
     key = "Ornate",
     rules = {custom = {{id = "Roland_Ornate"}}},
     restrictions = vanillas,
     pronouns = "any_all",
-}
-
-SMODS.Challenge {
-    key = "Pastries",
-    rules = {custom = {{id = "Roland_Pastries"}}},
-    restrictions = pastries,
-    pronouns = "she_them",
 }
 
 SMODS.Challenge {
@@ -293,8 +275,11 @@ SMODS.Challenge {
 }
 
 q(function()
+    if not G.P_CENTERS.j_Bakery_Spinner then
+        spin_to_win.jokers = nil
+    end
+
     f {
-        {G.P_CENTERS, is_joker,                                        jokerful.banned_cards},
         {G.P_TAGS,    is_vanilla,                                      vanillas.banned_tags},
         {G.P_BLINDS,  is_vanilla,                                      vanillas.banned_other},
         {G.P_CENTERS, is_vanilla,                                      vanillas.banned_cards},
