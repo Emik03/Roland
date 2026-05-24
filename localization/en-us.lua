@@ -416,6 +416,7 @@ return {
             c_Roland_Ornate = "Ornate",
             c_Roland_Pastries = "Sweet Pastries",
             c_Roland_Showdown = "Showdown",
+            c_Roland_Spin_To_Win = "Spin to Win",
         },
         v_dictionary = {
             b_Roland_add = "ADD",

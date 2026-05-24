@@ -76,6 +76,25 @@ SMODS.Challenge {
 }
 
 SMODS.Challenge {
+    key = "Spin_To_Win",
+    jokers = f(4):map(f().const {id = "j_Bakery_Spinner", eternal = true}):table(),
+    restrictions = {banned_cards = {{id = "c_Roland_coolheaded"}}},
+    pronouns = "they_them",
+    apply = function(self)
+        self.rotation = 0
+    end,
+    calculate = function(self, context)
+        if not context.card_added or context.card.config.center.key ~= "j_Bakery_Spinner" then
+            return
+        end
+
+        context.card.ability.extra.rotation = self.rotation
+        self.rotation = self.rotation + 1
+    end,
+    rotation = 0,
+}
+
+SMODS.Challenge {
     key = "Jokerful",
     rules = {custom = {{id = "Roland_Jokerful"}}},
     restrictions = jokerful,
@@ -96,8 +115,14 @@ SMODS.Challenge {
     pronouns = "she_them",
 }
 
-local finalizers = {
+SMODS.Challenge {
+    key = "Pastries",
+    rules = {custom = {{id = "Roland_Pastries"}}},
+    restrictions = pastries,
+    pronouns = "she_them",
+}
 
+local finalizers = {
     SMODS.Challenge {
         key = "Eternally_Amber",
         rules = {custom = {{id = "Roland_Eternally_Amber"}, {id = "Roland_Showdown_Amber"}}},
@@ -242,7 +267,7 @@ local finalizers = {
         restrictions = violet,
         calculate = function(_, context)
             if context.setting_blind then
-                G.GAME.blind.chips = G.GAME.blind.chips * (6 / G.GAME.blind.mult)
+                G.GAME.blind.chips = G.GAME.blind.chips * 6
                 G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
             end
         end,

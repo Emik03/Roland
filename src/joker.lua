@@ -641,7 +641,7 @@ joker {
             return {card = card, xmult = card.ability.extra.xmult}
         end
 
-        if not context.press_play then
+        if card.debuff or context.blueprint or not context.press_play then
             return
         end
 
