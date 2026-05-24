@@ -388,6 +388,10 @@ return {
             },
         },
         Tag = {
+            tag_Roland_freeze = {
+                name = "Freeze Tag",
+                text = {"Apply {C:dark_edition}Frozen", "to the next {C:attention}#1#", "scored cards"},
+            },
             tag_Roland_invisible = {
                 name = "Invisible Tag",
                 text = {"{C:attention}Duplicate {}a random Joker", "{C:inactive}(Must have room)"},

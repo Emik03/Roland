@@ -8,7 +8,7 @@ end
 local back = (function()
     local x = 0
 
-    ---@param tbl SMODS.Back|{is_alt: function, alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
+    ---@param tbl SMODS.Back|{artist?: string, is_alt: function, alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
     return function(tbl)
         local key = tbl.key
         local apply = tbl.apply
@@ -48,6 +48,7 @@ local back = (function()
             key = key,
             pos = tbl.pos,
             atlas = "sleeve",
+            artist = tbl.artist,
             config = tbl.config and f(tbl.config):table() or nil,
             loc_vars = function(self, ...)
                 local ret = tbl.loc_vars and tbl.loc_vars(self, ...) or {}
@@ -91,7 +92,7 @@ back {
     key = "blossom",
     pronouns = "any_all",
     artist = "Roland_bakersdozenbagels",
-    config = {extra = {alt_times = 8, times = 2}},
+    config = {extra = {alt_times = 4, times = 2}},
     attributes = {"boss_blind"},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.times, self.config.extra.alt_times}}
