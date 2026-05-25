@@ -68,14 +68,13 @@ function G.FUNCS.use_card(e, ...)
         area = e.config.ref_table.from_area,
     }
 
-    local normal = e.config.ref_table.area ~= G.pack_cards
+    local normal = G.GAME.pack_choices and e.config.ref_table.area ~= G.pack_cards
     e.config.ref_table:remove()
 
     if normal then
         return
     end
 
-    e.config.ref_table:remove()
     G.GAME.pack_choices = G.GAME.pack_choices - 1
     local _ = G.GAME.pack_choices <= 0 and G.FUNCS.end_consumeable()
 end

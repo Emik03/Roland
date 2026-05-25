@@ -247,7 +247,9 @@ SMODS.Challenge {
 
 q(function()
     if not G.P_CENTERS.j_Bakery_Spinner then
-        spin_to_win.jokers = nil
+        f(spin_to_win.jokers):each(function(v)
+            v.id = "j_joker"
+        end)
     end
 
     f {
