@@ -33,49 +33,6 @@ local charm = (function()
     end
 end)()
 
-local function add_to_consumable_ability_by(n)
-    local function new(v)
-        return type(v) == "number" and v + n or type(v) == "table" and f(v):map(new):table() or v
-    end
-
-    ---@param card Card
-    return function(card)
-        local ability = card.ability or {}
-
-        local function go(key)
-            ---@type { [string]: number }|number
-            local value = ability[key]
-            --print(key)
-            if not value then
-                return
-            end
-
-            if type(value) == "number" then
-                ability[key] = value + n
-                return
-            end
-
-            if type(value) ~= "table" then
-                return
-            end
-
-            local new_value = f(value):map(new):table()
-
-            f(new_value):each(function(v, k)
-                ability[k] = v
-            end)
-
-            ability[key] = new_value
-        end
-
-        local center_key = (card.config or {}).center_key
-
-        if center_key and center_key:sub(1, 2) == "c_" then
-            f {"extra", "consumeable"}:each(go)
-        end
-    end
-end
-
 charm {
     key = "wii",
     pronouns = "they_them",
@@ -103,6 +60,13 @@ charm {
     end,
 }
 
+local function can_discard_zero()
+    return G.GAME.current_round.discards_left > 0 and
+        not next(G.hand.highlighted) and
+        G.hand.config.card_limit > 0 and
+        G.GAME.Bakery_charm == "BakeryCharm_Roland_cocacola"
+end
+
 charm {
     key = "flexible",
     pronouns = "any_all",
@@ -118,7 +82,7 @@ charm {
     key = "fat",
     pronouns = "he_they",
     attributes = {"passive"},
-    config = {extra = {mod = 1}},
+    config = {extra = {mod = 2}},
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.mod}}
     end,
@@ -137,7 +101,9 @@ function Card:init(X, Y, W, H, card, center, params, ...)
         return orig_init(self, X, Y, W, H, card, center, params, ...)
     end
 
-    local key = center.key:gsub("normal", "mega"):gsub("jumbo", "mega"):gsub("mini", "mega")
+    local key = f {"mini", "jumbo", "normal"}:fold(center.key, function(a, v)
+        return a:gsub(v, "mega")
+    end)
 
     if G.P_CENTERS[key] then
         return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
@@ -163,24 +129,68 @@ charm {
     key = "cocacola",
     pronouns = "he_they",
     attributes = {"passive", "tarot", "spectral"},
-    equip = function()
-        f(G.consumeables.cards):each(add_to_consumable_ability_by(1))
+    config = {extra = {discard = 2, hand_size = 1, refund = 0}},
+    loc_vars = function(_, _, card)
+        local extra = card.ability.extra
+        return {vars = {extra.discard, extra.hand_size}}
     end,
-    unequip = function()
-        f(G.consumeables.cards):each(add_to_consumable_ability_by(-1))
+    calculate = function(_, card, context)
+        if not context.end_of_round then
+            return
+        end
+
+        local extra = card.ability.extra
+        G.hand:change_size(extra.refund)
+        extra.refund = 0
     end,
 }
 
-local orig_set_ability = Card.set_ability
+local orig_can_discard = G.FUNCS.can_discard
 
-function Card:set_ability(center, initial, delay_sprites, ...)
-    local ret = orig_set_ability(self, center, initial, delay_sprites, ...)
-
-    if G.GAME.Bakery_charm == "BakeryCharm_Roland_cocacola" then
-        add_to_consumable_ability_by(1)(self)
+function G.FUNCS.can_discard(e, ...)
+    if can_discard_zero() then
+        e.config.button, e.config.colour = "Roland_cocacola", G.C.RED
+    else
+        return orig_can_discard(e, ...)
     end
+end
 
-    return ret
+G.FUNCS.Roland_cocacola = function()
+    stop_use()
+    G.CONTROLLER.interrupt.focus = true
+    G.CONTROLLER:save_cardarea_focus "hand"
+
+    f(G.playing_cards):map "ability":each(function(v)
+        v.forced_selection = nil
+    end)
+
+    G.card_area_focus_reset = (G.CONTROLLER.focused.target or {}).area == G.hand and
+        {area = G.hand, rank = G.CONTROLLER.focused.target.rank} or G.card_area_focus_reset
+
+    SMODS.calculate_context {pre_discard = true, full_hand = G.hand.highlighted}
+    G.GAME.current_round.discards_used = G.GAME.current_round.discards_used + 1
+
+    local c = G.Bakery_charm_area.cards[1]
+    local extra = c.ability.extra or {}
+    juice_card(c)
+    ease_discard(extra.discard - 1)
+    G.hand:change_size(-extra.hand_size)
+    extra.refund = extra.refund + extra.hand_size
+
+    local _ = G.GAME.modifiers.discard_cost and ease_dollars(-G.GAME.modifiers.discard_cost)
+    G.STATE = G.STATES.DRAW_TO_HAND
+
+    q {
+        trigger = "immediate",
+        func = function()
+            if G.SCORING_COROUTINE then
+                return false
+            end
+
+            G.STATE_COMPLETE = false
+            return true
+        end,
+    }
 end
 
 charm {

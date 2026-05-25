@@ -21,9 +21,10 @@ return {
             BakeryCharm_Roland_cocacola = {
                 name = "coca cola phone",
                 text = {
-                    "Values on consumables",
-                    "increase by {C:attention}1",
-                    "{C:inactive}(excluding {C:planet}Planets{C:inactive})",
+                    "{C:attention}Discard 0 cards {}to",
+                    "gain {C:red}#1# {}discards and",
+                    "lose {C:attention}#2# {}hand size",
+                    "this round",
                 },
             },
             BakeryCharm_Roland_fat = {
