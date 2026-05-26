@@ -308,7 +308,7 @@ joker {
     cost = 8,
     rarity = 3,
     eternal_compat = false,
-    blueprint_compat = true,
+    blueprint_compat = false,
     perishable_compat = true,
     loc_vars = function(_, _, card)
         local extra = card.ability.extra
@@ -317,7 +317,11 @@ joker {
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
-        if (not context.before or card.getting_sliced or context.scoring_name ~= extra.hand_name) and not context.forcetrigger then
+        if (not context.before or
+                context.blueprint or
+                card.getting_sliced or
+                context.scoring_name ~= extra.hand_name) and
+            not context.forcetrigger then
             return
         end
 
