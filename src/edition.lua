@@ -12,6 +12,7 @@ local function frozen_sound(suffix)
 end
 
 frozen_sound "_click"
+local frozen_blocklist = {CardSleeve = true}
 local frozen_sounds = f(4):map(frozen_sound):map("key"):table()
 
 local needs_chip_mult_override = {
@@ -51,8 +52,13 @@ local function freeze(card)
         end):table() or x
     end
 
+    if frozen_blocklist[(card.ability or {}).name] then
+        return card.ability
+    end
+
     card.Roland_frozen_ability = card.Roland_frozen_ability or copy(card.ability)
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
+    card.Roland_frozen_probability = card.Roland_frozen_probability or SMODS.get_probability_vars(card, 1, 1)
     local ability, ret = card.ability, card.Roland_frozen_ability
 
     if type(ability) ~= "table" then
@@ -80,18 +86,21 @@ SMODS.Edition {
     key = "frozen",
     shader = "frozen",
     sound = {sound = "Roland_frozen", per = 1, vol = 0.8},
-    attributes = {"passive", "scaling"},
+    attributes = {"passive", "scaling", "mod_chance"},
     weight = 8,
     extra_cost = 4,
     in_shop = true,
     apply_to_float = false,
-    calculate = function(_, card)
-        freeze(card)
+    calculate = function(_, card, context)
+        if not context.fix_probability and not context.mod_probability then
+            freeze(card)
+        end
     end,
     on_remove = function(card)
         card.Roland_frozen_proxy = nil
         card.Roland_frozen_estate = nil
         card.Roland_frozen_ability = nil
+        card.Roland_frozen_probability = nil
     end,
     get_weight = function(self)
         return G.GAME.edition_rate * self.weight
@@ -191,6 +200,13 @@ function Card:calculate_dollar_bonus(...)
     end
 
     return orig_calculate_dollar_bonus(self, ...)
+end
+
+local orig_get_probability_vars = SMODS.get_probability_vars
+
+function SMODS.get_probability_vars(trigger_obj, ...)
+    local numerator, denominator = orig_get_probability_vars(trigger_obj, ...)
+    return trigger_obj and trigger_obj.Roland_frozen_probability or numerator, denominator
 end
 
 q(function()

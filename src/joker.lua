@@ -668,8 +668,8 @@ joker {
     blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, _, card)
-        local normal = G.GAME.probabilities.normal
         local odds   = card.ability.extra.odds
+        local normal = SMODS.get_probability_vars(card, 1, odds, "RolandMartingaleLoc")
         local vars   = {normal}
 
         for i = 0, 7 do
@@ -683,23 +683,24 @@ joker {
             return
         end
 
-        local g, extra, numerator, xmult = G.GAME, card.ability.extra, 1, 1
+        local extra, numerator, xmult = card.ability.extra, 1, 1
 
-        if g.blind.name == "bl_mp_nemesis" then
+        if G.GAME.blind.name == "bl_mp_nemesis" then
             return {card = card, xmult = extra.odds}
         end
 
-        for _ = 1, 64 do
-            local key = "RolandMartingale" .. tostring(g.modifiers.Roland_martingale_seed or "")
+        for _ = 1, 256 do
+            local key = "RolandMartingale" .. tostring(G.GAME.modifiers.Roland_martingale_seed or "")
 
             if SMODS.pseudorandom_probability(card, self.key, 1, extra.odds, key) then
                 break
             end
 
-            numerator = numerator * (extra.odds - g.probabilities.normal)
+            local other_key = "RolandMartingaleNumerator"
+            numerator = numerator * (extra.odds - SMODS.get_probability_vars(card, 1, extra.odds, other_key))
+            xmult = xmult * extra.odds
             local message = number_format(numerator) .. "/" .. number_format(xmult)
             SMODS.calculate_effect({card = card, repetitions = 1, message = message, message_card = card}, card)
-            xmult = xmult * extra.odds
         end
 
         SMODS.calculate_effect({card = card, xmult = xmult}, card)
