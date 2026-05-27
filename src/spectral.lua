@@ -67,6 +67,66 @@ spectral {
 }
 
 spectral {
+    key = "primal",
+    pronouns = "he_him",
+    attributes = {"enhancements", "modify_card", "spectral"},
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_CENTERS.m_stone)
+    end,
+    can_use = function()
+        return u() and next(G.hand.cards)
+    end,
+    use = function(_, card)
+        q {
+            trigger = "after",
+            delay = 0.4,
+            func = function()
+                play_sound("tarot1")
+                card:juice_up(0.3, 0.5)
+            end,
+        }
+
+        f(G.hand.cards):each(function(v, k)
+            local percent = 1.15 - (k - 0.999) / (#G.hand.cards - 0.998) * 0.3
+
+            q {
+                trigger = "after",
+                delay = 0.15,
+                func = function()
+                    v:flip()
+                    play_sound("card1", percent)
+                    v:juice_up(0.3, 0.3)
+                    return true
+                end,
+            }
+        end)
+
+        f(G.hand.cards):each(function(v)
+            q(function()
+                v:set_ability(G.P_CENTERS.m_stone)
+            end)
+        end)
+
+        f(G.hand.cards):each(function(v, k)
+            local percent = 0.85 + (k - 0.999) / (#G.hand.cards - 0.998) * 0.3
+
+            q {
+                trigger = "after",
+                delay = 0.15,
+                func = function()
+                    v:flip()
+                    play_sound("tarot2", percent, 0.6)
+                    v:juice_up(0.3, 0.3)
+                    return true
+                end,
+            }
+        end)
+
+        delay(0.5)
+    end,
+}
+
+spectral {
     key = "refract",
     pronouns = "he_him",
     artist = "aster",

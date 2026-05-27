@@ -371,6 +371,14 @@ return {
                     "cards in {C:hands}hand",
                 },
             },
+            c_Roland_primal = {
+                name = "Primal Force",
+                text = {
+                    "Enhance {C:attention}all cards",
+                    "held in hand to",
+                    "{C:enhanced}Stone Cards",
+                },
+            },
             c_Roland_refract = {
                 name = "Refract",
                 text = {

@@ -66,6 +66,10 @@ local function set_freeze(state)
 
     ---@param card Card|{ Roland_blizzard: true|nil }
     return function(card)
+        if not card.Roland_blizzard and card.edition and card.edition.Roland_frozen then
+            return
+        end
+
         local last_edition = card.Roland_blizzard
         card.Roland_blizzard = state and (copy(card.edition) or true) or nil
 
@@ -222,6 +226,10 @@ blind {
             draw_card(G.hand, G.discard, i / count * 100, "down", false, copy, nil, nil, true)
         end)
 
+        if not next(cards_added) then
+            return
+        end
+
         b:wiggle()
         b.triggered = true
         playing_card_joker_effects(cards_added)
@@ -300,9 +308,12 @@ blind {
             b:set_text()
         end
     end,
+    disable = function()
+        G.GAME.blind.disabled = true
+    end,
     recalc_debuff = function(self, card)
         local id, _ = common_rank()
-        local ret = not self.disabled and id == card:get_id()
+        local ret = not G.GAME.blind.disabled and id == card:get_id()
         self.triggered = ret
         return ret
     end,
