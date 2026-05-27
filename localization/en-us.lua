@@ -374,7 +374,7 @@ return {
             c_Roland_primal = {
                 name = "Primal Force",
                 text = {
-                    "Enhance {C:attention}all cards",
+                    "Enhance {C:attention}all {}cards",
                     "held in hand to",
                     "{C:enhanced}Stone Cards",
                 },
