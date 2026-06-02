@@ -107,7 +107,7 @@ end
 ---@nodiscard
 function f.index(v)
     return function(x)
-        return x[v]
+        return x and x[v]
     end
 end
 
@@ -512,7 +512,7 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): boolean
+---@param func F|fun(v: V, k: K): any
 ---@return boolean|V
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
@@ -530,7 +530,7 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): boolean
+---@param func F|fun(v: V, k: K): any
 ---@return boolean|V
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
@@ -548,7 +548,7 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): boolean
+---@param func F|fun(v: V, k: K): any
 ---@return integer
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string): integer

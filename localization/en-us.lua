@@ -403,7 +403,12 @@ return {
             },
             tag_Roland_invisible = {
                 name = "Invisible Tag",
-                text = {"{C:attention}Duplicate {}a random Joker", "{C:inactive}(Must have room)"},
+                text = {
+                    "{C:attention}Duplicate {}a random",
+                    "Joker after {C:attention}#1#{} rounds",
+                    "{C:inactive}(Must have room)",
+                    "{C:inactive}(Currently {C:attention}#2#{C:inactive}/#1#)",
+                },
             },
         },
         Tarot = {

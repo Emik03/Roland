@@ -22,6 +22,7 @@ local back = (function()
             return (calculate and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key) and calculate(self, ...) or nil
         end
 
+        tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
         tbl.pos = {x = x, y = 0}
         tbl.atlas = "back"
 
@@ -91,7 +92,7 @@ local _ = _G["CardSleeves"] and SMODS.Atlas {
 back {
     key = "blossom",
     pronouns = "any_all",
-    artist = "Roland_bakersdozenbagels",
+    artist = "bakersdozenbagels",
     config = {extra = {alt_times = 4, times = 2}},
     attributes = {"boss_blind"},
     loc_vars = function(self, _, _)
@@ -133,7 +134,7 @@ back {
 back {
     key = "swapper",
     pronouns = "he_him",
-    artist = "Roland_bakersdozenbagels",
+    artist = "bakersdozenbagels",
     attributes = {"spectral", "tarot"},
     apply = function(self)
         local modifiers = G.GAME.modifiers

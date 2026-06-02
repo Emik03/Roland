@@ -13,7 +13,7 @@ SMODS.Seal {
     pos = {x = 0, y = 0},
     attributes = {"destroy_card", "tag"},
     badge_colour = HEX "a6a6a6ff",
-    pronouns = "he_him",
+    pronouns = "they_them",
     calculate = function(_, card, context)
         local function eq(v)
             return v == card

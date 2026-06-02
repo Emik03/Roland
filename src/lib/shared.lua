@@ -23,7 +23,7 @@ local function protect_ev(fun)
     return fun
 end
 
----@alias Attributes "mult"|"chips"|"xmult"|"xchips"|"score"|"xscore"|"blindsize"|"xblindsize"|"balance"|"swap"|"retrigger"|"scaling"|"reset"|"suit"|"diamonds"|"hearts"|"spades"|"clubs"|"hand_type"|"rank"|"ace"|"two"|"three"|"four"|"five"|"six"|"seven"|"eight"|"nine"|"ten"|"jack"|"queen"|"king"|"face"|"economy"|"generation"|"destroy_card"|"hands"|"discard"|"hand_size"|"chance"|"joker_slot"|"mod_chance"|"copying"|"full_deck"|"passive"|"joker"|"tarot"|"planet"|"spectral"|"enhancements"|"seals"|"editions"|"tag"|"skip"|"modify_card"|"perma_bonus"|"prevents_death"|"boss_blind"|"reroll"|"on_sell"|"sell_value"|"food"|"space"
+---@alias Attributes "mult"|"chips"|"xmult"|"xchips"|"score"|"xscore"|"blindsize"|"xblindsize"|"balance"|"swap"|"retrigger"|"scaling"|"reset"|"suit"|"diamonds"|"hearts"|"spades"|"clubs"|"hand_type"|"rank"|"ace"|"two"|"three"|"four"|"five"|"six"|"seven"|"eight"|"nine"|"ten"|"jack"|"queen"|"king"|"face"|"economy"|"generation"|"destroy_card"|"hands"|"discard"|"hand_size"|"chance"|"joker_slot"|"mod_chance"|"copying"|"full_deck"|"passive"|"joker"|"tarot"|"planet"|"spectral"|"enhancements"|"seals"|"editions"|"tag"|"skip"|"modify_card"|"perma_bonus"|"prevents_death"|"boss_blind"|"reroll"|"on_sell"|"sell_value"|"food"|"space"|"bakery_double_sided"
 if false then
     -- This allows for better type inference.
     SMODS.Mods.Roland.config = require "config"

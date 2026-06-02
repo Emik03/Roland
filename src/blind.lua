@@ -347,6 +347,11 @@ function SMODS.current_mod:calculate(context)
     local _ = type(G.calc) == "function" and G.calc(f(context):keys():string())
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 
+    local _ = context.end_of_round and
+        context.main_eval and
+        not context.blueprint and
+        G.P_TAGS.tag_Roland_invisible.increment()
+
     -- Normally unreachable since we set it to nil ourselves,
     -- but other mods may want to use this modifier.
     if improbable == false then

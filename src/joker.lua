@@ -69,6 +69,21 @@ local function localize_card(card, fallback)
     }
 end
 
+---@param card Card
+---@return boolean
+local function has_rank_and_suit(card)
+    return not SMODS.has_no_rank(card) and not SMODS.has_no_suit(card)
+end
+
+---@param value table
+---@return fun(other: table): boolean
+local function ranksuitnq(value)
+    return function(other)
+        local v, o = value.base or value, other.base or other
+        return value == other or v.suit ~= o.suit or v.value ~= o.value
+    end
+end
+
 SMODS.Atlas {
     key = "joker",
     path = "joker.png",
@@ -157,7 +172,7 @@ joker {
 
 joker {
     key = "sunny",
-    pronouns = "they_them",
+    pronouns = "it_its",
     artist = "char",
     attributes = {"food", "on_sell"},
     cost = 2,
@@ -192,7 +207,7 @@ joker {
 
 joker {
     key = "hardboiled",
-    pronouns = "they_them",
+    pronouns = "it_its",
     attributes = {"food", "editions", "modify_card", "on_sell"},
     cost = 5,
     rarity = 2,
@@ -386,7 +401,7 @@ joker {
 
 joker {
     key = "snowsquall",
-    pronouns = "they_them",
+    pronouns = "he_they",
     config = {extra = {mult_gain = 1, mult = 0}},
     attributes = {"mult", "scaling", "hand_type"},
     cost = 6,
@@ -420,7 +435,7 @@ joker {
 
 joker {
     key = "arctic",
-    pronouns = "it_its",
+    pronouns = "they_them",
     cost = 10,
     rarity = 3,
     config = {extra = {frozen = 2, non_frozen = 1}},
@@ -529,7 +544,7 @@ joker {
 
 joker {
     key = "bulldozer",
-    pronouns = "it_its",
+    pronouns = "she_her",
     attributes = {"xmult"},
     cost = 6,
     rarity = 2,
@@ -592,7 +607,7 @@ joker {
     key = "nilly",
     pronouns = "any_all",
     config = {extra = {flipped = false}},
-    attributes = {"xmult"},
+    attributes = {"xmult", "bakery_double_sided"},
     cost = 0,
     rarity = 2,
     eternal_compat = true,
@@ -601,10 +616,6 @@ joker {
     loc_vars = function(_, _, card)
         local key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled"
         return {vars = {localize {type = "variable", key = key}}}
-    end,
-    inject = function(...)
-        SMODS.Joker.inject(...)
-        Bakery_API.double_sided_jokers.j_Roland_nilly = true
     end,
     calculate = function(_, card, context)
         if (not context.joker_main or not card.ability.extra.flipped) and not context.forcetrigger then
@@ -628,7 +639,7 @@ joker {
 
 joker {
     key = "amber",
-    pronouns = "he_they",
+    pronouns = "they_them",
     config = {extra = {xmult = 3}},
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
@@ -709,7 +720,7 @@ joker {
 
 joker {
     key = "idle",
-    pronouns = "they_them",
+    pronouns = "any_all",
     rarity = 2,
     Roland_idle_capacity = 6,
     cost = G.P_CENTERS.j_idol.cost,
@@ -749,27 +760,38 @@ joker {
             end):any(f().eq(context.other_card)) and {xmult = card.ability.extra.xmult} or nil
     end,
     Bakery_can_use = function(self, card)
+        local key = self:Roland_idle_status(card)
+        local new_cards = G.hand.highlighted
+        local extra = card.ability.extra
+
+        if extra.last_text ~= key then
+            extra.last_text = key
+            Bakery_API.rehighlight(card)
+        end
+
+        local function all_cards()
+            return f(new_cards):concat(extra.cards or {})
+        end
+
         return not card.debuff and
-            next(G.hand.highlighted) and
-            self.Roland_idle_capacity - #card.ability.extra.cards - #G.hand.highlighted >= 0 and
-            f(G.hand.highlighted):all(function(v)
-                return not SMODS.has_no_rank(v) and
-                    not SMODS.has_no_suit(v) and
-                    f(card.ability.extra.cards or {}):all(function(o)
-                        return v.base.suit ~= o.suit or v.base.value ~= o.value
-                    end)
+            next(new_cards) and
+            self.Roland_idle_capacity - #extra.cards - #new_cards >= 0 and
+            f(new_cards):all(has_rank_and_suit) and
+            all_cards():all(function(v)
+                return all_cards():all(ranksuitnq(v))
             end)
     end,
     Bakery_use_button_text = function(self, card)
-        local key = card.debuff and "b_Roland_debuffed" or
-            (self.Roland_idle_capacity - #card.ability.extra.cards > 0 and "b_Roland_add" or "b_Roland_full")
-
-        return localize {type = "variable", key = key}
+        return localize {type = "variable", key = self:Roland_idle_status(card)}
     end,
     Bakery_use_joker = function(_, card)
         f(G.hand.highlighted):each(function(v)
             table.insert(card.ability.extra.cards, {suit = v.base.suit, value = v.base.value})
         end)
+    end,
+    Roland_idle_status = function(self, card)
+        return card.debuff and "b_Roland_debuffed" or
+            (self.Roland_idle_capacity - #card.ability.extra.cards > 0 and "b_Roland_add" or "b_Roland_full")
     end,
 }
 
@@ -827,7 +849,7 @@ end
 
 joker {
     key = "artemis",
-    pronouns = "she_they",
+    pronouns = "any_all",
     cost = 6,
     rarity = 2,
     config = {extra = {
@@ -837,12 +859,9 @@ joker {
         flipped = false,
         sequence = {"c_earth", "c_mars", "c_earth"},
     }},
+    attributes = {"economy", "scaling", "planet", "space", "bakery_double_sided"},
     calc_dollar_bonus = function(_, card)
         return card.ability.extra.dollars
-    end,
-    inject = function(...)
-        SMODS.Joker.inject(...)
-        Bakery_API.double_sided_jokers.j_Roland_artemis = true
     end,
     loc_vars = function(_, info_queue, card)
         local extra = card.ability.extra
@@ -895,7 +914,7 @@ joker {
     cost = 7,
     rarity = 3,
     config = {extra = {probability = 1, probability_mult = 2, reset = 1}},
-    attributes = {"hands", "mod_chance", "scaling"},
+    attributes = {"hands", "mod_chance", "scaling", "reset"},
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,

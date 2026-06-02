@@ -95,6 +95,7 @@ SMODS.Challenge {
     key = "Eternally_Amber",
     rules = {custom = {{id = "Roland_Eternally_Amber"}, {id = "Roland_Showdown_Amber"}}},
     restrictions = amber,
+    pronouns = "they_them",
     calculate = function(_, context)
         local function slide(pitch)
             q(function()
@@ -132,6 +133,7 @@ SMODS.Challenge {
     key = "Eternally_Cerulean",
     rules = {custom = {{id = "Roland_Eternally_Cerulean"}, {id = "Roland_Showdown_Cerulean"}}},
     restrictions = cerulean,
+    pronouns = "she_her",
     calculate = function(_, context)
         if not context.hand_drawn then
             return
@@ -157,6 +159,7 @@ SMODS.Challenge {
     key = "Eternally_Crimson",
     rules = {custom = {{id = "Roland_Eternally_Crimson"}, {id = "Roland_Showdown_Crimson"}}},
     restrictions = crimson,
+    pronouns = "she_her",
     calculate = function(_, context)
         local _ = context.blind_defeated and f(G.jokers.cards):each(function(v)
             v.ability.Roland_crimson_heart_chosen = nil
@@ -216,6 +219,7 @@ SMODS.Challenge {
     key = "Eternally_Verdant",
     rules = {custom = {{id = "Roland_Eternally_Verdant"}, {id = "Roland_Showdown_Verdant"}}},
     restrictions = verdant,
+    pronouns = "she_her",
     calculate = function(_, context)
         if context.setting_blind then
             G.GAME.modifiers.Roland_Eternally_Verdant = true
@@ -237,6 +241,7 @@ SMODS.Challenge {
     key = "Eternally_Violet",
     rules = {custom = {{id = "Roland_Eternally_Violet"}, {id = "Roland_Showdown_Violet"}}},
     restrictions = violet,
+    pronouns = "she_they",
     calculate = function(_, context)
         if context.setting_blind then
             G.GAME.blind.chips = G.GAME.blind.chips * 6

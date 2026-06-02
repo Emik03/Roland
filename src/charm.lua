@@ -53,7 +53,7 @@ charm {
             G.STATE = G.STATES.SHOP
             G.GAME.shop_free = nil
             G.GAME.shop_d6ed = nil
-            G.STATE_COMPLETE = false
+            -- G.STATE_COMPLETE = false
             play_sound("whoosh1", 1.33333, 0.8)
             play_sound("whoosh1", 0.66666, 0.8)
         end)

@@ -52,8 +52,11 @@ end
 SMODS.Atlas {
     px = 256,
     py = 256,
+    fps = 12,
+    frames = 12,
     key = "modicon",
     path = "icon.png",
+    atlas_table = "ANIMATION_ATLAS",
 }
 
 SMODS.current_mod.qol = qol

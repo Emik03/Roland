@@ -36,7 +36,7 @@ SMODS.Sound {
 
 spectral {
     key = "afterimage",
-    pronouns = "he_they",
+    pronouns = "she_they",
     artist = "aster",
     config = {extra = {amount = 2}},
     attributes = {"seal", "modify_card", "spectral"},
@@ -69,6 +69,7 @@ spectral {
 spectral {
     key = "primal",
     pronouns = "he_him",
+    artist = "aster",
     attributes = {"enhancements", "modify_card", "spectral"},
     loc_vars = function(_, info_queue)
         table.insert(info_queue, G.P_CENTERS.m_stone)
@@ -128,7 +129,7 @@ spectral {
 
 spectral {
     key = "refract",
-    pronouns = "he_him",
+    pronouns = "it_its",
     artist = "aster",
     config = {extra = {amount = 2}},
     attributes = {"seal", "modify_card", "spectral"},

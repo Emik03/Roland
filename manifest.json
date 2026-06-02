@@ -3,20 +3,20 @@
     "id": "Roland",
     "name": "Roland",
     "prefix": "Roland",
-    "author": [
-        "Emik"
-    ],
-    "version": "2.7.5",
+    "version": "2.8.0",
     "badge_colour": "8BE9FD",
+    "display_name": "Roland",
     "main_file": "src/main.lua",
     "badge_text_colour": "44475A",
-    "display_name": "Roland",
     "description": "Adds mechanics that are meant to have interesting interactions with the base game. Not meant to be balanced, but not entirely broken either.",
     "provides": [],
     "conflicts": [],
+    "author": [
+        "Emik"
+    ],
     "dependencies": [
-        "Steamodded (>=1.0~*)",
+        "Steamodded (>=1.0.0~BETA-1606b)",
         "Lovely (>=0.6)",
-        "Bakery (>=0.1.26~*)"
+        "Bakery (>=3.2.0~*)"
     ]
 }

@@ -55,6 +55,7 @@ end
 SMODS.Tag {
     key = "freeze",
     atlas = "tag",
+    pronouns = "any_all",
     min_ante = 1,
     pos = {x = 0, y = 0},
     config = {amount = 5},
@@ -73,6 +74,7 @@ SMODS.Tag {
 
         if tag.triggered or
             (tag.ability.amount or self.config.amount) <= 0 or
+            (context.card.edition and context.card.edition.Roland_frozen) or
             context.type ~= "Bakery_score_card" then
             return
         end
@@ -85,13 +87,42 @@ SMODS.Tag {
 SMODS.Tag {
     key = "invisible",
     atlas = "tag",
+    pronouns = "any_all",
     min_ante = 2,
     pos = {x = 1, y = 0},
-    apply = function(_, tag)
+    config = {invis_rounds = 0, total_rounds = 2},
+    loc_vars = function(self, _, tag)
+        tag.ability = tag.ability or f(self.config):table()
+        local main_end = {}
+
+        local _ = f((G.jokers or {}).cards or {}):map "edition":any "negative" and
+            localize {type = "other", key = "remove_negative", nodes = main_end, vars = {}}
+
+        return {
+            vars = {
+                tag.ability.total_rounds or self.config.total_rounds,
+                tag.ability.invis_rounds or self.config.invis_rounds,
+            },
+            main_end = main_end[1],
+        }
+    end,
+    increment = function(self)
+        f(G.GAME.tags):where("key", "tag_Roland_invisible"):each(function(v)
+            v.ability = v.ability or {}
+            v.ability.invis_rounds = (v.ability.invis_rounds or self.config.invis_rounds) + 1
+            v:juice_up()
+        end)
+    end,
+    apply = function(self, tag)
         local modifiers = G.GAME.modifiers
+        tag.ability = tag.ability or {}
+        local ab = tag.ability
+        ab.invis_rounds = ab.invis_rounds or self.config.invis_rounds
+        ab.total_rounds = ab.total_rounds or self.config.total_rounds
 
         if tag.triggered or
             not next(G.jokers.cards) or
+            ab.invis_rounds < ab.total_rounds or
             #G.jokers.cards + (modifiers.Roland_invisible or 0) >= G.jokers.config.card_limit then
             return
         end
@@ -101,7 +132,7 @@ SMODS.Tag {
 
         tag:yep("!", G.C.GREY, function()
             local copied = pseudorandom_element(G.jokers.cards, pseudoseed "Roland_invisible")
-            local copy = copy_card(copied)
+            local copy = copy_card(copied, nil, nil, nil, copied.edition and copied.edition.negative)
             G.jokers:emplace(copy)
             copy:add_to_deck()
             modifiers.Roland_invisible = (modifiers.Roland_invisible or 0) - 1

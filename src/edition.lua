@@ -87,6 +87,7 @@ SMODS.Edition {
     shader = "frozen",
     sound = {sound = "Roland_frozen", per = 1, vol = 0.8},
     attributes = {"passive", "scaling", "mod_chance"},
+    pronouns = "any_all",
     weight = 8,
     extra_cost = 4,
     in_shop = true,
