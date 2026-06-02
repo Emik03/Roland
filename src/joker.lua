@@ -446,10 +446,6 @@ joker {
     loc_vars = function(_, info_queue)
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
     end,
-    inject = function(...)
-        SMODS.Joker.inject(...)
-        Bakery_API.retrigger_jokers.j_Roland_arctic = true
-    end,
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
