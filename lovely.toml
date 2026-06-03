@@ -12,12 +12,12 @@ priority = -2
 target = "game.lua"
 pattern = "self.GAME.round_resets.blind_choices.Boss = get_new_boss()"
 position = "before"
-payload = '''
+payload = """
 if G.GAME.modifiers.Roland_blossom_deck then
     self.GAME.round_resets.blind_choices.Small = get_new_boss()
     self.GAME.round_resets.blind_choices.Big = get_new_boss()
 end
-'''
+"""
 match_indent = true
 
 [[patches]]
@@ -25,12 +25,12 @@ match_indent = true
 target = "functions/common_events.lua"
 pattern = "G.GAME.round_resets.blind_choices.Boss = get_new_boss()"
 position = "before"
-payload = '''
+payload = """
 if G.GAME.modifiers.Roland_blossom_deck then
     G.GAME.round_resets.blind_choices.Small = get_new_boss()
     G.GAME.round_resets.blind_choices.Big = get_new_boss()
 end
-'''
+"""
 match_indent = true
 
 [[patches]]
@@ -84,4 +84,12 @@ times = 1
 payload = """if next(SMODS.find_card "j_Roland_misfortune") then
     card:set_edition "e_negative"
 end"""
+match_indent = true
+
+[[patches]]
+[patches.regex]
+target = "card.lua"
+pattern = "math\\.floor\\(\\(G\\.GAME\\.dollars \\+ \\(G\\.GAME\\.dollar_buffer or 0\\)\\)/self\\.ability\\.extra\\.dollars\\)"
+position = "at"
+payload = "G.P_CENTERS.j_erosion:mult(self)"
 match_indent = true

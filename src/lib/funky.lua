@@ -18,6 +18,14 @@ end
 ---@type F
 local none
 
+---@generic T: F|function|string|nil
+---@param func T
+---@return T
+---@nodiscard
+local function autofunc(func)
+    return type(func) == "string" and f.index(func) or func or f.id
+end
+
 ---@generic K, V
 ---@param tbl table<K, V>
 ---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
@@ -236,7 +244,7 @@ end
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: U }
 function f:map(func)
-    func = type(func) == "string" and f.index(func) or func
+    func = autofunc(func)
 
     return f.new(function()
         local k, v = self:next()
@@ -257,7 +265,7 @@ end
 function f:flatmap(func, fpairs)
     -- local i = 0
     local vt, vk, vv, vp
-    func = type(func) == "string" and f.index(func) or func
+    func = autofunc(func)
 
     return f.new(function()
         if vk then
@@ -307,7 +315,7 @@ end
 function f:flatmap(func, fpairs)
     -- local i = 0
     local vt, vk, vv, vp
-    func = type(func) == "string" and f.index(func) or func
+    func = autofunc(func)
 
     return f.new(function()
         if vk then
@@ -355,7 +363,7 @@ end
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string, is?: any): F|{ [K]: V }
 function f:where(func, is)
-    func = type(func) == "string" and f.index(func) or func
+    func = autofunc(func)
 
     return f.new(function()
         local k, v
@@ -517,7 +525,7 @@ end
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
 function f:any(func)
-    func = type(func) == "string" and f.index(func) or func
+    func = autofunc(func)
 
     for k, v in self.next do
         if not func or func(v, k) then
@@ -535,7 +543,7 @@ end
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
 function f:all(func)
-    func = type(func) == "string" and f.index(func) or func
+    func = autofunc(func)
 
     for k, v in self.next do
         if not func or not func(v, k) then
@@ -554,7 +562,7 @@ end
 ---@overload fun(self: F|{ [K]: V }, func: string): integer
 function f:count(func)
     local ret = 0
-    func = type(func) == "string" and f.index(func) or func
+    func = autofunc(func)
 
     for k, v in self.next do
         if not func or func(v, k) then

@@ -3,7 +3,7 @@
     "id": "Roland",
     "name": "Roland",
     "prefix": "Roland",
-    "version": "2.8.1",
+    "version": "2.8.2",
     "badge_colour": "8BE9FD",
     "display_name": "Roland",
     "main_file": "src/main.lua",

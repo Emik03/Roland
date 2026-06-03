@@ -17,7 +17,6 @@ local frozen_sounds = f(4):map(frozen_sound):map("key"):table()
 
 local needs_chip_mult_override = {
     Bull = true,
-    Erosion = true,
     Misprint = true,
     TierList = true,
     Bootstraps = true,
@@ -48,7 +47,7 @@ local function freeze(card)
     ---@return T
     local function copy(x)
         return type(x) == "table" and f(x):map(copy):where(function(v, k)
-            return k ~= "Roland_frozen_proxy" and (k ~= "nine_tally" or v ~= 0)
+            return k ~= "nine_tally" or v ~= 0
         end):table() or x
     end
 
@@ -58,7 +57,7 @@ local function freeze(card)
 
     card.Roland_frozen_ability = card.Roland_frozen_ability or copy(card.ability)
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
-    card.Roland_frozen_probability = card.Roland_frozen_probability or SMODS.get_probability_vars(card, 1, 1)
+    card.Roland_frozen = card.Roland_frozen and {probability = SMODS.get_probability_vars(card, 1, 1)}
     local ability, ret = card.ability, card.Roland_frozen_ability
 
     if type(ability) ~= "table" then
@@ -93,15 +92,10 @@ SMODS.Edition {
     in_shop = true,
     apply_to_float = false,
     calculate = function(_, card, context)
-        if not context.fix_probability and not context.mod_probability then
-            freeze(card)
-        end
+        local _ = not context.fix_probability and not context.mod_probability and freeze(card)
     end,
     on_remove = function(card)
-        card.Roland_frozen_proxy = nil
-        card.Roland_frozen_estate = nil
-        card.Roland_frozen_ability = nil
-        card.Roland_frozen_probability = nil
+        card.Roland_frozen, card.Roland_frozen_ability, card.Roland_frozen_current_round = nil, nil, nil
     end,
     get_weight = function(self)
         return G.GAME.edition_rate * self.weight
@@ -153,7 +147,7 @@ function Card:calculate_joker(context, ...)
 
     local ret = {orig_calculate_joker(self, context, ...)}
 
-    if not is_frozen or not ret[1] then
+    if not is_frozen or type(ret[1]) ~= "table" then
         return unpack(ret)
     end
 
@@ -163,24 +157,11 @@ function Card:calculate_joker(context, ...)
         return unpack(ret)
     end
 
-    ability.Roland_frozen_mult_mod = ability.Roland_frozen_mult_mod or ret[1].mult_mod
-    ability.Roland_frozen_chip_mod = ability.Roland_frozen_chip_mod or ret[1].chip_mod
-    ability.Roland_frozen_xmult = ability.Roland_frozen_xmult or ret[1].xmult
-
-    return {
-        chip_mod = ability.Roland_frozen_chip_mod,
-        mult_mod = ability.Roland_frozen_mult_mod,
-        xmult = ability.Roland_frozen_xmult,
-        message = localize {
-            type = "variable",
-            key = "a_mult",
-            vars = {
-                ability.Roland_frozen_mult_mod or
-                ability.Roland_frozen_chip_mod or
-                ability.Roland_frozen_xmult,
-            },
-        },
-    }
+    return f {mult = "mult_mod", chips = "chip_mod", xmult = "xmult", x_mult = "x_mult"}:map(function(v)
+        local key = "Roland_frozen_" .. v
+        ability[key] = ability[key] or ret[1][v]
+        return ability[key]
+    end):where(f().id):table()
 end
 
 local orig_calculate_dollar_bonus = Card.calculate_dollar_bonus
@@ -205,9 +186,21 @@ end
 
 local orig_get_probability_vars = SMODS.get_probability_vars
 
+function G.P_CENTERS.j_erosion:mult(card)
+    local ability = card.Roland_frozen_ability
+    local ret = math.floor((G.GAME.dollars + (G.GAME.dollar_buffer or 0)) / card.ability.extra.dollars)
+
+    if not ability then
+        return ret
+    end
+
+    ability.Roland_erosion_mult = ability.Roland_erosion_mult or ret
+    return ability.Roland_erosion_mult
+end
+
 function SMODS.get_probability_vars(trigger_obj, ...)
     local numerator, denominator = orig_get_probability_vars(trigger_obj, ...)
-    return trigger_obj and trigger_obj.Roland_frozen_probability or numerator, denominator
+    return trigger_obj and (trigger_obj.Roland_frozen or {}).probability or numerator, denominator
 end
 
 q(function()
@@ -217,19 +210,19 @@ q(function()
         return
     end
 
-    ---@param card Card|{ Roland_frozen_estate: integer }
+    ---@param card Card|{ Roland_frozen: {estate: integer} }
     local function estate_pos(card)
         if card.area ~= G.jokers and card.area.config.type ~= "title" then
             return 1
         end
 
-        card.Roland_frozen_estate = card.Roland_frozen_estate and
-            card.Roland_frozen_estate or
+        card.Roland_frozen.estate = card.Roland_frozen.estate and
+            card.Roland_frozen.estate or
             (f(card.area.cards):swap():any(function(_, k)
                 return k == card
             end) or 1)
 
-        return card.Roland_frozen_estate
+        return card.Roland_frozen.estate
     end
 
     local orig_calculate = estate.calculate
@@ -268,18 +261,18 @@ q(function()
         return
     end
 
-    ---@param card Card|{ Roland_frozen_proxy: number }
+    ---@param card Card|{ Roland_frozen: {proxy: string} }
     local function get_proxied_joker(card)
         if not G.jokers or not G.jokers.cards then
             return
         end
 
-        card.Roland_frozen_proxy = card.Roland_frozen_proxy or
+        card.Roland_frozen.proxy = card.Roland_frozen.proxy or
             (Bakery_API.get_proxied_joker() or card).config.center.key
 
         ---@param v Card
         local function eq(v)
-            return v.config.center.key == card.Roland_frozen_proxy
+            return v.config.center.key == card.Roland_frozen.proxy
         end
 
         return f(G.jokers.cards):any(eq) ---@type Card?
@@ -290,9 +283,9 @@ q(function()
     function proxy:calculate(card, context, ...)
         if not card or not card.edition or not card.edition.Roland_frozen then
             return orig_calculate(self, card, context, ...)
+        else
+            return SMODS.blueprint_effect(card, get_proxied_joker(card), context)
         end
-
-        return SMODS.blueprint_effect(card, get_proxied_joker(card), context)
     end
 
     local orig_loc_vars = proxy.loc_vars

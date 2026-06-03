@@ -125,7 +125,7 @@ return {
             },
             j_Roland_arctic = {
                 name = "Arctic Circle",
-                text = {"Retrigger {C:dark_edition}Frozen {}cards", "Retrigger playing cards"},
+                text = {"Retrigger {C:attention}all", "{C:dark_edition}Frozen {}cards"},
             },
             j_Roland_artemis = {
                 name = "Artemis X",
@@ -261,7 +261,7 @@ return {
             },
             j_Roland_phytoestrogens = {
                 name = "Phytoestrogens",
-                text = {"{C:mult}+Chips{} Mult", "{X:mult,C:white}X#1#{} Mult"},
+                text = {"{C:mult}+Chips{} Mult, {X:mult,C:white}X#1#{} Mult"},
             },
             j_Roland_sapling = {
                 name = "Sapling",
