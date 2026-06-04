@@ -74,7 +74,7 @@ SMODS.Tag {
 
         if tag.triggered or
             (tag.ability.amount or self.config.amount) <= 0 or
-            (context.card.edition and context.card.edition.Roland_frozen) or
+            ((context.card or {}).edition or {}).Roland_frozen or
             context.type ~= "Bakery_score_card" then
             return
         end
