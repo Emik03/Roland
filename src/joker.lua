@@ -655,15 +655,22 @@ joker {
             return {card = card, xmult = card.ability.extra.xmult}
         end
 
-        if card.debuff or context.blueprint or not context.press_play then
+        if card.debuff or
+            context.blueprint or
+            not context.press_play or
+            card.ability.extra.context == context then
             return
         end
 
-        local keys = f(card.area.cards):where(f().nq(card)):keys():table()
-        local k = pseudorandom_element(keys, pseudoseed "Roland_amber") or card.rank
+        card.ability.extra.context = context
+        local cards = card.area.cards
+        local keys = f(cards):where(f().nq(card)):keys():table()
+        local key = pseudorandom_element(keys, pseudoseed "Roland_amber") or card.rank
+        local next = card.rank < key and 1 or -1
 
-        card.area.cards[k], card.area.cards[card.rank] =
-            card.area.cards[card.rank], card.area.cards[k]
+        for i = card.rank, key - next, next do
+            cards[i], cards[i + next] = cards[i + next], cards[i]
+        end
     end,
 }
 
@@ -859,6 +866,9 @@ joker {
         sequence = {"c_earth", "c_mars", "c_earth"},
     }},
     attributes = {"economy", "scaling", "planet", "space", "bakery_double_sided"},
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = false,
     calc_dollar_bonus = function(_, card)
         return card.ability.extra.dollars
     end,
