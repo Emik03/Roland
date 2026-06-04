@@ -17,9 +17,9 @@ local frozen_sounds = f(4):map(frozen_sound):map("key"):table()
 
 local needs_chip_mult_override = {
     Bull = true,
+    Erosion = true,
     Misprint = true,
     TierList = true,
-    Bootstraps = true,
     ["Blue Joker"] = true,
     ["Abstract Joker"] = true,
     ["Fortune Teller"] = true,
@@ -186,7 +186,7 @@ end
 
 local orig_get_probability_vars = SMODS.get_probability_vars
 
-function G.P_CENTERS.j_erosion:mult(card)
+function G.P_CENTERS.j_bootstraps:mult(card)
     local ability = card.Roland_frozen_ability
     local ret = math.floor((G.GAME.dollars + (G.GAME.dollar_buffer or 0)) / card.ability.extra.dollars)
 
@@ -194,8 +194,8 @@ function G.P_CENTERS.j_erosion:mult(card)
         return ret
     end
 
-    ability.Roland_erosion_mult = ability.Roland_erosion_mult or ret
-    return ability.Roland_erosion_mult
+    ability.Roland_bootstraps_mult = ability.Roland_bootstraps_mult or ret
+    return ability.Roland_bootstraps_mult
 end
 
 function SMODS.get_probability_vars(trigger_obj, ...)

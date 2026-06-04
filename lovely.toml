@@ -91,5 +91,5 @@ match_indent = true
 target = "card.lua"
 pattern = "math\\.floor\\(\\(G\\.GAME\\.dollars \\+ \\(G\\.GAME\\.dollar_buffer or 0\\)\\)/self\\.ability\\.extra\\.dollars\\)"
 position = "at"
-payload = "G.P_CENTERS.j_erosion:mult(self)"
+payload = "G.P_CENTERS.j_bootstraps:mult(self)"
 match_indent = true
