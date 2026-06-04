@@ -46,9 +46,7 @@ local function freeze(card)
     ---@param x T
     ---@return T
     local function copy(x)
-        return type(x) == "table" and f(x):map(copy):where(function(v, k)
-            return k ~= "nine_tally" or v ~= 0
-        end):table() or x
+        return type(x) == "table" and f(x):map(copy):table() or x
     end
 
     if frozen_blocklist[(card.ability or {}).name] then

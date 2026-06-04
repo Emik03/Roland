@@ -87,6 +87,44 @@ end"""
 match_indent = true
 
 [[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """if self.ability.name == 'Throwback' then
+    self.ability.x_mult = 1 + G.GAME.skips*self.ability.extra
+end
+if self.ability.name == "Driver's License" then"""
+position = "at"
+payload = """if self.ability.name == 'Throwback' then
+    self.ability.x_mult = 1 + G.GAME.skips*self.ability.extra
+end
+if self.ability.name == "Driver's License" and not (self.edition and self.edition.Roland_frozen) then"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """if self.ability.name == "Steel Joker" then"""
+position = "at"
+payload = """if self.ability.name == "Steel Joker" and not (self.edition and self.edition.Roland_frozen) then"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """if self.ability.name == "Cloud 9" then"""
+position = "at"
+payload = """if self.ability.name == "Cloud 9" and not (self.edition and self.edition.Roland_frozen) then"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """if self.ability.name == "Stone Joker" then"""
+position = "at"
+payload = """if self.ability.name == "Stone Joker" and not (self.edition and self.edition.Roland_frozen) then"""
+match_indent = true
+
+[[patches]]
 [patches.regex]
 target = "card.lua"
 pattern = "math\\.floor\\(\\(G\\.GAME\\.dollars \\+ \\(G\\.GAME\\.dollar_buffer or 0\\)\\)/self\\.ability\\.extra\\.dollars\\)"
