@@ -57,7 +57,7 @@ local function freeze(card)
 
     card.Roland_frozen_ability = card.Roland_frozen_ability or copy(card.ability)
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
-    card.Roland_frozen = card.Roland_frozen and {probability = SMODS.get_probability_vars(card, 1, 1)}
+    card.Roland_frozen = card.Roland_frozen or {probability = SMODS.get_probability_vars(card, 1, 1)}
     local ability, ret = card.ability, card.Roland_frozen_ability
 
     if type(ability) ~= "table" then
@@ -216,11 +216,10 @@ q(function()
             return 1
         end
 
-        card.Roland_frozen.estate = card.Roland_frozen.estate and
-            card.Roland_frozen.estate or
-            (f(card.area.cards):swap():any(function(_, k)
+        card.Roland_frozen.estate = card.Roland_frozen.estate or
+            f(card.area.cards):swap():any(function(_, k)
                 return k == card
-            end) or 1)
+            end) or 1
 
         return card.Roland_frozen.estate
     end
@@ -237,7 +236,7 @@ q(function()
         end
 
         local joker_count = estate_pos(card)
-        local extra = card.ability.extra or {}
+        local extra = card.ability.extra
         return {chips = extra.chips * joker_count, mult = extra.mult * joker_count}
     end
 
