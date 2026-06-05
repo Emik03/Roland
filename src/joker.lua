@@ -665,6 +665,11 @@ joker {
         card.ability.extra.context = context
         local cards = card.area.cards
         local keys = f(cards):where(f().nq(card)):keys():table()
+
+        if not next(keys) then
+            return
+        end
+
         local key = pseudorandom_element(keys, pseudoseed "Roland_amber") or card.rank
         local next = card.rank < key and 1 or -1
 
