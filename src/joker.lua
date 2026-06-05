@@ -679,7 +679,7 @@ joker {
             return
         end
 
-        card.Roland_amber_waiting = false
+        card.Roland_amber_waiting = true
         local cards = card.area.cards
         local keys = f(cards):where(f().nq(card)):keys():table()
 
