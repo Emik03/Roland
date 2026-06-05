@@ -451,11 +451,16 @@ joker {
 
         if context.repetition and context.other_card then
             local repetitions = is_frozen(context.other_card) and extra.frozen or extra.non_frozen
-            return repetitions ~= 0 and {card = card, repetitions = repetitions} or nil
+
+            if repetitions and repetitions > 0 then
+                return {card = card, repetitions = repetitions}
+            end
         end
 
         return SMODS.merge_effects(
-            f(G.jokers.cards):where(is_frozen):map(function(v)
+            f(G.jokers.cards):where(is_frozen):where(function(v)
+                return v.config.center.key ~= card.config.center.key
+            end):map(function(v)
                 return SMODS.blueprint_effect(card, v, context) or true
             end):where(function(v)
                 return type(v) == "table"
@@ -582,7 +587,7 @@ joker {
 joker {
     key = "phytoestrogens",
     pronouns = "she_her",
-    config = {extra = {xmult = 0.25}},
+    config = {extra = {xmult = 0.4}},
     attributes = {"mult", "xmult"},
     cost = 8,
     rarity = 3,
