@@ -668,14 +668,18 @@ joker {
             return {card = card, xmult = card.ability.extra.xmult}
         end
 
-        if card.debuff or
+        card.Roland_amber_waiting = card.Roland_amber_waiting and not context.after
+
+        local no = card.debuff or
             context.blueprint or
-            not context.press_play or
-            card.ability.extra.context == context then
+            card.Roland_amber_waiting or
+            not context.press_play
+
+        if no and not context.forcetrigger then
             return
         end
 
-        card.ability.extra.context = context
+        card.Roland_amber_waiting = false
         local cards = card.area.cards
         local keys = f(cards):where(f().nq(card)):keys():table()
 
@@ -877,8 +881,8 @@ joker {
     cost = 6,
     rarity = 2,
     config = {extra = {
-        dollars = 2,
-        increase = 3,
+        dollars = 3,
+        increase = 4,
         progress = 0,
         flipped = false,
         sequence = {"c_earth", "c_mars", "c_earth"},
