@@ -115,7 +115,25 @@ end
 ---@nodiscard
 function f.index(v)
     return function(x)
-        return x and x[v]
+        return type(x) == "table" and x[v] or x
+    end
+end
+
+---@generic V
+---@param v string
+---@return fun(x: { [string]: V }): V
+---@nodiscard
+function f.indices(v)
+    return function(x)
+        if type(x) ~= "table" then
+            return x
+        end
+
+        for i in v:gmatch "[^.]+" do
+            x = x[i]
+        end
+
+        return x
     end
 end
 
@@ -146,18 +164,18 @@ end
 ---@overload fun(iter: true): fun(): true
 ---@overload fun(iter: nil): F
 function f.from(iter, fpairs, step)
-    if iter == true then
+    if iter == nil then
+        return none
+    elseif iter == true then
         return f.tru
     elseif iter == false then
         return f.fals
-    elseif iter == nil then
-        return none
     end
 
     local t = type(iter)
 
     if t == "string" then
-        return f.index(iter)
+        return f.indices(iter)
     elseif t == "number" then
         local ik, is, start = 0, step or 1, fpairs and iter or 1
 

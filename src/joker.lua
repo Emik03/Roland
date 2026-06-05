@@ -438,7 +438,7 @@ joker {
     pronouns = "they_them",
     cost = 10,
     rarity = 3,
-    config = {extra = {frozen = 1}},
+    config = {extra = {frozen = 1, non_frozen = 0, max_stack = 6, color = "DARK_EDITION"}},
     attributes = {"retrigger", "editions"},
     eternal_compat = true,
     blueprint_compat = true,
@@ -449,26 +449,34 @@ joker {
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
+        if extra.max_stack and
+            context.blueprint_copiers_stack and
+            extra.max_stack < #context.blueprint_copiers_stack then
+            return
+        end
+
         if context.repetition and context.other_card then
             local repetitions = is_frozen(context.other_card) and extra.frozen or extra.non_frozen
 
             if repetitions and repetitions > 0 then
-                return {card = card, repetitions = repetitions}
+                return {card = card, colour = G.C[extra.color], repetitions = repetitions}
             end
         end
 
-        return SMODS.merge_effects(
+        local key = card.config.center.key
+
+        local merged = SMODS.merge_effects(
             f(G.jokers.cards):where(is_frozen):where(function(v)
-                return v.config.center.key ~= card.config.center.key
+                return v.config.center.key ~= key
             end):map(function(v)
-                return SMODS.blueprint_effect(card, v, context) or true
-            end):where(function(v)
-                return type(v) == "table"
-            end):map(function(v)
-                v.colour = G.C.DARK_EDITION
+                return SMODS.blueprint_effect(card, v, context)
+            end):where(type, "table"):map(function(v)
+                v.colour = G.C[extra.color]
                 return v
             end):values():table()
         )
+
+        return merged
     end,
 }
 
