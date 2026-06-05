@@ -129,7 +129,7 @@ charm {
     equip = function(_, card)
         SMODS.change_booster_limit(card.ability.extra.mod)
     end,
-    unequip = function(card)
+    unequip = function(_, card)
         SMODS.change_booster_limit(-card.ability.extra.mod)
     end,
 }
