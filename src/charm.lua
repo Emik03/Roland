@@ -8,10 +8,15 @@ SMODS.Atlas {
     py = 68,
 }
 
+SMODS.Sound {
+    key = "phone",
+    path = "phone.ogg",
+}
+
 local charm = (function()
     local x = 0
 
-    ---@param tbl SMODS.Joker|{alerted?: boolean}
+    ---@param tbl SMODS.Joker|{alerted?: boolean, equip?: fun(self: self, card: Card)}
     return function(tbl)
         q(function()
             local current_mod = SMODS.current_mod
@@ -22,8 +27,18 @@ local charm = (function()
             tbl.unlocked = true
             tbl.discovered = true
             tbl.pos = {x = x, y = 0}
-            x = x + 1
             tbl.atlas = "charm"
+            x = x + 1
+
+            local orig_equip = tbl.equip
+
+            function tbl.equip(...)
+                play_sound("Roland_phone", 1, 0.5)
+
+                if orig_equip then
+                    return orig_equip(...)
+                end
+            end
 
             local charm = Bakery_API.Charm(tbl)
             charm:inject()

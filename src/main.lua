@@ -49,14 +49,16 @@ local function toggle(id)
     }
 end
 
+local animated = SMODS.Mods.Roland.config.animated_icon
+
 SMODS.Atlas {
     px = 256,
     py = 256,
-    fps = 12,
-    frames = 12,
     key = "modicon",
-    path = "icon.png",
-    atlas_table = "ANIMATION_ATLAS",
+    fps = animated and 12 or nil,
+    frames = animated and 12 or nil,
+    path = animated and "icon.png" or "unicon.png",
+    atlas_table = animated and "ANIMATION_ATLAS" or "ASSET_ATLAS",
 }
 
 SMODS.current_mod.qol = qol
@@ -69,13 +71,14 @@ function SMODS.current_mod.config_tab()
             n = G.UIT.C,
             config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.CLEAR},
             nodes = {
+                toggle "animated_icon",
                 toggle "faster_planets",
-                toggle "illusion_seal",
-                toggle "no_wild_debuff",
                 _G["Talisman"] and toggle "harsh_ante_scaling",
-                G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
-                toggle "equinox_assist",
+                toggle "illusion_seal",
                 SMODS.Mods.DebugPlus and toggle "import_funky",
+                toggle "no_wild_debuff",
+                toggle "equinox_assist",
+                G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
             },
         }},
     }

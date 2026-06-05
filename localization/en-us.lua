@@ -436,6 +436,7 @@ return {
         },
         v_dictionary = {
             b_Roland_add = "ADD",
+            b_Roland_animated_icon = "Animated Icon (requires restart)",
             b_Roland_bye = "Bye!",
             b_Roland_comma = ", ",
             b_Roland_debuffed = "DEBUFFED",
