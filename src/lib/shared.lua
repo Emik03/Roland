@@ -10,7 +10,22 @@ local function protect(fun)
     end
 end
 
-local function protect_ev(fun)
+local function protect_ev(fun, retries)
+    if type(fun) == "function" and retries then
+        local orig_fun = fun
+
+        fun = function(...)
+            local ret = orig_fun(...)
+
+            if ret == true then
+                retries = retries - 1
+                return retries <= 0
+            else
+                return ret
+            end
+        end
+    end
+
     if type(fun) == "table" then
         fun.func = protect(fun.func)
         fun = getmetatable(fun) == Event and fun or Event(fun)
@@ -63,10 +78,10 @@ local f = assert(SMODS.load_file "src/lib/funky.lua")() or require "lib.funky"
 
 --- Queues an event to be run.
 --- Note that events added this way implicitly `return true` unless you explicitly `return false`, unlike the vanilla ones.
---- @param fun (fun():false|nil)|Event The event or a function to run turn into an event.
---- @param front boolean|nil `true` to add the event to the front of the queue, rather than the end.
+--- @param fun (fun():boolean?)|Event The event or a function to run turn into an event.
+--- @param front? boolean `true` to add the event to the front of the queue, rather than the end.
 local function q(fun, front)
-    G.E_MANAGER:add_event(protect_ev(fun), nil, front)
+    G.E_MANAGER:add_event(protect_ev(fun, SMODS.current_mod and 100), nil, front)
 end
 
 --- Determines if a center is allowed to be usable.

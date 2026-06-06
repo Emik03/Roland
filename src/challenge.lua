@@ -67,7 +67,7 @@ SMODS.Challenge {
 
 local spin_to_win = SMODS.Challenge {
     key = "Spin_To_Win",
-    jokers = f(4):map(f().const {id = "j_Bakery_Spinner", eternal = true}):table(),
+    jokers = f(4):map(f().const {id = "j_joker", eternal = true}):table(),
     restrictions = {banned_cards = {{id = "c_Roland_coolheaded"}}},
     pronouns = "they_them",
     apply = function(self)
@@ -261,12 +261,6 @@ SMODS.Challenge {
 }
 
 q(function()
-    if not G.P_CENTERS.j_Bakery_Spinner then
-        f(spin_to_win.jokers):each(function(v)
-            v.id = "j_joker"
-        end)
-    end
-
     f {
         {G.P_TAGS,    is_banned_from_pastry,                pastries.banned_tags},
         {G.P_BLINDS,  is_banned_from_pastry,                pastries.banned_other},
@@ -278,5 +272,15 @@ q(function()
         {G.P_BLINDS,  is_showdown_except "bl_final_vessel", violet.banned_other},
     }:each(function(v)
         f(v[1]):where(v[2]):each(adder(v[3]))
+    end)
+end)
+
+q(function()
+    if not G.P_CENTERS.j_Bakery_Spinner then
+        return true
+    end
+
+    f(spin_to_win.jokers):each(function(v)
+        v.id = "j_Bakery_Spinner"
     end)
 end)

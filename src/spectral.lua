@@ -147,7 +147,7 @@ spectral {
     end,
 }
 
-local void = spectral {
+spectral {
     key = "void",
     pronouns = "it_its",
     artist = "aster",
@@ -205,7 +205,3 @@ local void = spectral {
         }
     end,
 }
-
-q(function()
-    void.hidden = not SMODS.Mods.Cryptid
-end)

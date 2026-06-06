@@ -205,7 +205,7 @@ q(function()
     local estate = G.P_CENTERS.j_Bakery_Estate
 
     if not estate then
-        return
+        return true
     end
 
     ---@param card Card|{ Roland_frozen: {estate: integer} }
@@ -214,18 +214,14 @@ q(function()
             return 1
         end
 
-        card.Roland_frozen.estate = card.Roland_frozen.estate or
-            f(card.area.cards):swap():any(function(_, k)
-                return k == card
-            end) or 1
-
+        card.Roland_frozen.estate = card.Roland_frozen.estate or card.rank or 1
         return card.Roland_frozen.estate
     end
 
     local orig_calculate = estate.calculate
 
     function estate:calculate(card, context, ...)
-        if not card or not card.edition or not card.edition.Roland_frozen then
+        if not ((card or {}).edition or {}).Roland_frozen then
             return orig_calculate(self, card, context, ...)
         end
 
@@ -241,7 +237,7 @@ q(function()
     local orig_loc_vars = estate.loc_vars
 
     function estate:loc_vars(info_queue, card, ...)
-        if not card or not card.edition or not card.edition.Roland_frozen then
+        if not ((card or {}).edition or {}).Roland_frozen then
             return orig_loc_vars(self, info_queue, card, ...)
         end
 
@@ -255,7 +251,7 @@ q(function()
     local proxy = G.P_CENTERS.j_Bakery_Proxy
 
     if not proxy then
-        return
+        return true
     end
 
     ---@param card Card|{ Roland_frozen: {proxy: string} }
@@ -308,7 +304,7 @@ q(function()
     local orig_flip_double_sided = (Bakery_API or {}).flip_double_sided
 
     if not orig_flip_double_sided then
-        return
+        return true
     end
 
     function Bakery_API.flip_double_sided(card, ...)

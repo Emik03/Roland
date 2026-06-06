@@ -130,13 +130,15 @@ function get_blind_amount(ante, ...)
 end
 
 q(function()
-    if not G.P_CENTERS.c_Bakery_Scribe then
-        return
+    local scribe = G.P_CENTERS.c_Bakery_Scribe
+
+    if not scribe then
+        return true
     end
 
-    local orig_can_use = G.P_CENTERS.c_Bakery_Scribe.can_use
+    local orig_can_use = scribe.can_use
 
-    function G.P_CENTERS.c_Bakery_Scribe.can_use(...)
+    function scribe.can_use(...)
         return orig_can_use(...) and
             (SMODS.Mods.Roland.config.scribable_basket or f(G.jokers.highlighted):all(function(v)
                 return v.config.center.key ~= "j_Roland_basket"

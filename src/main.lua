@@ -14,8 +14,12 @@ end
 
 q(function()
     -- Special shoutout to all contributors. <3
-    ---@type table<string, {name: string, fg: table, bg: table}>
-    local contributors, mods = Bakery_API.contributors, SMODS.Mods
+    ---@type table<string, {name: string, fg: table, bg: table}>?
+    local contributors = (Bakery_API or {}).contributors
+
+    if not contributors then
+        return true
+    end
 
     contributors.Roland_aster = {
         name = "asterSSH",
@@ -35,7 +39,7 @@ q(function()
         bg = HEX "ff79c6ff",
     }
 
-    if mods.DebugPlus and mods.Roland.config.import_funky then
+    if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
         _G.f, _G.q, _G.u = unpack(qol)
     end
 end, true)
