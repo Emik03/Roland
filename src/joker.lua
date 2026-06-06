@@ -242,7 +242,9 @@ joker {
         table.insert(info_queue, negative)
     end,
     calculate = function(_, _, context)
-        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):each(function(v)
+        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):where(function(v, k)
+            return v.config.center.set ~= "Joker"
+        end):each(function(v)
             q {
                 delay = 1,
                 func = function()
