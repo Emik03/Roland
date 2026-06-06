@@ -242,10 +242,8 @@ joker {
         table.insert(info_queue, negative)
     end,
     calculate = function(_, _, context)
-        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):where(function(v)
-            return v.config.center.set ~= "Joker"
-        end):each(function(v)
-            q {
+        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):each(function(v) --@type Card
+            return v.ability.consumeable and q {
                 delay = 1,
                 func = function()
                     play_sound "timpani"

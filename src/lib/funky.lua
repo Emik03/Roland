@@ -640,7 +640,7 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func? fun(v: V, k: K)
+---@param func? fun(v: V, k: K): nil
 function f:each(func)
     for k, v in self.next do
         if func then
