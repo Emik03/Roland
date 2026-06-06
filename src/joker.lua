@@ -242,7 +242,7 @@ joker {
         table.insert(info_queue, negative)
     end,
     calculate = function(_, _, context)
-        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):where(function(v, k)
+        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):where(function(v)
             return v.config.center.set ~= "Joker"
         end):each(function(v)
             q {
@@ -597,7 +597,7 @@ joker {
 joker {
     key = "phytoestrogens",
     pronouns = "she_her",
-    config = {extra = {xmult = 0.4}},
+    config = {extra = {xmult = 0.3}},
     attributes = {"mult", "xmult"},
     cost = 8,
     rarity = 3,
