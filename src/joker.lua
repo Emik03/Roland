@@ -966,7 +966,7 @@ joker {
 
         if context.end_of_round and extra.probability ~= extra.reset then
             extra.probability = extra.reset
-            return {message = localize "k_reset", colour = G.C.RED, message_card = card}
+            return {message = localize "k_reset", colour = G.C.RED, message_card = card, repetitions = 0}
         end
 
         if context.after then
