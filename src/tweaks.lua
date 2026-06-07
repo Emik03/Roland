@@ -54,22 +54,21 @@ end
 local orig_use_card = G.FUNCS.use_card
 
 function G.FUNCS.use_card(e, ...)
+    local ref = e.config.ref_table or {}
+    local consumeable = (ref.ability or {}).consumeable or {}
+
     if not SMODS.Mods.Roland.config.faster_planets or
-        not (((e.config.ref_table or {}).ability or {}).consumeable or {}).hand_type then
+        (not consumeable.hand_type and not consumeable.hand_types) then
         return orig_use_card(e, ...)
     end
 
+    local normal = ref.area ~= G.pack_cards or not G.GAME.pack_choices or G.GAME.pack_choices <= 0
+    ref.from_area = ref.from_area or ref.area
     play_sound("tarot1", percent, 0.6)
-    e.config.ref_table:use_consumeable(e.config.ref_table.area)
-
-    SMODS.calculate_context {
-        using_consumeable = true,
-        consumeable = e.config.ref_table,
-        area = e.config.ref_table.from_area,
-    }
-
-    local normal = G.GAME.pack_choices and e.config.ref_table.area ~= G.pack_cards
-    e.config.ref_table:remove()
+    discover_card(ref.config.center)
+    ref:use_consumeable(ref.area)
+    SMODS.calculate_context {area = ref.area, consumeable = ref, using_consumeable = true}
+    ref:remove()
 
     if normal then
         return
