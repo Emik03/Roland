@@ -158,7 +158,7 @@ joker {
             G.GAME.chips / card.ability.extra.requirement < G.GAME.blind.chips then
             card.getting_sliced = true
             local message = localize {type = "variable", key = "b_Roland_bye"}
-            SMODS.calculate_effect({message = message, colour = G.C.RED, message_card = card}, card)
+            SMODS.calculate_effect({message = message, colour = G.C.RED, message_card = card, repetitions = 0}, card)
 
             q(function()
                 G.hand_text_area.blind_chips:juice_up()
