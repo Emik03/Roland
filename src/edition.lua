@@ -221,7 +221,7 @@ q(function()
     local orig_calculate = estate.calculate
 
     function estate:calculate(card, context, ...)
-        if not ((card or {}).edition or {}).Roland_frozen then
+        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
             return orig_calculate(self, card, context, ...)
         end
 
@@ -237,7 +237,7 @@ q(function()
     local orig_loc_vars = estate.loc_vars
 
     function estate:loc_vars(info_queue, card, ...)
-        if not ((card or {}).edition or {}).Roland_frozen then
+        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
             return orig_loc_vars(self, info_queue, card, ...)
         end
 
