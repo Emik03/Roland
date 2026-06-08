@@ -75,7 +75,7 @@ spectral {
         table.insert(info_queue, G.P_CENTERS.m_stone)
     end,
     can_use = function()
-        return u() and next(G.hand.cards)
+        return u() and not not next(G.hand.cards)
     end,
     use = function(_, card)
         q {

@@ -31,6 +31,21 @@ local joker = (function()
     end
 end)()
 
+---@generic T
+---@param tbl T[]
+---@return fun(t: T[], i: integer): integer, T
+---@return T[]
+local function ipairs_reversed(tbl)
+    return function(t, i)
+        local k = i and i - 1 or #t
+        local v = t[k]
+
+        if v ~= nil then
+            return k, v
+        end
+    end, tbl
+end
+
 ---@param card Card
 local function is_frozen(card)
     return card.edition and card.edition.key == "e_Roland_frozen"
@@ -244,7 +259,7 @@ joker {
         table.insert(info_queue, negative)
     end,
     calculate = function(_, _, context)
-        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):each(function(v) --@type Card
+        return (context.selling_self or context.forcetrigger) and f(G.consumeables.cards):each(function(v)
             return v.ability.consumeable and q {
                 delay = 1,
                 func = function()
@@ -702,6 +717,50 @@ joker {
 }
 
 joker {
+    key = "crimson",
+    pronouns = "she_her",
+    config = {extra = {xmult = 3}},
+    pixel_size = {w = 68, h = 68},
+    attributes = {"xmult"},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = false,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(self, card, context)
+        return (self.crimson() or context.joker_main or context.forcetrigger) and
+            {card = card, xmult = card.ability.extra.xmult} or nil
+    end,
+    crimson = function()
+        f(G.jokers.cards, ipairs_reversed):each(function(v)
+            local right = G.jokers.cards[v.rank + 1]
+
+            local debuffed_by_crimson = right and
+                not right.debuff and
+                right.config.center.key == "j_Roland_crimson"
+
+            if debuffed_by_crimson and v.ability.Roland_crimson == nil then
+                v.ability.Roland_crimson = v.debuff and true or false
+                v:set_debuff(true)
+            elseif not debuffed_by_crimson and v.ability.Roland_crimson ~= nil then
+                v:set_debuff(v.ability.Roland_crimson)
+                v.ability.Roland_crimson = nil
+            end
+        end)
+    end,
+}
+
+local orig_stop_drag = Card.stop_drag
+
+function Card:stop_drag(...)
+    local _ = self.area == G.jokers and G.P_CENTERS.j_Roland_crimson.crimson()
+    return orig_stop_drag(self, ...)
+end
+
+joker {
     key = "martingale",
     pronouns = "he_him",
     config = {extra = {odds = 2}},
@@ -766,7 +825,6 @@ joker {
         local extra = card.ability.extra
         local col = {}
 
-        ---@type { [number]: string|table|nil }|{colours: {[number]: {[1]: number, [2]: number, [3]: number, [4]: number}}}
         local vars = f(self.Roland_idle_capacity):flatmap(function(v)
             local l = localize_card(extra.cards[v], "b_Roland_unassigned").vars
 
@@ -779,7 +837,7 @@ joker {
         end):values():table()
 
         table.insert(vars, extra.xmult)
-        vars.colours = col
+        vars["colours"] = col
         return {vars = vars}
     end,
     calculate = function(_, card, context)

@@ -43,6 +43,15 @@ if false then
     -- This allows for better type inference.
     SMODS.Mods.Roland.config = require "config"
 
+    ---@type Card[]
+    CardArea.cards = CardArea.cards
+
+    --- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
+    _G["Big"] = _G["Big"]
+
+    --- @type fun(area: CardArea, ...: ...): Card
+    create_card_for_shop = create_card_for_shop
+
     -- This exists to remove the @deprecated warning.
     ---Returns the elements from the given `list`. This function is equivalent to
     ---```lua

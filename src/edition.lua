@@ -268,7 +268,7 @@ q(function()
             return v.config.center.key == card.Roland_frozen.proxy
         end
 
-        return f(G.jokers.cards):any(eq) ---@type Card?
+        return f(G.jokers.cards):any(eq)
     end
 
     local orig_calculate = proxy.calculate

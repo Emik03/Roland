@@ -34,7 +34,7 @@ end
 ---@return V
 ---@nodiscard
 local function autopairs(tbl, fpairs)
-    return (fpairs or tbl[#tbl] and ipairs or pairs)(tbl)
+    return (fpairs or (tbl[#tbl] and ipairs or pairs))(tbl)
 end
 
 ---@param any any

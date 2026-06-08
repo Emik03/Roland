@@ -173,7 +173,6 @@ SMODS.Challenge {
         local mod = G.GAME.modifiers
         mod.Roland_Eternally_Crimson = not context.setting_blind and mod.Roland_Eternally_Crimson or nil
         local debuff = context.debuff_card
-        ---@type (SMODS.Joker|{ability?: {Roland_crimson_heart_chosen: boolean?}, debuff: boolean?})[]
         local cards = G.jokers.cards
 
         if debuff and

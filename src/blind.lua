@@ -29,7 +29,6 @@ SMODS.Sound {
 }
 
 local function common_rank()
-    ---@type { [integer]: integer }, { [integer]: string }
     local tally, to_name = {}, {}
 
     f(G.playing_cards):where(SMODS.has_no_rank, false):each(function(v)

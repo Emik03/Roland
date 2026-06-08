@@ -81,7 +81,6 @@ end
 local orig_create_card_for_shop = create_card_for_shop
 
 function create_card_for_shop(...)
-    ---@type Card
     local ret = orig_create_card_for_shop(...)
 
     if not SMODS.Mods.Roland.config.illusion_seal or
@@ -119,7 +118,6 @@ function get_blind_amount(ante, ...)
         return 1 / 0
     end
 
-    --- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
     local big, rem = _G["Big"], tonumber(blind((ante % loop) + 1))
 
     return ante / 15 >= loop and big:new(f(blind(ante - (loop * 15))):map(f().const(10)):table()) or

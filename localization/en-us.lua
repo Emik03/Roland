@@ -121,7 +121,11 @@ return {
         Joker = {
             j_Roland_amber = {
                 name = "Amber Acorn",
-                text = {"{X:mult,C:white}X#1#{} Mult", "Moves before", "hand is played"},
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult",
+                    "Moves before",
+                    "hand is played",
+                },
             },
             j_Roland_arctic = {
                 name = "Arctic Circle",
@@ -159,6 +163,14 @@ return {
                     "Third scored card",
                     "gives {X:red,C:white}X#1#{} Mult",
                     "if it is {C:dark_edition}Frozen",
+                },
+            },
+            j_Roland_crimson = {
+                name = "Crimson Heart",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult",
+                    "{C:red}Debuffs {C:attention}Joker",
+                    "to the left",
                 },
             },
             j_Roland_domino = {
