@@ -13,31 +13,37 @@ if _G["Balatest"] then
 end
 
 q(function()
-    -- Special shoutout to all contributors. <3
-    ---@type table<string, {name: string, fg: table, bg: table}>?
     local contributors = (Bakery_API or {}).contributors
 
     if not contributors then
         return true
     end
 
-    contributors.Roland_aster = {
-        name = "asterSSH",
-        fg = HEX "f8f8f2ff",
-        bg = HEX "bd93f9ff",
-    }
-
-    contributors.Roland_bakersdozenbagels = {
-        name = "BakersDozenBagels",
-        fg = HEX "362708",
-        bg = HEX "EDD198",
-    }
-
-    contributors.Roland_char = {
-        name = "char (@irregulester)",
-        fg = HEX "f8f8f2ff",
-        bg = HEX "ff79c6ff",
-    }
+    -- Special shoutout to all contributors. <3
+    f {
+        aster = {
+            name = "asterSSH",
+            fg = HEX "f8f8f2ff",
+            bg = HEX "bd93f9ff",
+        },
+        bakersdozenbagels = {
+            name = "BakersDozenBagels",
+            fg = HEX "362708ff",
+            bg = HEX "edd198ff",
+        },
+        char = {
+            name = "char (@irregulester)",
+            fg = HEX "f8f8f2ff",
+            bg = HEX "ff79c6ff",
+        },
+        ghostlyfield = {
+            name = "ghostlyfield",
+            fg = HEX "ffffffff",
+            bg = HEX "b290e6ff",
+        },
+    }:each(function(v, k)
+        contributors["Roland_" .. k] = v
+    end)
 
     if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
         _G.f, _G.q, _G.u = unpack(qol)

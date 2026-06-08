@@ -12,13 +12,11 @@ local joker = (function()
         return ret
     end
 
-    ---@param tbl SMODS.Joker|{artist?: string, Bakery_can_use: (fun(self: self, card: Card): boolean?), Bakery_use_button_text: (fun(self: self, card: Card): string|table|nil), Bakery_use_joker: fun(self: self, card: Card), sinis?: boolean|{x: number, y: number}, soul_pos?: boolean|{x: number, y: number}, attributes?: Attributes[]}
+    ---@param tbl SMODS.Joker|{artist?: string, Bakery_can_use: (fun(self: self, card: Card): boolean?), Bakery_use_button_text: (fun(self: self, card: Card): string|table|nil), Bakery_use_joker: fun(self: self, card: Card), attributes?: Attributes[]}
     return function(tbl)
         tbl.pos = inc()
         tbl.atlas = "joker"
         tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
-        tbl.soul_pos = tbl.soul_pos and inc() or nil
-        tbl.sinis = tbl.sinis and inc() or nil
 
         if ((tbl.config or {}).extra or {}).flipped ~= nil then
             tbl.config.extra.front_pos = tbl.pos
@@ -99,6 +97,7 @@ SMODS.Sound {
 joker {
     key = "msjoker",
     pronouns = "she_her",
+    artist = "ghostlyfield",
     cost = 1,
     rarity = 1,
     eternal_compat = true,
@@ -118,6 +117,7 @@ joker {
 joker {
     key = "jokersr",
     pronouns = "he_him",
+    artist = "ghostlyfield",
     config = {extra = {xmult = 1.25}},
     attributes = {"xmult"},
     cost = 2,
@@ -137,7 +137,7 @@ joker {
 joker {
     key = "mrsbones",
     pronouns = "she_her",
-    artist = "char",
+    artist = "ghostlyfield",
     config = {extra = {xmult = 4, requirement = 4}},
     attributes = {"xmult"},
     cost = G.P_CENTERS.j_mr_bones.cost - 1,
@@ -208,6 +208,7 @@ joker {
 joker {
     key = "hardboiled",
     pronouns = "it_its",
+    artist = "ghostlyfield",
     attributes = {"food", "editions", "modify_card", "on_sell"},
     cost = 5,
     rarity = 2,
@@ -232,6 +233,7 @@ joker {
 joker {
     key = "basket",
     pronouns = "they_them",
+    artist = "ghostlyfield",
     attributes = {"food", "generation", "on_sell"},
     cost = 8,
     rarity = 3,
@@ -376,6 +378,7 @@ joker {
 joker {
     key = "cold",
     pronouns = "he_him",
+    artist = "ghostlyfield",
     config = {extra = {xmult = 2}},
     attributes = {"xmult"},
     cost = 4,
@@ -595,6 +598,7 @@ joker {
 joker {
     key = "phytoestrogens",
     pronouns = "she_her",
+    artist = "ghostlyfield",
     config = {extra = {xmult = 0.3}},
     attributes = {"mult", "xmult"},
     cost = 8,
@@ -618,6 +622,7 @@ joker {
 joker {
     key = "nilly",
     pronouns = "any_all",
+    artist = "ghostlyfield",
     config = {extra = {flipped = false}},
     attributes = {"xmult", "bakery_double_sided"},
     cost = 0,
