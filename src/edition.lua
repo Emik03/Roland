@@ -53,6 +53,7 @@ local function freeze(card)
         return card.ability
     end
 
+    (card.ability or {}).Roland_crimson = not not (card.ability or {}).Roland_crimson
     card.Roland_frozen_ability = card.Roland_frozen_ability or copy(card.ability)
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
     card.Roland_frozen = card.Roland_frozen or {probability = SMODS.get_probability_vars(card, 1, 1)}

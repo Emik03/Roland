@@ -735,7 +735,7 @@ joker {
             {card = card, xmult = card.ability.extra.xmult} or nil
     end,
     crimson = function()
-        f(G.jokers.cards, ipairs_reversed):each(function(v)
+        f(G.jokers.cards, ipairs_reversed):where(is_frozen, false):each(function(v)
             local right = G.jokers.cards[v.rank + 1]
 
             local debuffed_by_crimson = right and
