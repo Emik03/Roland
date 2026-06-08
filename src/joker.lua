@@ -740,6 +740,7 @@ joker {
 
             local debuffed_by_crimson = right and
                 not right.debuff and
+                v.config.center.key ~= "j_turtle_bean" and
                 right.config.center.key == "j_Roland_crimson"
 
             if debuffed_by_crimson and v.ability.Roland_crimson == nil then
