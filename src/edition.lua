@@ -58,6 +58,7 @@ local function freeze(card)
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
     card.Roland_frozen = card.Roland_frozen or {probability = SMODS.get_probability_vars(card, 1, 1)}
     local ability, ret = card.ability, card.Roland_frozen_ability
+    ability.extra = ability.extra == nil and {} or ability.extra
 
     if type(ability) ~= "table" then
         return ret
