@@ -249,6 +249,7 @@ function f.new(fnext)
         concat = f.concat,
         const = f.const,
         count = f.count,
+        each = f.each,
         eq = f.eq,
         fals = f.fals,
         flatmap = f.flatmap,
@@ -257,15 +258,12 @@ function f.new(fnext)
         id = f.id,
         index = f.index,
         indices = f.indices,
+        keys = f.keys,
         map = f.map,
         new = f.new,
         next = fnext or f.noop,
         noop = f.noop,
         nq = f.nq,
-        tru = f.tru,
-        where = f.where,
-        each = f.each,
-        keys = f.keys,
         pun = f.pun,
         skip = f.skip,
         slice = f.slice,
@@ -273,7 +271,9 @@ function f.new(fnext)
         swap = f.swap,
         table = f.table,
         take = f.take,
+        tru = f.tru,
         values = f.values,
+        where = f.where,
     }
 end
 
@@ -766,5 +766,12 @@ function f:each(func)
 end
 
 none = f.new()
-local ret = (setmetatable or f.const(f.from))(f, {__call = f.from}) ---@type F|FFrom
+
+---@type F|FFrom
+local ret = (setmetatable or f.const(f.from))(f, {
+    __call = function(_, ...)
+        return f.from(...)
+    end,
+})
+
 return ret
