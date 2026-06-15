@@ -161,7 +161,7 @@ function Card:calculate_joker(context, ...)
         local key = "Roland_frozen_" .. v
         ability[key] = ability[key] or ret[1][v]
         return ability[key]
-    end):where(f().id):table()
+    end):where(f.id):table()
 end
 
 local orig_calculate_dollar_bonus = Card.calculate_dollar_bonus

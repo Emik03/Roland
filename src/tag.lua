@@ -69,7 +69,7 @@ SMODS.Tag {
 
         if not tag.triggered and context.type == "Bakery_play_hand_late" and tag.ability.amount == 0 then
             tag.triggered = true
-            tag:yep("X", G.C.RED, f().tru)
+            tag:yep("X", G.C.RED, f.tru)
         end
 
         if tag.triggered or

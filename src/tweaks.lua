@@ -100,7 +100,7 @@ local orig_get_blind_amount = get_blind_amount
 ---@param ante number
 ---@return table|number
 local function blind(ante)
-    return ante == 39 and 1e294 or (_G["to_number"] or f().id)(orig_get_blind_amount(ante))
+    return ante == 39 and 1e294 or (_G["to_number"] or f.id)(orig_get_blind_amount(ante))
 end
 
 local function no_harsh_ante_scaling()
@@ -120,8 +120,8 @@ function get_blind_amount(ante, ...)
 
     local big, rem = _G["Big"], tonumber(blind((ante % loop) + 1))
 
-    return ante / 15 >= loop and big:new(f(blind(ante - (loop * 15))):map(f().const(10)):table()) or
-        (ante / 9 >= loop and big:new(f(ante / loop - 8):map(f().const(10)):concat {rem}:table()) or
+    return ante / 15 >= loop and big:new(f(blind(ante - (loop * 15))):map(f.const(10)):table()) or
+        (ante / 9 >= loop and big:new(f(ante / loop - 8):map(f.const(10)):concat {rem}:table()) or
             (ante / 2 >= loop and big:new {rem, ante / loop} or
                 (big.constants and big.constants.TEN or big:new {10}):pow(rem)))
 end

@@ -701,7 +701,7 @@ joker {
 
         card.Roland_amber_waiting = true
         local cards = card.area.cards
-        local keys = f(cards):where(f().nq(card)):keys():table()
+        local keys = f(cards):where(f.nq(card)):keys():table()
 
         if not next(keys) then
             return
@@ -849,7 +849,7 @@ joker {
                 return f(context.scoring_hand):any(function(x)
                     return x:is_suit(v.suit) and x.base.value == v.value
                 end) or {}
-            end):any(f().eq(context.other_card)) and {xmult = card.ability.extra.xmult} or nil
+            end):any(f.eq(context.other_card)) and {xmult = card.ability.extra.xmult} or nil
     end,
     Bakery_can_use = function(self, card)
         local key = self:Roland_idle_status(card)

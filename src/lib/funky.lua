@@ -3,10 +3,91 @@
 ---@license MPL-2.0
 ---@version 1.0.0
 ---
+---@alias FFrom (fun<K, V>(iter: table<K, V>, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K?, V?)): F | { [K]: V })|(fun(iter: number, fpairs?: number, step?: number): F | { [number]: number })|(fun<V>(iter: string): (fun(table: { [string]: V }): V))|(fun<V>(iter: string): (fun(table: { [string]: V }): V))|(fun<K, V>(iter: fun(): K, V): F | { [K]: V })|(fun(iter: false): fun(): false)|(fun(iter: true): fun(): true)|(fun(iter: nil): F)
 ---@class F
 local f = {}
 
 if not f then
+    ---@generic I, O
+    ---@param first fun(v: I): O
+    ---@return fun(v: I): O
+    function f.chain(first)
+        error {first}
+    end
+
+    ---@generic I, T, O
+    ---@param first fun(v: I): T
+    ---@param second fun(v: T): O
+    ---@return fun(v: I): O
+    function f.chain(first, second)
+        error {first, second}
+    end
+
+    ---@generic I, T1, T2, O
+    ---@param first fun(v: I): T1
+    ---@param second fun(v: T1): T2
+    ---@param third fun(v: T2): O
+    ---@return fun(v: I): O
+    function f.chain(first, second, third)
+        error {first, second, third}
+    end
+
+    ---@generic I, T1, T2, T3, O
+    ---@param first fun(v: I): T1
+    ---@param second fun(v: T1): T2
+    ---@param third fun(v: T2): T3
+    ---@param fourth fun(v: T3): O
+    ---@return fun(v: I): O
+    function f.chain(first, second, third, fourth)
+        error {first, second, third, fourth}
+    end
+
+    ---@generic I, T1, T2, T3, T4, O
+    ---@param first fun(v: I): T1
+    ---@param second fun(v: T1): T2
+    ---@param third fun(v: T2): T3
+    ---@param fourth fun(v: T3): T4
+    ---@param fifth fun(v: T4): O
+    ---@return fun(v: I): O
+    function f.chain(first, second, third, fourth, fifth)
+        error {first, second, third, fourth, fifth}
+    end
+
+    ---@generic I, O
+    ---@param all {[1]: (fun(v: I): O)}
+    ---@return fun(v: I): O
+    function f.chain(all)
+        error(all)
+    end
+
+    ---@generic I, T, O
+    ---@param all {[1]: (fun(v: I): T), [2]: (fun(v: T): O)}
+    ---@return fun(v: I): O
+    function f.chain(all)
+        error(all)
+    end
+
+    ---@generic I, T1, T2, O
+    ---@param all {[1]: (fun(v: I): T1), [2]: (fun(v: T1): T2), [3]: (fun(v: T2): O)}
+    ---@return fun(v: I): O
+    function f.chain(all)
+        error(all)
+    end
+
+    ---@generic I, T1, T2, T3, O
+    ---@param all {[1]: (fun(v: I): T1), [2]: (fun(v: T1): T2), [3]: (fun(v: T2): T3), [4]: (fun(v: T3): O)}
+    ---@return fun(v: I): O
+    function f.chain(all)
+        error(all)
+    end
+
+    ---@generic I, T1, T2, T3, T4, O
+    ---@param all {[1]: (fun(v: I): T1), [2]: (fun(v: T1): T2), [3]: (fun(v: T2): T3), [4]: (fun(v: T3): T4), [4]: (fun(v: T4): O)}
+    ---@return fun(v: I): O
+    function f.chain(all)
+        error(all)
+    end
+
     ---@generic K, V
     ---@param self F | { [K]: V }
     ---@return K?, V?
@@ -137,32 +218,67 @@ function f.indices(v)
     end
 end
 
+f[true and "chain"] = function(...)
+    for _, v in ipairs(...) do
+        if type(v) == "table" then
+            for _, vv in ipairs(v) do
+                ret = ret and function(...)
+                    return vv(ret(...))
+                end or vv
+            end
+        else
+            ret = ret and function(...)
+                return v(ret(...))
+            end or v
+        end
+    end
+
+    return ret or f.noop
+end
+
 ---@generic K, V
 ---@param fnext? fun(): K?, V?
 ---@return F|{ [K]: V }
 ---@nodiscard
 function f.new(fnext)
-    local ret = {next = fnext or f.noop}
-
-    for k, v in pairs(f) do
-        ret[k] = v
-    end
-
-    return ret
+    -- Iterating over `f` is far easier, but we do this for performance sake.
+    return {
+        all = f.all,
+        any = f.any,
+        chain = f.chain,
+        concat = f.concat,
+        const = f.const,
+        count = f.count,
+        eq = f.eq,
+        fals = f.fals,
+        flatmap = f.flatmap,
+        fold = f.fold,
+        from = f.from,
+        id = f.id,
+        index = f.index,
+        indices = f.indices,
+        map = f.map,
+        new = f.new,
+        next = fnext or f.noop,
+        noop = f.noop,
+        nq = f.nq,
+        tru = f.tru,
+        where = f.where,
+        each = f.each,
+        keys = f.keys,
+        pun = f.pun,
+        skip = f.skip,
+        slice = f.slice,
+        string = f.string,
+        swap = f.swap,
+        table = f.table,
+        take = f.take,
+        values = f.values,
+    }
 end
 
 --- Creates an enumeration.
----@generic K, V
----@param iter table<K, V>
----@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K?, V?)
----@param step? nil
----@return F | { [K]: V }
----@overload fun(iter: number, fpairs?: number, step?: number): F | { [number]: number }
----@overload fun(iter: string): (fun(table: { [string]: V }): V)
----@overload fun(iter: fun(): K, V): F | { [K]: V }
----@overload fun(iter: false): fun(): false
----@overload fun(iter: true): fun(): true
----@overload fun(iter: nil): F
+---@type FFrom
 function f.from(iter, fpairs, step)
     if iter == nil then
         return none
@@ -207,7 +323,7 @@ function f.from(iter, fpairs, step)
             end
         end)
     else
-        local next, context, k, v = autopairs(iter, fpairs)
+        local next, context, k, v = autopairs(iter, type(fpairs) == "function" and fpairs or nil)
 
         return f.new(function()
             k, v = next(context, k)
@@ -650,5 +766,5 @@ function f:each(func)
 end
 
 none = f.new()
-
-return f.from
+local ret = (setmetatable or f.const(f.from))(f, {__call = f.from}) ---@type F|FFrom
+return ret

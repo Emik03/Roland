@@ -141,7 +141,7 @@ back {
         modifiers.Roland_swapper_deck = true
         modifiers.Roland_alt_swapper_deck = modifiers.Roland_alt_swapper_deck or self:is_alt()
     end,
-    calculate = f().noop,
+    calculate = f.noop,
 }
 
 local swapper = {Spectral = "Tarot", Tarot = "Spectral"}

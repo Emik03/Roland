@@ -67,7 +67,7 @@ SMODS.Challenge {
 
 local spin_to_win = SMODS.Challenge {
     key = "Spin_To_Win",
-    jokers = f(4):map(f().const {id = "j_joker", eternal = true}):table(),
+    jokers = f(4):map(f.const {id = "j_joker", eternal = true}):table(),
     restrictions = {banned_cards = {{id = "c_Roland_coolheaded"}}},
     pronouns = "they_them",
     apply = function(self)
@@ -91,7 +91,7 @@ SMODS.Challenge {
     pronouns = "she_them",
 }
 
-local starting_jokers = f(5):map(f().const {id = "j_joker"}):table()
+local starting_jokers = f(5):map(f.const {id = "j_joker"}):table()
 
 SMODS.Challenge {
     key = "Eternally_Amber",
