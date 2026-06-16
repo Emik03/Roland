@@ -200,6 +200,16 @@ function f.index(v)
     end
 end
 
+---@generic K, V
+---@param v { [K]: V }
+---@return fun(x: K): V
+---@nodiscard
+function f.index_into(v)
+    return type(v) == "table" and function(x)
+        return v[x]
+    end or f.const(v)
+end
+
 ---@generic V
 ---@param v string
 ---@return fun(x: { [string]: V }): V
@@ -257,6 +267,7 @@ function f.new(fnext)
         from = f.from,
         id = f.id,
         index = f.index,
+        index_into = f.index_into,
         indices = f.indices,
         keys = f.keys,
         map = f.map,
