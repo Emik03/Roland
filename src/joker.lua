@@ -1,13 +1,23 @@
 local f, q = unpack(... or require "lib.shared")
 
+local atlas = SMODS.Atlas {
+    key = "joker",
+    path = "joker.png",
+    px = 71,
+    py = 95,
+}
+
 local negative = {key = "e_negative_consumable", set = "Edition", config = {extra = 1}}
 
 local joker = (function()
+    atlas:inject()
     local z = 0
+    local row
 
     ---@return {x: number, y: number}
     local function inc()
-        local ret = {x = z % 6, y = math.floor(z / 6)}
+        row = row or atlas.image_data:getWidth() / atlas.px / G.SETTINGS.GRAPHICS.texture_scaling
+        local ret = {x = z % row, y = math.floor(z / row)}
         z = z + 1
         return ret
     end
@@ -96,13 +106,6 @@ local function ranksuitnq(value)
         return value == other or v.suit ~= o.suit or v.value ~= o.value
     end
 end
-
-SMODS.Atlas {
-    key = "joker",
-    path = "joker.png",
-    px = 71,
-    py = 95,
-}
 
 SMODS.Sound {
     key = "nilly",
@@ -425,7 +428,7 @@ joker {
 joker {
     key = "snowsquall",
     pronouns = "he_they",
-    config = {extra = {mult_gain = 1, mult = 0}},
+    config = {extra = {mult_gain = 3, mult = 0}},
     attributes = {"mult", "scaling", "hand_type"},
     cost = 6,
     rarity = 2,
@@ -718,6 +721,39 @@ joker {
         for i = card.rank, key - next, next do
             cards[i], cards[i + next] = cards[i + next], cards[i]
         end
+    end,
+}
+
+joker {
+    key = "cerulean",
+    pronouns = "she_her",
+    config = {extra = {xmult = 3}},
+    pixel_size = {w = 68, h = 68},
+    attributes = {"xmult"},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    remove_from_deck = function(self)
+        self:cerulean(true)
+    end,
+    calculate = function(_, card, context)
+        return (context.joker_main or context.forcetrigger) and
+            {card = card, xmult = card.ability.extra.xmult} or nil
+    end,
+    update = function(self, card)
+        local _ = card.area == G.jokers and self:cerulean(false)
+    end,
+    cerulean = function(_, value)
+        f(G.jokers.cards):each(function(v)
+            f {"click", "drag", "focus", "hover"}:map(f.index_into(v.states)):each(function(s)
+                s.can = value or v.config.center.key == "j_Roland_cerulean"
+            end)
+        end)
     end,
 }
 

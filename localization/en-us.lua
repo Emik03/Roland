@@ -165,6 +165,14 @@ return {
                     "if it is {C:dark_edition}Frozen",
                 },
             },
+            j_Roland_cerulean = {
+                name = "Cerulean Bell",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult",
+                    "All other {C:attention}Jokers {}cannot",
+                    "be selected or dragged",
+                },
+            },
             j_Roland_crimson = {
                 name = "Crimson Heart",
                 text = {

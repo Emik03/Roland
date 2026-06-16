@@ -46,6 +46,9 @@ if false then
     ---@type Card[]
     CardArea.cards = CardArea.cards
 
+    ---@type userdata|{getWidth: fun(self: self): number}
+    SMODS.Atlas.image_data = SMODS.Atlas.image_data
+
     --- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
     _G["Big"] = _G["Big"]
 
