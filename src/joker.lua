@@ -684,7 +684,7 @@ joker {
     rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
-    perishable_compat = false,
+    perishable_compat = true,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.xmult}}
     end,
@@ -731,7 +731,7 @@ joker {
     rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
-    perishable_compat = false,
+    perishable_compat = true,
     loc_vars = function(_, _, card)
         return {vars = {card.ability.extra.xmult}}
     end,
@@ -749,7 +749,7 @@ joker {
                 right.config.center.key == "j_Roland_crimson"
 
             if debuffed_by_crimson and v.ability.Roland_crimson == nil then
-                v.ability.Roland_crimson = v.debuff and true or false
+                v.ability.Roland_crimson = not not v.debuff
                 v:set_debuff(true)
             elseif not debuffed_by_crimson and v.ability.Roland_crimson ~= nil then
                 v:set_debuff(v.ability.Roland_crimson)
@@ -764,6 +764,56 @@ local orig_stop_drag = Card.stop_drag
 function Card:stop_drag(...)
     local _ = self.area == G.jokers and G.P_CENTERS.j_Roland_crimson.crimson()
     return orig_stop_drag(self, ...)
+end
+
+joker {
+    key = "verdant",
+    pronouns = "she_her",
+    config = {extra = {debuffs = 2, xmult = 3}},
+    pixel_size = {w = 68, h = 68},
+    attributes = {"xmult"},
+    cost = 6,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local extra = card.ability.extra
+        return {vars = {extra.xmult, extra.debuffs}}
+    end,
+    calculate = function(self, card, context)
+        local extra = card.ability.extra
+        self:verdant(context.scoring_hand, extra.debuffs)
+        return (context.joker_main or context.forcetrigger) and {card = card, xmult = extra.xmult} or nil
+    end,
+    update = function()
+        local _ = G.STATE == G.STATES.SELECTING_HAND and G.hand and G.hand:parse_highlighted()
+    end,
+    verdant = function(_, cards, amount)
+        return cards and next(cards) and f(G.playing_cards):each(function(v)
+            table.sort(cards, function(a, b)
+                return a.rank < b.rank
+            end)
+
+            local should_be_verdant = f(amount):map(f.index_into(cards)):any(f.eq(v))
+            local has_verdant = v.ability.Roland_verdant ~= nil
+
+            if should_be_verdant and not has_verdant then
+                v.ability.Roland_verdant = not not v.debuff
+                v:set_debuff(true)
+            elseif not should_be_verdant and has_verdant then
+                v:set_debuff(v.ability.Roland_verdant)
+                v.ability.Roland_verdant = nil
+            end
+        end) or nil
+    end,
+}
+
+local orig_unhighlight_all = CardArea.unhighlight_all
+
+function CardArea:unhighlight_all(...)
+    G.P_CENTERS.j_Roland_verdant:verdant(self.cards)
+    return orig_unhighlight_all(self, ...)
 end
 
 joker {

@@ -339,6 +339,14 @@ return {
                     "{C:attention}#2#",
                 },
             },
+            j_Roland_verdant = {
+                name = "Verdant Leaf",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult",
+                    "{C:red}Debuffs {}the {C:attention}first",
+                    "{C:attention}#2# {}scored cards",
+                },
+            },
             j_Roland_yard = {
                 name = "Yard Sale",
                 text = {
