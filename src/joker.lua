@@ -109,6 +109,11 @@ SMODS.Sound {
     path = "nilly.ogg",
 }
 
+SMODS.Sound {
+    key = "excalibur",
+    path = "excalibur.ogg",
+}
+
 joker {
     key = "msjoker",
     pronouns = "she_her",
@@ -974,9 +979,10 @@ joker {
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
-        if context.blueprint or
-            not context.using_consumeable or
-            context.consumeable.config.center.key ~= extra.sequence[extra.progress + 1] then
+        if not context.forcetrigger and
+            (context.blueprint or
+                not context.using_consumeable or
+                context.consumeable.config.center.key ~= extra.sequence[extra.progress + 1]) then
             return
         end
 
@@ -999,6 +1005,70 @@ joker {
             colour = G.C.MONEY,
             message_card = card,
         }
+    end,
+}
+
+joker {
+    key = "excalibur",
+    pronouns = "he_him",
+    cost = 8,
+    rarity = 3,
+    config = {extra = {
+        scored = 0,
+        xmult = 1.5,
+        required = 15,
+        flipped = false,
+    }},
+    attributes = {"xmult", "enhancements", "bakery_double_sided"},
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue, card)
+        local extra = card.ability.extra
+        local _ = card.fake_card or table.insert(info_queue, G.P_CENTERS.m_stone)
+        return {vars = {extra.required, extra.scored, extra.xmult}}
+    end,
+    generate_ui = function(self, info_queue, card, ...)
+        Bakery_API.werewolf_ui "j_Roland_excalibur_Back" (self, info_queue, card, ...)
+
+        if not card or not card.ability.extra.flipped then
+            return
+        end
+
+        f(info_queue):keys():each(function(v)
+            info_queue[v] = nil
+        end)
+
+        table.insert(info_queue, G.P_CENTERS.m_stone)
+    end,
+    calculate = function(_, card, context)
+        local extra = card.ability.extra
+
+        if not context.forcetrigger and
+            (context.end_of_round or
+                not context.individual or
+                (context.cardarea ~= G.play and context.cardarea ~= G.hand) or
+                not SMODS.has_enhancement(context.other_card, "m_stone")) then
+            return
+        end
+
+        local delta = (context.cardarea == G.play and not card.blueprint) and 1 or 0
+        extra.scored = extra.scored + delta
+
+        if not extra.flipped and extra.scored == extra.required then
+            Bakery_API.flip_double_sided(card)
+
+            q(function()
+                play_sound "Roland_excalibur"
+            end)
+        end
+
+        return extra.scored > extra.required and {card = card, xmult = card.ability.extra.xmult} or
+            (delta > 0 and {
+                message = extra.scored .. "/" .. extra.required,
+                colour = G.C.JOKER_GREY,
+                message_card = card,
+            } or nil)
     end,
 }
 

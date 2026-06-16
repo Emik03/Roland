@@ -182,6 +182,22 @@ return {
                     "{C:inactive}(Currently {C:red}+#3#{C:inactive} Mult)",
                 },
             },
+            j_Roland_excalibur = {
+                name = "Excalibur",
+                text = {
+                    "Score {C:attention}#1# {C:enhanced}Stone Cards",
+                    "to {C:attention}pull {}this {C:attention}Joker",
+                    "{C:inactive}(Currently {C:attention}#2#{C:inactive})",
+                },
+            },
+            j_Roland_excalibur_Back = {
+                name = "Excalibur",
+                text = {
+                    "Scored and held in",
+                    "hand {C:enhanced}Stone Cards",
+                    "each give {X:mult,C:white}X#3#{} Mult",
+                },
+            },
             j_Roland_hardboiled = {
                 name = "Hard-Boiled",
                 text = {
