@@ -43,6 +43,25 @@ local pastries, amber, cerulean, crimson, verdant, violet =
     bans(), bans(), bans(), bans(), bans(), bans()
 
 SMODS.Challenge {
+    key = "Glass",
+    rules = {custom = {{id = "Roland_Glass1"}, {id = "Roland_Glass2"}}},
+    pronouns = "they_them",
+    config = {extra = {odds = 4}},
+    calculate = function(self, context)
+        if not context.after or context.blueprint_card then
+            return
+        end
+
+        f(G.play.cards):where(function(v)
+            return not v:get_seal(true) and
+                SMODS.pseudorandom_probability(self, self.key, 1, self.config.extra.odds, self.key)
+        end):each(function(v)
+            v:set_seal "Roland_glass"
+        end)
+    end,
+}
+
+SMODS.Challenge {
     key = "Go",
     rules = {custom = {{id = "Roland_Go"}}},
     jokers = {{id = "j_credit_card"}},
