@@ -18,33 +18,36 @@ local charm = (function()
 
     ---@param tbl SMODS.Joker|{alerted?: boolean, equip?: fun(self: self, card: Card)}
     return function(tbl)
-        q(function()
-            local current_mod = SMODS.current_mod
-            SMODS.current_mod = mod
+        q {
+            front = true,
+            func = function()
+                local current_mod = SMODS.current_mod
+                SMODS.current_mod = mod
 
-            -- SMODS._save_d_u(charm)
-            tbl.alerted = true
-            tbl.unlocked = true
-            tbl.discovered = true
-            tbl.pos = {x = x, y = 0}
-            tbl.atlas = "charm"
-            x = x + 1
+                -- SMODS._save_d_u(charm)
+                tbl.alerted = true
+                tbl.unlocked = true
+                tbl.discovered = true
+                tbl.pos = {x = x, y = 0}
+                tbl.atlas = "charm"
+                x = x + 1
 
-            local orig_equip = tbl.equip
+                local orig_equip = tbl.equip
 
-            function tbl.equip(...)
-                play_sound("Roland_phone", 1, 0.5)
+                function tbl.equip(...)
+                    play_sound("Roland_phone", 1, 0.5)
 
-                if orig_equip then
-                    return orig_equip(...)
+                    if orig_equip then
+                        return orig_equip(...)
+                    end
                 end
-            end
 
-            local charm = Bakery_API.Charm(tbl)
-            charm:inject()
-            charm:process_loc_text()
-            SMODS.current_mod = current_mod
-        end, true)
+                local charm = Bakery_API.Charm(tbl)
+                charm:inject()
+                charm:process_loc_text()
+                SMODS.current_mod = current_mod
+            end,
+        }
     end
 end)()
 
