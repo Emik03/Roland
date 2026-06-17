@@ -3,14 +3,20 @@ local f, q = unpack(... or require "lib.shared")
 local blind = (function()
     local y = 0
 
-    ---@param tbl SMODS.Blind
+    ---@param tbl SMODS.Blind|{idea?: string}
     ---@return SMODS.Blind
     return function(tbl)
         tbl.pos = {x = 0, y = y}
         tbl.atlas = "blind"
-        local ret = SMODS.Blind(tbl)
+        tbl.idea = tbl.idea and "Roland_" .. tbl.idea or nil
+        local blind = SMODS.Blind(tbl)
         y = y + 1
-        return ret
+
+        q(function()
+            Bakery_API.credit(blind)
+        end)
+
+        return blind
     end
 end)()
 
@@ -237,6 +243,7 @@ blind {
 
 blind {
     key = "blizzard",
+    idea = "redstoad",
     boss = {min = 3},
     boss_colour = HEX "102a41ff",
     pronouns = "it_its",

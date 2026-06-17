@@ -355,6 +355,18 @@ return {
                     "{C:attention}#2# {}scored cards",
                 },
             },
+            j_Roland_violet = {
+                name = "Violet Vessel",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult,",
+                    "but {X:mult,C:white}X#2#{} Mult",
+                    "{C:attention}before {}scoring",
+                },
+            },
+            j_Roland_venerable = {
+                name = "Venerable Visage",
+                text = {"{X:red,C:white}X#1#{} discards each round"},
+            },
             j_Roland_yard = {
                 name = "Yard Sale",
                 text = {

@@ -22,10 +22,11 @@ local joker = (function()
         return ret
     end
 
-    ---@param tbl SMODS.Joker|{artist?: string, Bakery_can_use: (fun(self: self, card: Card): boolean?), Bakery_use_button_text: (fun(self: self, card: Card): string|table|nil), Bakery_use_joker: fun(self: self, card: Card), attributes?: Attributes[]}
+    ---@param tbl SMODS.Joker|{artist?: string, idea?: string, Bakery_can_use: (fun(self: self, card: Card): boolean?), Bakery_use_button_text: (fun(self: self, card: Card): string|table|nil), Bakery_use_joker: fun(self: self, card: Card), attributes?: Attributes[]}
     return function(tbl)
         tbl.pos = inc()
         tbl.atlas = "joker"
+        tbl.idea = tbl.idea and "Roland_" .. tbl.idea or nil
         tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
 
         if ((tbl.config or {}).extra or {}).flipped ~= nil then
@@ -38,6 +39,8 @@ local joker = (function()
         q(function()
             Bakery_API.credit(joker)
         end)
+
+        return joker
     end
 end)()
 
@@ -161,6 +164,7 @@ joker {
     key = "mrsbones",
     pronouns = "she_her",
     artist = "ghostlyfield",
+    idea = "redstoad",
     config = {extra = {xmult = 4, requirement = 4}},
     attributes = {"xmult"},
     cost = G.P_CENTERS.j_mr_bones.cost - 1,
@@ -197,6 +201,7 @@ joker {
     key = "sunny",
     pronouns = "it_its",
     artist = "char",
+    idea = "redstoad",
     attributes = {"food", "on_sell"},
     cost = 2,
     rarity = 1,
@@ -510,6 +515,7 @@ joker {
     key = "sapling",
     pronouns = "they_them",
     artist = "char",
+    idea = "redstoad",
     attributes = {"mult", "suit"},
     cost = 4,
     rarity = 1,
@@ -581,103 +587,6 @@ joker {
 }
 
 joker {
-    key = "bulldozer",
-    pronouns = "she_her",
-    attributes = {"xmult"},
-    cost = 6,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(self, _, card)
-        return {vars = {self:xmult_frozen(card)}}
-    end,
-    calculate = function(self, card, context)
-        return (context.joker_main or context.forcetrigger) and {card = card, xmult = self:xmult_frozen(card)} or nil
-    end,
-    xmult_frozen = function(self, card)
-        if not is_frozen(card) then
-            return self.xmult()
-        end
-
-        local ability = card.Roland_frozen_ability or {}
-        card.Roland_frozen_ability = ability
-        ability.Roland_frozen_xmult = ability.Roland_frozen_xmult or self.xmult()
-        return ability.Roland_frozen_xmult
-    end,
-    xmult = function()
-        local function mult(id)
-            local next = {Select = true, Upcoming = true}
-            local states = G.GAME.round_resets.blind_states
-            local choices = G.GAME.round_resets.blind_choices
-            return next[states[id]] and G.P_BLINDS[choices[id]].mult
-        end
-
-        local m = ((G.GAME or {}).blind or {}).mult
-        return m and m ~= 0 and m or mult "Small" or mult "Big" or mult "Boss" or 1
-    end,
-}
-
-joker {
-    key = "phytoestrogens",
-    pronouns = "she_her",
-    artist = "ghostlyfield",
-    config = {extra = {xmult = 0.3}},
-    attributes = {"mult", "xmult"},
-    cost = 8,
-    rarity = 3,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.xmult}}
-    end,
-    calculate = function(_, card, context)
-        if not context.joker_main and not context.forcetrigger then
-            return
-        end
-
-        SMODS.calculate_effect({mult = hand_chips}, card)
-        SMODS.calculate_effect({xmult = card.ability.extra.xmult}, card)
-    end,
-}
-
-joker {
-    key = "nilly",
-    pronouns = "any_all",
-    artist = "ghostlyfield",
-    config = {extra = {flipped = false}},
-    attributes = {"xmult", "bakery_double_sided"},
-    cost = 0,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        local key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled"
-        return {vars = {localize {type = "variable", key = key}}}
-    end,
-    calculate = function(_, card, context)
-        if (not context.joker_main or not card.ability.extra.flipped) and not context.forcetrigger then
-            return
-        end
-
-        mult = mod_mult(0)
-        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
-        return {sound = "Roland_nilly", message = "0X " .. localize "k_mult", colour = G.C.MULT, message_card = card}
-    end,
-    Bakery_can_use = function(_, card)
-        return not card.debuff
-    end,
-    Bakery_use_button_text = function(_, card)
-        return localize {type = "variable", key = card.debuff and "b_Roland_debuffed" or "b_Roland_toggle"}
-    end,
-    Bakery_use_joker = function(_, card)
-        local _ = card.debuff or Bakery_API.flip_double_sided(card)
-    end,
-}
-
-joker {
     key = "amber",
     pronouns = "they_them",
     config = {extra = {xmult = 3}},
@@ -731,7 +640,7 @@ joker {
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
     cost = 6,
-    rarity = 2,
+    rarity = 3,
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
@@ -853,8 +762,162 @@ function CardArea:unhighlight_all(...)
 end
 
 joker {
+    key = "violet",
+    pronouns = "she_they",
+    idea = "hamester",
+    config = {extra = {before = 1 / 3, xmult = 9}},
+    pixel_size = {w = 68, h = 68},
+    attributes = {"xmult"},
+    cost = 6,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local extra = card.ability.extra
+        return {vars = {extra.xmult, extra.before}}
+    end,
+    calculate = function(_, card, context)
+        local extra = card.ability.extra
+
+        return (context.joker_main or context.forcetrigger) and
+            {card = card, xmult = extra.xmult} or
+            (context.before and {card = card, xmult = extra.before} or nil)
+    end,
+}
+
+joker {
+    key = "venerable",
+    pronouns = "any_all",
+    config = {extra = {xdiscard = 3}},
+    pixel_size = {w = 68, h = 68},
+    attributes = {"discard", "passive"},
+    cost = 6,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local extra = card.ability.extra
+        return {vars = {extra.xdiscard}}
+    end,
+    add_to_deck = function(self, card)
+        self:venerable(math.ceil(G.GAME.round_resets.discards * card.ability.extra.xdiscard))
+    end,
+    remove_from_deck = function(self, card)
+        self:venerable(math.floor(G.GAME.round_resets.discards / card.ability.extra.xdiscard))
+    end,
+    venerable = function(_, amount)
+        local round_resets = G.GAME.round_resets
+        local discards = round_resets.discards
+        round_resets.discards = amount
+        ease_discard(round_resets.discards - discards)
+    end,
+}
+
+joker {
+    key = "bulldozer",
+    pronouns = "she_her",
+    idea = "redstoad",
+    attributes = {"xmult"},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(self, _, card)
+        return {vars = {self:xmult_frozen(card)}}
+    end,
+    calculate = function(self, card, context)
+        return (context.joker_main or context.forcetrigger) and {card = card, xmult = self:xmult_frozen(card)} or nil
+    end,
+    xmult_frozen = function(self, card)
+        if not is_frozen(card) then
+            return self.xmult()
+        end
+
+        local ability = card.Roland_frozen_ability or {}
+        card.Roland_frozen_ability = ability
+        ability.Roland_frozen_xmult = ability.Roland_frozen_xmult or self.xmult()
+        return ability.Roland_frozen_xmult
+    end,
+    xmult = function()
+        local function mult(id)
+            local next = {Select = true, Upcoming = true}
+            local states = G.GAME.round_resets.blind_states
+            local choices = G.GAME.round_resets.blind_choices
+            return next[states[id]] and G.P_BLINDS[choices[id]].mult
+        end
+
+        local m = ((G.GAME or {}).blind or {}).mult
+        return m and m ~= 0 and m or mult "Small" or mult "Big" or mult "Boss" or 1
+    end,
+}
+
+joker {
+    key = "phytoestrogens",
+    pronouns = "she_her",
+    artist = "ghostlyfield",
+    config = {extra = {xmult = 0.3}},
+    attributes = {"mult", "xmult"},
+    cost = 8,
+    rarity = 3,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(_, card, context)
+        if not context.joker_main and not context.forcetrigger then
+            return
+        end
+
+        SMODS.calculate_effect({mult = hand_chips}, card)
+        SMODS.calculate_effect({xmult = card.ability.extra.xmult}, card)
+    end,
+}
+
+joker {
+    key = "nilly",
+    pronouns = "any_all",
+    artist = "ghostlyfield",
+    idea = "redstoad",
+    config = {extra = {flipped = false}},
+    attributes = {"xmult", "bakery_double_sided"},
+    cost = 0,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    loc_vars = function(_, _, card)
+        local key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled"
+        return {vars = {localize {type = "variable", key = key}}}
+    end,
+    calculate = function(_, card, context)
+        if (not context.joker_main or not card.ability.extra.flipped) and not context.forcetrigger then
+            return
+        end
+
+        mult = mod_mult(0)
+        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
+        return {sound = "Roland_nilly", message = "0X " .. localize "k_mult", colour = G.C.MULT, message_card = card}
+    end,
+    Bakery_can_use = function(_, card)
+        return not card.debuff
+    end,
+    Bakery_use_button_text = function(_, card)
+        return localize {type = "variable", key = card.debuff and "b_Roland_debuffed" or "b_Roland_toggle"}
+    end,
+    Bakery_use_joker = function(_, card)
+        local _ = card.debuff or Bakery_API.flip_double_sided(card)
+    end,
+}
+
+joker {
     key = "martingale",
     pronouns = "he_him",
+    idea = "redstoad",
     config = {extra = {odds = 2}},
     attributes = {"xmult", "chance"},
     cost = 8,
@@ -1033,6 +1096,8 @@ end
 joker {
     key = "artemis",
     pronouns = "any_all",
+    artist = "hamester",
+    idea = "redstoad",
     cost = 6,
     rarity = 2,
     config = {extra = {
@@ -1097,6 +1162,7 @@ joker {
 joker {
     key = "excalibur",
     pronouns = "he_him",
+    idea = "redstoad",
     cost = 8,
     rarity = 3,
     config = {extra = {

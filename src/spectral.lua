@@ -11,14 +11,14 @@ local spectral = (function()
         tbl.atlas = "spectral"
         tbl.pos = {x = x, y = 0}
         tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
-        local ret = SMODS.Consumable(tbl)
+        local spectral = SMODS.Consumable(tbl)
         x = x + 1
 
         q(function()
-            Bakery_API.credit(ret)
+            Bakery_API.credit(spectral)
         end)
 
-        return ret
+        return spectral
     end
 end)()
 

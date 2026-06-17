@@ -1,17 +1,6 @@
 local qol = assert(SMODS.load_file "src/lib/shared.lua")() or require "lib.shared"
 local f, q = unpack(qol)
 
-f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "tarot", "back", "seal", "tag"}
-    :each(function(v)
-        assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
-    end)
-
-if _G["Balatest"] then
-    f {"joker", "blind", "spectral"}:each(function(v)
-        assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
-    end)
-end
-
 q(function()
     local contributors = (Bakery_API or {}).contributors
 
@@ -20,7 +9,7 @@ q(function()
     end
 
     -- Special shoutout to all contributors. <3
-    f {
+    local credits = {
         aster = {
             name = "asterSSH",
             fg = HEX "f8f8f2ff",
@@ -41,14 +30,37 @@ q(function()
             fg = HEX "ffffffff",
             bg = HEX "b290e6ff",
         },
-    }:each(function(v, k)
+        hamester = {
+            name = "Hamester",
+            fg = HEX "ffffffff",
+            bg = HEX "ffa100ff",
+        },
+        redstoad = {
+            name = "RedsToad",
+            fg = HEX "ffffffff",
+            bg = HEX "da4044ff",
+        },
+    }
+
+    f(credits):each(function(v, k)
         contributors["Roland_" .. k] = v
     end)
 
     if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
         _G.f, _G.q, _G.u = unpack(qol)
     end
-end, true)
+end)
+
+f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "tarot", "back", "seal", "tag"}
+    :each(function(v)
+        assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
+    end)
+
+if _G["Balatest"] then
+    f {"joker", "blind", "spectral"}:each(function(v)
+        assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
+    end)
+end
 
 local function toggle(id)
     return create_toggle {
@@ -71,8 +83,6 @@ SMODS.Atlas {
     atlas_table = animated and "ANIMATION_ATLAS" or "ASSET_ATLAS",
 }
 
-SMODS.current_mod.qol = qol
-
 function SMODS.current_mod.config_tab()
     return {
         n = G.UIT.ROOT,
@@ -93,3 +103,5 @@ function SMODS.current_mod.config_tab()
         }},
     }
 end
+
+SMODS.current_mod.qol = qol

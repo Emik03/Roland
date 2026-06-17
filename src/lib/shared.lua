@@ -6,31 +6,19 @@ local function protect(fun)
             sendErrorMessage(tostring(ret), "Roland")
         end
 
-        return not res or ret ~= false
+        return not res or ret ~= false and not (SMODS.current_mod and ret ~= true)
     end
 end
 
-local function protect_ev(fun, retries)
-    if type(fun) == "function" and retries then
-        local orig_fun = fun
-
-        fun = function(...)
-            local ret = orig_fun(...)
-
-            if ret == true then
-                retries = retries - 1
-                return retries <= 0
-            else
-                return ret
-            end
-        end
-    end
+local function protect_ev(fun)
+    local no_delete = not not SMODS.current_mod
 
     if type(fun) == "table" then
         fun.func = protect(fun.func)
+        fun.no_delete = no_delete
         fun = getmetatable(fun) == Event and fun or Event(fun)
     elseif type(fun) == "function" then
-        fun = Event {func = protect(fun)}
+        fun = Event {func = protect(fun), no_delete = no_delete}
     else
         error("Expected a function or event, got a " .. type(fun), 3)
     end
@@ -89,11 +77,12 @@ end
 local f = assert(SMODS.load_file "src/lib/funky.lua")() or require "lib.funky"
 
 --- Queues an event to be run.
---- Note that events added this way implicitly `return true` unless you explicitly `return false`, unlike the vanilla ones.
---- @param fun (fun():boolean?)|Event The event or a function to run turn into an event.
---- @param front? boolean `true` to add the event to the front of the queue, rather than the end.
-local function q(fun, front)
-    G.E_MANAGER:add_event(protect_ev(fun, SMODS.current_mod and 100), nil, front)
+--- Note that events added this way implicitly `return true` unless you explicitly `return false`.
+--- For `front`; boolean `true` to add the event to the front of the queue, rather than the end.
+--- @param fun fun():boolean?|{front?: boolean}|Event The event or a function to run turn into an event.
+local function q(fun)
+    local ev = protect_ev(fun)
+    G.E_MANAGER:add_event(ev, nil, ev.front)
 end
 
 --- Determines if a center is allowed to be usable.
