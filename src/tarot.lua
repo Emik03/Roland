@@ -21,9 +21,16 @@ local coolheaded = SMODS.Consumable {
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function(_, card)
-        return u() and f(G.jokers.highlighted):concat(Bakery_API.get_highlighted()):count(function(v)
-            return not v.edition
-        end) == card.ability.extra.amount
+        if not u() then
+            return false
+        end
+
+        local highlighted = Bakery_API.get_highlighted()
+
+        return #G.jokers.highlighted + #highlighted == card.ability.extra.amount and
+            f(G.jokers.highlighted):concat(Bakery_API.get_highlighted()):all(function(v)
+                return not v.edition
+            end)
     end,
     use = function()
         f(G.jokers.highlighted):concat(Bakery_API.get_highlighted()):each(function(v)
