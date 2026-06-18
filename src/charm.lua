@@ -42,7 +42,7 @@ local charm = (function()
                 local orig_equip = tbl.equip
 
                 function tbl.equip(...)
-                    play_sound("Roland_phone", 1, 0.5)
+                    local _ = cool_phones and play_sound("Roland_phone", 1, 0.5)
 
                     if orig_equip then
                         return orig_equip(...)
