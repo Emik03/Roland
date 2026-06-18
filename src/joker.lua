@@ -776,7 +776,7 @@ joker {
 
         return (context.joker_main or context.forcetrigger) and
             {card = card, xmult = extra.xmult} or
-            (context.before and {card = card, xmult = extra.before} or nil)
+            (context.initial_scoring_step and {card = card, xmult = extra.before} or nil)
     end,
 }
 

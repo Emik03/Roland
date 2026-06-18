@@ -338,7 +338,22 @@ end
 function SMODS.current_mod:calculate(context)
     local _ = type(G.calccontext) == "function" and G.calccontext(context)
     local _ = type(G.calckeys) == "function" and G.calckeys(f(context):keys())
-    local _ = type(G.calc) == "function" and G.calc(f(context):keys():string())
+
+    if type(G.calc) == "function" then
+        G.calc = {G.calc}
+    end
+
+    if type(G.calc) == "table" then
+        local str
+
+        f(context):keys():map(f.index_into(G.calc)):where(type, "function"):each(function(v)
+            str = str or f(context):keys():string()
+            v(str)
+        end)
+
+        local _ = not str and type(G.calc[1]) == "function" and G.calc[1](f(context):keys():string())
+    end
+
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 
     local _ = context.end_of_round and

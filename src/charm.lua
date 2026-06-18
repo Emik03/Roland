@@ -19,7 +19,6 @@ local charm = (function()
     ---@param tbl SMODS.Joker|{alerted?: boolean, equip?: fun(self: self, card: Card)}
     return function(tbl)
         q {
-            front = true,
             blocking = false,
             no_delete = true,
             func = function()
@@ -65,114 +64,29 @@ local function can_discard_zero()
 end
 
 charm {
-    key = "wii",
-    pronouns = "they_them",
-    attributes = {"skip"},
-    config = {extra = {active = true}},
-    calculate = function(_, card, context)
-        if context.prevent_tag_trigger and card.ability.extra.active then
-            return {prevent_trigger = true}
-        end
-
-        if not context.skip_blind then
-            return
-        end
-
-        card.ability.extra.active = true
-        local message = localize {type = "variable", key = "b_Roland_entering_shop"}
-        SMODS.calculate_effect({card = card, message = message, sound = "whoosh1"}, card)
-
-        q(function()
-            G.blind_prompt_box = G.blind_prompt_box and G.blind_prompt_box:remove()
-            G.blind_select = G.blind_select and G.blind_select:remove()
-            G.round_eval = G.round_eval and G.round_eval:remove()
-            G.GAME.current_round.jokers_purchased = 0
-            G.GAME.shop_free = nil
-            G.GAME.shop_d6ed = nil
-            play_sound("whoosh1", 1.33333, 0.8)
-            play_sound("whoosh1", 0.66666, 0.8)
-
-            q(function()
-                G.STATE = G.STATES.SHOP
-                G.STATE_COMPLETE = false
-                delay(1)
-
-                q(function()
-                    card.ability.extra.active = false
-                end)
-            end)
-        end)
-    end,
-}
-
-local orig_apply_to_run = Tag.apply_to_run
-
-function Tag:apply_to_run(...)
-    if G.GAME.Bakery_charm == "BakeryCharm_Roland_wii" and
-        G.Bakery_charm_area.cards[1].config.center.ability.extra.active then
-        return
-    end
-
-    return orig_apply_to_run(self, ...)
-end
-
-charm {
-    key = "flexible",
-    pronouns = "any_all",
-}
-
-local orig_showman = SMODS.showman
-
-function SMODS.showman(...)
-    return G.GAME.Bakery_charm == "BakeryCharm_Roland_flexible" or orig_showman(...)
-end
-
-charm {
-    key = "fat",
-    pronouns = "he_they",
-    attributes = {"passive"},
-    config = {extra = {mod = 2}},
+    key = "hand",
+    pronouns = "he_him",
+    config = {extra = {hands = -2, hand_size = 5}},
+    attributes = {"hands", "hand_size", "passive"},
     loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.mod}}
+        local extra = card.ability.extra
+        return {vars = {extra.hand_size, extra.hands}}
     end,
     equip = function(_, card)
-        SMODS.change_booster_limit(card.ability.extra.mod)
+        local extra = card.ability.extra
+        local round = G.GAME.round_resets
+        ease_hands_played(extra.hands)
+        G.hand:change_size(extra.hand_size)
+        round.hands = round.hands + extra.hands
     end,
     unequip = function(_, card)
-        SMODS.change_booster_limit(-card.ability.extra.mod)
+        local extra = card.ability.extra
+        local round = G.GAME.round_resets
+        ease_hands_played(-extra.hands)
+        G.hand:change_size(-extra.hand_size)
+        round.hands = round.hands - extra.hands
     end,
 }
-
-local orig_init = Card.init
-
-function Card:init(X, Y, W, H, card, center, params, ...)
-    if G.GAME.Bakery_charm ~= "BakeryCharm_Roland_fat" or center.set ~= "Booster" then
-        return orig_init(self, X, Y, W, H, card, center, params, ...)
-    end
-
-    local key = f {"mini", "jumbo", "normal"}:fold(center.key, function(a, v)
-        return a:gsub(v, "mega")
-    end)
-
-    if G.P_CENTERS[key] then
-        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
-    end
-
-    key = key:gsub("_?%d+$", "_1")
-
-    if G.P_CENTERS[key] then
-        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
-    end
-
-    key = key:gsub("_?%d+$", "")
-
-    if G.P_CENTERS[key] then
-        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
-    end
-
-    self.Roland_no_mega = true
-    return orig_init(self, X, Y, W, H, card, center, params, ...)
-end
 
 charm {
     key = "cocacola",
@@ -243,26 +157,111 @@ G.FUNCS.Roland_cocacola = function()
 end
 
 charm {
-    key = "hand",
-    pronouns = "he_him",
-    config = {extra = {hands = -2, hand_size = 5}},
-    attributes = {"hands", "hand_size", "passive"},
+    key = "fat",
+    pronouns = "he_they",
+    attributes = {"passive"},
+    config = {extra = {mod = 2}},
     loc_vars = function(_, _, card)
-        local extra = card.ability.extra
-        return {vars = {extra.hand_size, extra.hands}}
+        return {vars = {card.ability.extra.mod}}
     end,
     equip = function(_, card)
-        local extra = card.ability.extra
-        local round = G.GAME.round_resets
-        ease_hands_played(extra.hands)
-        G.hand:change_size(extra.hand_size)
-        round.hands = round.hands + extra.hands
+        SMODS.change_booster_limit(card.ability.extra.mod)
     end,
     unequip = function(_, card)
-        local extra = card.ability.extra
-        local round = G.GAME.round_resets
-        ease_hands_played(-extra.hands)
-        G.hand:change_size(-extra.hand_size)
-        round.hands = round.hands - extra.hands
+        SMODS.change_booster_limit(-card.ability.extra.mod)
     end,
 }
+
+local orig_init = Card.init
+
+function Card:init(X, Y, W, H, card, center, params, ...)
+    if G.GAME.Bakery_charm ~= "BakeryCharm_Roland_fat" or center.set ~= "Booster" then
+        return orig_init(self, X, Y, W, H, card, center, params, ...)
+    end
+
+    local key = f {"mini", "jumbo", "normal"}:fold(center.key, function(a, v)
+        return a:gsub(v, "mega")
+    end)
+
+    if G.P_CENTERS[key] then
+        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
+    end
+
+    key = key:gsub("_?%d+$", "_1")
+
+    if G.P_CENTERS[key] then
+        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
+    end
+
+    key = key:gsub("_?%d+$", "")
+
+    if G.P_CENTERS[key] then
+        return orig_init(self, X, Y, W, H, card, G.P_CENTERS[key], params, ...)
+    end
+
+    self.Roland_no_mega = true
+    return orig_init(self, X, Y, W, H, card, center, params, ...)
+end
+
+charm {
+    key = "flexible",
+    pronouns = "any_all",
+}
+
+local orig_showman = SMODS.showman
+
+function SMODS.showman(...)
+    return G.GAME.Bakery_charm == "BakeryCharm_Roland_flexible" or orig_showman(...)
+end
+
+charm {
+    key = "wii",
+    pronouns = "they_them",
+    attributes = {"skip"},
+    config = {extra = {active = true}},
+    calculate = function(_, card, context)
+        if context.prevent_tag_trigger and card.ability.extra.active then
+            return {prevent_trigger = true}
+        end
+
+        if not context.skip_blind then
+            return
+        end
+
+        card.ability.extra.active = true
+        local message = localize {type = "variable", key = "b_Roland_entering_shop"}
+        SMODS.calculate_effect({card = card, message = message, sound = "whoosh1"}, card)
+
+        q(function()
+            G.blind_prompt_box = G.blind_prompt_box and G.blind_prompt_box:remove()
+            G.blind_select = G.blind_select and G.blind_select:remove()
+            G.round_eval = G.round_eval and G.round_eval:remove()
+            G.GAME.current_round.jokers_purchased = 0
+            G.GAME.shop_free = nil
+            G.GAME.shop_d6ed = nil
+            play_sound("whoosh1", 1.33333, 0.8)
+            play_sound("whoosh1", 0.66666, 0.8)
+
+            q(function()
+                G.STATE = G.STATES.SHOP
+                G.STATE_COMPLETE = false
+                delay(1)
+
+                q(function()
+                    card.ability.extra.active = false
+                end)
+            end)
+        end)
+    end,
+}
+
+local orig_apply_to_run = Tag.apply_to_run
+
+function Tag:apply_to_run(...)
+    if G.GAME.Bakery_charm == "BakeryCharm_Roland_wii" and
+        G.Bakery_charm_area.cards[1].config.center.ability.extra.active then
+        return
+    end
+
+    return orig_apply_to_run(self, ...)
+end
