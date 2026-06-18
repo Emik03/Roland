@@ -6,7 +6,7 @@ return {
                 text = {
                     "{C:attention}Small{} and {C:attention}Big Blinds{} are",
                     "replaced with {C:attention}Boss Blinds",
-                    "that are {C:dark_edition}debuffed #1# times",
+                    "that are {C:dark_edition}debuffed twice",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
@@ -59,39 +59,47 @@ return {
         Blind = {
             bl_Roland_blizzard = {
                 name = "The Blizzard",
-                text = {"All cards", "are Frozen"},
+                text = {"All cards", "are {C:dark_edition}Frozen"},
             },
             bl_Roland_divide = {
                 name = "The Great Divide",
-                text = {"Half of the deck", "is discarded"},
+                text = {"Half of the deck", "is {C:red}discarded"},
             },
             bl_Roland_equinox = {
                 name = "The Equinox",
-                text = {"No UI"},
+                text = {"{C:inactive}No UI"},
             },
             bl_Roland_falseshuffle = {
                 name = "The False Shuffle",
-                text = {"Enhanced cards", "are drawn last"},
+                text = {"{C:enhanced}Enhanced {}cards", "are drawn {C:attention}last"},
             },
             bl_Roland_improbable = {
                 name = "The Improbable",
-                text = {"All probabilities", "cannot happen"},
+                text = {"All {C:green}probabilities", "cannot happen"},
             },
             bl_Roland_mitotic = {
                 name = "The Mitotic",
-                text = {"Discarded cards", "are copied"},
+                text = {"{C:red}Discarded {}cards", "are {C:attention}copied"},
             },
             bl_Roland_nimble = {
                 name = "The Nimble",
-                text = {"The first 5 cards", "drawn are played"},
+                text = {"The {C:attention}first 5 {}cards", "drawn are {C:blue}played"},
             },
             bl_Roland_tranquilizer = {
                 name = "The Tranquilizer",
-                text = {"#1#s are debuffed", "Changes based on", "most common rank"},
+                text = {
+                    "{C:attention}#1#s {}are {C:red}debuffed",
+                    "Changes based on",
+                    "most common rank",
+                },
             },
             bl_Roland_venerable_visage = {
                 name = "Venerable Visage",
-                text = {"Infinite discards", "Lose if any card was", "not played or discarded"},
+                text = {
+                    "Infinite {C:red}discards",
+                    "Lose if {C:attention}any {}card was",
+                    "not {C:blue}played {}or {C:red}discarded",
+                },
                 fail = {
                     "Blasphemy.",
                     "Blunder.",
@@ -330,7 +338,7 @@ return {
                 text = {
                     "Sell this Joker to",
                     "{C:attention}draw{} the bottom",
-                    "card of the {C:hand}deck",
+                    "card of the deck",
                     "{C:inactive}(Currently {V:1}#1#{C:inactive}#2#{V:2}#3#{C:inactive})",
                 },
             },
@@ -396,7 +404,7 @@ return {
                 text = {
                     "{C:attention}Small{} and {C:attention}Big Blinds{} are",
                     "replaced with {C:attention}Boss Blinds",
-                    "that are {C:dark_edition}debuffed #1# times",
+                    "that are {C:dark_edition}debuffed twice",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
@@ -404,9 +412,8 @@ return {
             sleeve_Roland_blossom_alt = {
                 name = "Efflorescent Sleeve",
                 text = {
-                    "{C:attention}Blinds{} are {C:dark_edition}debuffed",
-                    "{C:dark_edition}({X:dark_edition,C:white}(ante * #2#){C:dark_edition}) times",
-                    "{C:inactive}(Instead of #1#)",
+                    "{C:dark_edition}Debuff {X:dark_edition,C:white}#1#X<ante>{C:dark_edition} times",
+                    "{C:inactive}(Instead of twice)",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
@@ -423,8 +430,7 @@ return {
             sleeve_Roland_swapper_alt = {
                 name = "Sleeve Swapper",
                 text = {
-                    "{C:attention}All {}consumable",
-                    "types swap places",
+                    "Swap {C:attention}all {}consumables",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
@@ -436,7 +442,7 @@ return {
                 text = {
                     "Add random seals",
                     "to {C:attention}#1#{} random",
-                    "cards in {C:hands}hand",
+                    "cards in hand",
                 },
             },
             c_Roland_primal = {
@@ -452,7 +458,7 @@ return {
                 text = {
                     "Add a {C:dark_edition}Glass Seal",
                     "to {C:attention}#1#{} selected",
-                    "cards in {C:hands}hand",
+                    "cards in hand",
                 },
             },
             c_Roland_void = {
@@ -519,12 +525,13 @@ return {
             b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
             b_Roland_illusion_seal = "Allow seals from Illusion voucher",
             b_Roland_import_funky = "Debug: Import funky.lua",
-            b_Roland_most_common_card = "(Rank)",
+            b_Roland_most_common_card = "Rank",
             b_Roland_no_wild_debuff = "No wild card debuffs",
             b_Roland_na = "N/A",
             b_Roland_of = " of ",
             b_Roland_toggle = "TOGGLE",
             b_Roland_unassigned = "(Unassigned)",
+            b_Roland_vitriol = "Vitriol (Venerable Visage)",
         },
         labels = {
             Roland_frozen = "Frozen",

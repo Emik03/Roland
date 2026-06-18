@@ -460,15 +460,31 @@ local venerable_visage = blind {
         }
     end,
     vitriol = function(b)
+        local vitriol = SMODS.Mods.Roland.config.vitriol
+        local resize_to_w, resize_to_h = 320, 200
+        local is_fullscreen = _G["love"].window.getFullscreen()
+
+        if vitriol then
+            _G["love"].window.setFullscreen(false)
+            delay(1.5)
+        end
+
+        local function jitter()
+            local x, y = _G["love"].window.getDesktopDimensions()
+
+            return pseudorandom(pseudoseed "RolandVenerableVisageX", 0, x) - x / 2,
+                pseudorandom(pseudoseed "RolandVenerableVisageY", 0, y) - y / 2
+        end
+
         if type(b) == "table" and type(b.wiggle) == "function" then
             b:wiggle()
         end
 
-        local fail = G.localization.descriptions.Blind.bl_Roland_venerable_visage.fail
-        local speed = 0.1
+        f(G.playing_cards):each(function(v, k)
+            return v.area ~= G.hand and draw_card(v.area, G.hand, k * 100 / #G.playing_cards, "up", true, v)
+        end)
 
-        SMODS.draw_cards(#G.deck.cards)
-        play_sound("gong", 0.6)
+        local fail = G.localization.descriptions.Blind.bl_Roland_venerable_visage.fail
 
         attention_text {
             text = pseudorandom_element(fail, pseudoseed "RolandVenerableVisage"),
@@ -478,46 +494,49 @@ local venerable_visage = blind {
             hold = 2,
         }
 
-        delay(1)
+        f {0.15, 0.3, 0.45, 0.6}:each(function(v)
+            play_sound("gong", v)
+        end)
 
-        f(G.playing_cards):each(function(v)
+        local len = #G.playing_cards
+        local w, h, flags = _G["love"].window.getMode()
+
+        if vitriol then
+            _G["love"].window.setMode(resize_to_w, resize_to_h)
+            _G["love"].resize(resize_to_w, resize_to_h)
+        end
+
+        local x, y = _G["love"].window.getPosition()
+
+        f(G.playing_cards):each(function(v, i)
             q {
                 trigger = "before",
-                delay = speed,
+                delay = 6 / len,
                 func = function()
+                    if vitriol then
+                        local x_random, y_random = jitter()
+                        _G["love"].window.setPosition(x + x_random * i / len, y + y_random * i / len)
+                    end
+
                     v:start_dissolve()
                     v:shatter()
+                    b:wiggle()
                 end,
             }
         end)
 
-        delay(1)
+        local _ = vitriol and q {
+            trigger = "before",
+            delay = 1.5,
+            func = function()
+                _G["love"].window.setPosition(x, y)
+                _G["love"].window.setMode(w, h, flags)
+                _G["love"].resize(w, h)
+                _G["love"].window.setFullscreen(is_fullscreen)
+            end,
+        }
 
-        f(G.P_CARDS):each(function(v)
-            q {
-                delay = speed,
-                func = function()
-                    G.playing_card = (G.playing_card and G.playing_card + 1) or 1
-
-                    local card = Card(
-                        b and b.T.x or 0,
-                        b and b.T.y or 0,
-                        G.CARD_W,
-                        G.CARD_H,
-                        v,
-                        G.P_CENTERS.m_Bakery_Curse or G.P_CENTERS.c_base,
-                        {playing_card = G.playing_card}
-                    )
-
-                    table.insert(G.playing_cards, card)
-                    G.deck:emplace(card)
-                    play_sound "card1"
-                    card:add_to_deck()
-                end,
-            }
-        end)
-
-        delay(1)
+        delay(1.5)
     end,
 }
 

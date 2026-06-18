@@ -74,7 +74,7 @@ back {
     config = {extra = {alt_times = 4, times = 2}},
     attributes = {"boss_blind"},
     loc_vars = function(self, _, _)
-        return {vars = {self.config.extra.times, self.config.extra.alt_times}}
+        return {vars = {self.config.extra.alt_times}}
     end,
     apply = function(_, _)
         G.GAME.modifiers.Roland_blossom_deck = true
@@ -94,12 +94,13 @@ back {
             G.GAME.round_resets.ante * self.config.extra.alt_times or
             self.config.extra.times
 
-        f(count):each(function()
-            G.GAME.blind:disable()
+        f(count):each(function(i)
+            local _ = i == 1 and G.GAME.blind:disable()
 
             q {
                 delay = 0.4,
                 func = function()
+                    local _ = i ~= 1 and G.GAME.blind:disable()
                     SMODS.calculate_effect({message = localize "ph_boss_disabled"}, card)
                     G.GAME.blind:wiggle()
                     play_sound "timpani"

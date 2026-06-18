@@ -7,4 +7,5 @@ return {
     import_funky = false,
     no_wild_debuff = true,
     scribable_basket = false,
+    vitriol = true,
 }

@@ -100,12 +100,13 @@ function SMODS.current_mod.config_tab()
             nodes = {
                 toggle "animated_icon",
                 toggle "faster_planets",
-                _G["Talisman"] and toggle "harsh_ante_scaling",
-                toggle "illusion_seal",
-                SMODS.Mods.DebugPlus and toggle "import_funky",
-                toggle "no_wild_debuff",
+                -- toggle "illusion_seal",
+                -- toggle "no_wild_debuff",
+                toggle "vitriol",
                 toggle "equinox_assist",
+                SMODS.Mods.DebugPlus and toggle "import_funky",
                 G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
+                _G["Talisman"] and toggle "harsh_ante_scaling",
             },
         }},
     }
