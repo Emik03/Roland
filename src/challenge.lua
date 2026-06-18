@@ -110,12 +110,10 @@ SMODS.Challenge {
     pronouns = "she_them",
 }
 
-local starting_jokers = f(5):map(f.const {id = "j_joker"}):table()
-
 SMODS.Challenge {
     key = "Eternally_Amber",
     rules = {custom = {{id = "Roland_Eternally_Amber"}, {id = "Roland_Showdown_Amber"}}},
-    jokers = starting_jokers,
+    jokers = {{id = "j_Roland_amber"}},
     restrictions = amber,
     pronouns = "they_them",
     calculate = function(_, context)
@@ -154,7 +152,7 @@ SMODS.Challenge {
 SMODS.Challenge {
     key = "Eternally_Cerulean",
     rules = {custom = {{id = "Roland_Eternally_Cerulean"}, {id = "Roland_Showdown_Cerulean"}}},
-    jokers = starting_jokers,
+    jokers = {{id = "j_Roland_cerulean"}},
     restrictions = cerulean,
     pronouns = "she_her",
     calculate = function(_, context)
@@ -181,7 +179,7 @@ SMODS.Challenge {
 SMODS.Challenge {
     key = "Eternally_Crimson",
     rules = {custom = {{id = "Roland_Eternally_Crimson"}, {id = "Roland_Showdown_Crimson"}}},
-    jokers = starting_jokers,
+    jokers = {{id = "j_Roland_crimson"}},
     restrictions = crimson,
     pronouns = "she_her",
     calculate = function(_, context)
@@ -241,7 +239,7 @@ SMODS.Challenge {
 SMODS.Challenge {
     key = "Eternally_Verdant",
     rules = {custom = {{id = "Roland_Eternally_Verdant"}, {id = "Roland_Showdown_Verdant"}}},
-    jokers = starting_jokers,
+    jokers = {{id = "j_Roland_verdant"}},
     restrictions = verdant,
     pronouns = "she_her",
     calculate = function(_, context)
@@ -264,7 +262,7 @@ SMODS.Challenge {
 SMODS.Challenge {
     key = "Eternally_Violet",
     rules = {custom = {{id = "Roland_Eternally_Violet"}, {id = "Roland_Showdown_Violet"}}},
-    jokers = starting_jokers,
+    jokers = {{id = "j_Roland_violet"}},
     restrictions = violet,
     pronouns = "she_they",
     calculate = function(_, context)
