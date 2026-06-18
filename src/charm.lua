@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 local mod = SMODS.current_mod
 
 SMODS.Atlas {
@@ -20,7 +20,13 @@ local charm = (function()
     return function(tbl)
         q {
             front = true,
+            blocking = false,
+            no_delete = true,
             func = function()
+                if not Bakery_API or not Bakery_API.Charm then
+                    return false
+                end
+
                 local current_mod = SMODS.current_mod
                 SMODS.current_mod = mod
 

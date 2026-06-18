@@ -1,4 +1,4 @@
-local f = unpack(... or require "lib.shared")
+local f = (... or require "lib.shared")[1]
 
 if not Balatest then
     return

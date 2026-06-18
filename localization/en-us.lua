@@ -7,6 +7,8 @@ return {
                     "{C:attention}Small{} and {C:attention}Big Blinds{} are",
                     "replaced with {C:attention}Boss Blinds",
                     "that are {C:dark_edition}debuffed #1# times",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
             b_Roland_swapper = {
@@ -14,6 +16,8 @@ return {
                 text = {
                     "{C:tarot}Tarot {}and {C:spectral}Spectral",
                     "cards swap places",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
         },
@@ -393,6 +397,8 @@ return {
                     "{C:attention}Small{} and {C:attention}Big Blinds{} are",
                     "replaced with {C:attention}Boss Blinds",
                     "that are {C:dark_edition}debuffed #1# times",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
             sleeve_Roland_blossom_alt = {
@@ -401,6 +407,8 @@ return {
                     "{C:attention}Blinds{} are {C:dark_edition}debuffed",
                     "{C:dark_edition}({X:dark_edition,C:white}(ante * #2#){C:dark_edition}) times",
                     "{C:inactive}(Instead of #1#)",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
             sleeve_Roland_swapper = {
@@ -408,6 +416,8 @@ return {
                 text = {
                     "{C:tarot}Tarot {}and {C:spectral}Spectral",
                     "cards swap places",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
             sleeve_Roland_swapper_alt = {
@@ -415,6 +425,8 @@ return {
                 text = {
                     "{C:attention}All {}consumable",
                     "types swap places",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
         },

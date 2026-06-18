@@ -1,4 +1,4 @@
-local f, q, u = unpack(... or require "lib.shared")
+local f, q, u = (... or require "lib.shared")[1], (... or require "lib.shared")[2], (... or require "lib.shared")[3]
 
 local spectral = (function()
     local x = 0
@@ -6,19 +6,13 @@ local spectral = (function()
     ---@param tbl SMODS.Consumable|{artist?: string}
     ---@return SMODS.Consumable
     return function(tbl)
-        tbl.cost = 4
-        tbl.set = "Spectral"
-        tbl.atlas = "spectral"
-        tbl.pos = {x = x, y = 0}
         tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
-        local spectral = SMODS.Consumable(tbl)
+        tbl.pos = {x = x, y = 0}
+        tbl.atlas = "spectral"
+        tbl.set = "Spectral"
+        tbl.cost = 4
         x = x + 1
-
-        q(function()
-            Bakery_API.credit(spectral)
-        end)
-
-        return spectral
+        return q(SMODS.Consumable(tbl))
     end
 end)()
 
@@ -196,12 +190,6 @@ spectral {
         end
 
         play_sound("Roland_void", 1, 0.7)
-
-        q {
-            delay = 0.28,
-            timer = "REAL",
-            trigger = "after",
-            func = void,
-        }
+        q {delay = 0.28, timer = "REAL", trigger = "after", func = void}
     end,
 }

@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
 local function save(ret)
     q(save_run)
@@ -8,7 +8,7 @@ end
 local back = (function()
     local x = 0
 
-    ---@param tbl SMODS.Back|{artist?: string, is_alt: function, alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
+    ---@param tbl SMODS.Back|{is_alt: (fun(self: self): boolean), alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
     return function(tbl)
         local key = tbl.key
         local apply = tbl.apply
@@ -22,34 +22,17 @@ local back = (function()
             return (calculate and G.GAME.selected_sleeve ~= "sleeve_Roland_" .. key) and calculate(self, ...) or nil
         end
 
-        tbl.artist = tbl.artist and "Roland_" .. tbl.artist or nil
         tbl.pos = {x = x, y = 0}
+        tbl.is_alt = f.fals
         tbl.atlas = "back"
-
-        -- This API intends that you share the same functions for apply/calculate,
-        -- meaning that this may be called to check if a deck/sleeve combo is used even
-        -- when we are from the deck context. We add this to prevent accidental calls to nil.
-        function tbl:is_alt()
-            return false
-        end
-
-        local sleeve = (_G["CardSleeves"] or {}).Sleeve
-        local b = SMODS.Back(tbl)
         x = x + 1
+        local back = q(SMODS.Back(tbl))
+        local sleeve = (_G["CardSleeves"] or {}).Sleeve
 
-        q(function()
-            Bakery_API.credit(b)
-        end)
-
-        if not sleeve then
-            return b
-        end
-
-        local s = sleeve {
+        local _ = sleeve and sleeve {
             key = key,
             pos = tbl.pos,
             atlas = "sleeve",
-            artist = tbl.artist,
             config = tbl.config and f(tbl.config):table() or nil,
             loc_vars = function(self, ...)
                 local ret = tbl.loc_vars and tbl.loc_vars(self, ...) or {}
@@ -67,11 +50,7 @@ local back = (function()
             end,
         }
 
-        q(function()
-            Bakery_API.credit(s)
-        end)
-
-        return b
+        return back
     end
 end)()
 
@@ -92,7 +71,6 @@ local _ = _G["CardSleeves"] and SMODS.Atlas {
 back {
     key = "blossom",
     pronouns = "any_all",
-    artist = "bakersdozenbagels",
     config = {extra = {alt_times = 4, times = 2}},
     attributes = {"boss_blind"},
     loc_vars = function(self, _, _)
@@ -134,7 +112,6 @@ back {
 back {
     key = "swapper",
     pronouns = "he_him",
-    artist = "bakersdozenbagels",
     attributes = {"spectral", "tarot"},
     apply = function(self)
         local modifiers = G.GAME.modifiers

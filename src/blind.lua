@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
 local blind = (function()
     local y = 0
@@ -6,17 +6,11 @@ local blind = (function()
     ---@param tbl SMODS.Blind|{idea?: string}
     ---@return SMODS.Blind
     return function(tbl)
+        tbl.idea = tbl.idea and "Roland_" .. tbl.idea or nil
         tbl.pos = {x = 0, y = y}
         tbl.atlas = "blind"
-        tbl.idea = tbl.idea and "Roland_" .. tbl.idea or nil
-        local blind = SMODS.Blind(tbl)
         y = y + 1
-
-        q(function()
-            Bakery_API.credit(blind)
-        end)
-
-        return blind
+        return q(SMODS.Blind(tbl))
     end
 end)()
 
@@ -183,13 +177,7 @@ blind {
     pronouns = "he_they",
     disable = function()
         -- Ensures that this runs after 'set_blind' since it also gets added to queue.
-        q {
-            delay = 0.8,
-            trigger = "after",
-            func = function()
-                G.FUNCS.draw_from_discard_to_deck()
-            end,
-        }
+        q {delay = 0.8, trigger = "after", func = G.FUNCS.draw_from_discard_to_deck}
     end,
     set_blind = function()
         -- Allows the background to ease in first before drawing cards.

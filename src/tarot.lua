@@ -1,4 +1,4 @@
-local f, q, u = unpack(... or require "lib.shared")
+local f, q, u = (... or require "lib.shared")[1], (... or require "lib.shared")[2], (... or require "lib.shared")[3]
 
 SMODS.Atlas {
     px = 71,
@@ -7,7 +7,7 @@ SMODS.Atlas {
     path = "tarot.png",
 }
 
-local coolheaded = SMODS.Consumable {
+q(SMODS.Consumable {
     key = "coolheaded",
     pos = {x = 0, y = 0},
     config = {extra = {amount = 1}},
@@ -28,7 +28,7 @@ local coolheaded = SMODS.Consumable {
         local highlighted = Bakery_API.get_highlighted()
 
         return #G.jokers.highlighted + #highlighted == card.ability.extra.amount and
-            f(G.jokers.highlighted):concat(Bakery_API.get_highlighted()):all(function(v)
+            f(G.jokers.highlighted):concat(highlighted):all(function(v)
                 return not v.edition
             end)
     end,
@@ -42,8 +42,4 @@ local coolheaded = SMODS.Consumable {
             }
         end)
     end,
-}
-
-q(function()
-    Bakery_API.credit(coolheaded)
-end)
+})

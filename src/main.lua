@@ -1,55 +1,62 @@
 local qol = assert(SMODS.load_file "src/lib/shared.lua")() or require "lib.shared"
-local f, q = unpack(qol)
+local f, q = qol[1], qol[2]
 
-q(function()
-    local contributors = (Bakery_API or {}).contributors
+q {
+    front = true,
+    no_delete = true,
+    blocking = false,
+    func = function()
+        local contributors = (Bakery_API or {}).contributors
 
-    if not contributors then
-        return true
-    end
+        if not contributors then
+            return false
+        end
 
-    -- Special shoutout to all contributors. <3
-    local credits = {
-        aster = {
-            name = "asterSSH",
-            fg = HEX "f8f8f2ff",
-            bg = HEX "bd93f9ff",
-        },
-        bakersdozenbagels = {
-            name = "BakersDozenBagels",
-            fg = HEX "362708ff",
-            bg = HEX "edd198ff",
-        },
-        char = {
-            name = "char (@irregulester)",
-            fg = HEX "f8f8f2ff",
-            bg = HEX "ff79c6ff",
-        },
-        ghostlyfield = {
-            name = "ghostlyfield",
-            fg = HEX "ffffffff",
-            bg = HEX "b290e6ff",
-        },
-        hamester = {
-            name = "Hamester",
-            fg = HEX "ffffffff",
-            bg = HEX "ffa100ff",
-        },
-        redstoad = {
-            name = "RedsToad",
-            fg = HEX "ffffffff",
-            bg = HEX "da4044ff",
-        },
-    }
+        -- Special shoutout to all contributors. <3
+        local credits = {
+            aster = {
+                name = "asterSSH",
+                fg = HEX "f8f8f2ff",
+                bg = HEX "bd93f9ff",
+            },
+            bakersdozenbagels = {
+                name = "BakersDozenBagels",
+                fg = HEX "362708ff",
+                bg = HEX "edd198ff",
+            },
+            char = {
+                name = "char (@irregulester)",
+                fg = HEX "f8f8f2ff",
+                bg = HEX "ff79c6ff",
+            },
+            ghostlyfield = {
+                name = "ghostlyfield",
+                fg = HEX "ffffffff",
+                bg = HEX "b290e6ff",
+            },
+            hamester = {
+                name = "Hamester",
+                fg = HEX "ffffffff",
+                bg = HEX "ffa100ff",
+            },
+            redstoad = {
+                name = "RedsToad",
+                fg = HEX "ffffffff",
+                bg = HEX "da4044ff",
+            },
+        }
 
-    f(credits):each(function(v, k)
-        contributors["Roland_" .. k] = v
-    end)
+        f(credits):each(function(v, k)
+            contributors["Roland_" .. k] = v
+            -- G.ARGS.LOC_COLOURS["Bakery_credit_fg_Roland_" .. k] = v.fg
+            -- G.ARGS.LOC_COLOURS["Bakery_credit_bg_Roland_" .. k] = v.bg
+        end)
 
-    if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
-        _G.f, _G.q, _G.u = unpack(qol)
-    end
-end)
+        if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
+            _G.f, _G.q, _G.u = unpack(qol)
+        end
+    end,
+}
 
 f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "tarot", "back", "seal", "tag"}
     :each(function(v)

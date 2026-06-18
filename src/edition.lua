@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
 SMODS.Shader {
     key = "frozen",
@@ -79,6 +79,107 @@ local function freeze(card)
     card.Roland_frozen_current_round = card.Roland_frozen_current_round or copy(G.GAME.current_round[key])
     G.GAME.current_round[key] = copy(card.Roland_frozen_current_round)
     return ret
+end
+
+local function hook_estate()
+    ---@param card Card|{ Roland_frozen: {estate: integer} }
+    local function estate_pos(card)
+        if card.area ~= G.jokers and card.area.config.type ~= "title" then
+            return 1
+        end
+
+        card.Roland_frozen.estate = card.Roland_frozen.estate or card.rank or 1
+        return card.Roland_frozen.estate
+    end
+
+    local estate = G.P_CENTERS.j_Bakery_Estate
+    local orig_calculate = estate.calculate
+
+    function estate:calculate(card, context, ...)
+        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
+            return orig_calculate(self, card, context, ...)
+        end
+
+        if not context.joker_main then
+            return
+        end
+
+        local joker_count = estate_pos(card)
+        local extra = card.ability.extra
+        return {chips = extra.chips * joker_count, mult = extra.mult * joker_count}
+    end
+
+    local orig_loc_vars = estate.loc_vars
+
+    function estate:loc_vars(info_queue, card, ...)
+        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
+            return orig_loc_vars(self, info_queue, card, ...)
+        end
+
+        local joker_count = estate_pos(card)
+        local extra = card.ability.extra or {}
+        return {vars = {extra.chips * joker_count, extra.mult * joker_count}}
+    end
+end
+
+local function hook_proxy()
+    ---@param card Card|{ Roland_frozen: {proxy: string} }
+    local function get_proxied_joker(card)
+        if not G.jokers or not G.jokers.cards then
+            return
+        end
+
+        card.Roland_frozen.proxy = card.Roland_frozen.proxy or
+            (Bakery_API.get_proxied_joker() or card).config.center.key
+
+        ---@param v Card
+        local function eq(v)
+            return v.config.center.key == card.Roland_frozen.proxy
+        end
+
+        return f(G.jokers.cards):any(eq)
+    end
+
+    local proxy = G.P_CENTERS.j_Bakery_Proxy
+    local orig_calculate = proxy.calculate
+
+    function proxy:calculate(card, context, ...)
+        if not card or not card.edition or not card.edition.Roland_frozen then
+            return orig_calculate(self, card, context, ...)
+        else
+            return SMODS.blueprint_effect(card, get_proxied_joker(card), context)
+        end
+    end
+
+    local orig_loc_vars = proxy.loc_vars
+
+    function proxy:loc_vars(info_queue, card, ...)
+        if not card or not card.edition or not card.edition.Roland_frozen then
+            return orig_loc_vars(self, info_queue, card, ...)
+        end
+
+        local other = get_proxied_joker(card)
+
+        local var = (other and other ~= card) and localize {
+            type = "name_text",
+            set = other.config.center.set,
+            key = other.config.center.key,
+        } or localize "k_none"
+
+        return {vars = {var}}
+    end
+end
+
+local function hook_scribe()
+    local scribe = G.P_CENTERS.c_Bakery_Scribe
+    local orig_can_use = scribe.can_use
+
+    function scribe.can_use(...)
+        return orig_can_use(...) and
+            (SMODS.Mods.Roland.config.scribable_basket or f(G.jokers.highlighted):all(function(v)
+                return v.config.center.key ~= "j_Roland_basket"
+            end))
+    end
 end
 
 SMODS.Edition {
@@ -203,115 +304,24 @@ function SMODS.get_probability_vars(trigger_obj, ...)
     return trigger_obj and (trigger_obj.Roland_frozen or {}).probability or numerator, denominator
 end
 
-q(function()
-    local estate = G.P_CENTERS.j_Bakery_Estate
+q {
+    blocking = false,
+    no_delete = true,
+    func = function()
+        local orig_flip_double_sided = (Bakery_API or {}).flip_double_sided
 
-    if not estate then
-        return true
-    end
-
-    ---@param card Card|{ Roland_frozen: {estate: integer} }
-    local function estate_pos(card)
-        if card.area ~= G.jokers and card.area.config.type ~= "title" then
-            return 1
+        if not orig_flip_double_sided then
+            return false
         end
 
-        card.Roland_frozen.estate = card.Roland_frozen.estate or card.rank or 1
-        return card.Roland_frozen.estate
-    end
-
-    local orig_calculate = estate.calculate
-
-    function estate:calculate(card, context, ...)
-        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
-            return orig_calculate(self, card, context, ...)
+        function Bakery_API.flip_double_sided(card, ...)
+            if not card.edition or not card.edition.Roland_frozen then
+                return orig_flip_double_sided(card, ...)
+            end
         end
 
-        if not context.joker_main then
-            return
-        end
-
-        local joker_count = estate_pos(card)
-        local extra = card.ability.extra
-        return {chips = extra.chips * joker_count, mult = extra.mult * joker_count}
-    end
-
-    local orig_loc_vars = estate.loc_vars
-
-    function estate:loc_vars(info_queue, card, ...)
-        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
-            return orig_loc_vars(self, info_queue, card, ...)
-        end
-
-        local joker_count = estate_pos(card)
-        local extra = card.ability.extra or {}
-        return {vars = {extra.chips * joker_count, extra.mult * joker_count}}
-    end
-end)
-
-q(function()
-    local proxy = G.P_CENTERS.j_Bakery_Proxy
-
-    if not proxy then
-        return true
-    end
-
-    ---@param card Card|{ Roland_frozen: {proxy: string} }
-    local function get_proxied_joker(card)
-        if not G.jokers or not G.jokers.cards then
-            return
-        end
-
-        card.Roland_frozen.proxy = card.Roland_frozen.proxy or
-            (Bakery_API.get_proxied_joker() or card).config.center.key
-
-        ---@param v Card
-        local function eq(v)
-            return v.config.center.key == card.Roland_frozen.proxy
-        end
-
-        return f(G.jokers.cards):any(eq)
-    end
-
-    local orig_calculate = proxy.calculate
-
-    function proxy:calculate(card, context, ...)
-        if not card or not card.edition or not card.edition.Roland_frozen then
-            return orig_calculate(self, card, context, ...)
-        else
-            return SMODS.blueprint_effect(card, get_proxied_joker(card), context)
-        end
-    end
-
-    local orig_loc_vars = proxy.loc_vars
-
-    function proxy:loc_vars(info_queue, card, ...)
-        if not card or not card.edition or not card.edition.Roland_frozen then
-            return orig_loc_vars(self, info_queue, card, ...)
-        end
-
-        local other = get_proxied_joker(card)
-
-        local var = (other and other ~= card) and localize {
-            type = "name_text",
-            set = other.config.center.set,
-            key = other.config.center.key,
-        } or localize "k_none"
-
-        return {vars = {var}}
-    end
-end)
-
-q(function()
-    local orig_flip_double_sided = (Bakery_API or {}).flip_double_sided
-
-    if not orig_flip_double_sided then
-        return true
-    end
-
-    function Bakery_API.flip_double_sided(card, ...)
-        if not card.edition or not card.edition.Roland_frozen then
-            return orig_flip_double_sided(card, ...)
-        end
-    end
-end)
+        local _ = G.P_CENTERS.j_Bakery_Estate and hook_estate()
+        local _ = G.P_CENTERS.c_Bakery_Scribe and hook_scribe()
+        local _ = G.P_CENTERS.j_Bakery_Proxy and hook_proxy()
+    end,
+}

@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
 SMODS.Atlas {
     px = 34,

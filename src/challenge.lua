@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
 local function bans()
     return {banned_cards = {}, banned_tags = {}, banned_other = {}}

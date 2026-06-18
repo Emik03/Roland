@@ -1,4 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
 local atlas = SMODS.Atlas {
     key = "joker",
@@ -34,13 +34,7 @@ local joker = (function()
             tbl.config.extra.back_pos = inc()
         end
 
-        local joker = SMODS.Joker(tbl)
-
-        q(function()
-            Bakery_API.credit(joker)
-        end)
-
-        return joker
+        return q(SMODS.Joker(tbl))
     end
 end)()
 

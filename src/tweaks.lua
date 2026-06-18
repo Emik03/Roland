@@ -1,5 +1,4 @@
-local f, q = unpack(... or require "lib.shared")
-
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 local orig_set_debuff = Card.set_debuff
 
@@ -26,10 +25,11 @@ function Card:use_consumeable(area, copier, ...)
         return orig_use_consumeable(self, area, copier, ...)
     end
 
+    local card = copier or self
+
     f(Bakery_API.get_highlighted()):each(function(v)
         q(function()
             play_sound "tarot1"
-            local card = (copier or self)
             card:juice_up(0.3, 0.5)
         end)
 
@@ -42,13 +42,7 @@ function Card:use_consumeable(area, copier, ...)
         }
     end)
 
-    q {
-        delay = 0.7,
-        trigger = "after",
-        func = function()
-            Bakery_API.unhighlight_all()
-        end,
-    }
+    q {delay = 0.7, trigger = "after", func = Bakery_API.unhighlight_all}
 end
 
 local orig_use_card = G.FUNCS.use_card
@@ -126,19 +120,37 @@ function get_blind_amount(ante, ...)
                 (big.constants and big.constants.TEN or big:new {10}):pow(rem)))
 end
 
-q(function()
-    local scribe = G.P_CENTERS.c_Bakery_Scribe
+q {
+    blocking = false,
+    no_delete = true,
+    func = function()
+        local orig_flip_double_sided = (Bakery_API or {}).flip_double_sided
 
-    if not scribe then
-        return true
-    end
+        if not orig_flip_double_sided then
+            return false
+        end
 
-    local orig_can_use = scribe.can_use
+        function Bakery_API.flip_double_sided(card, ...)
+            if not card.edition or not card.edition.Roland_frozen then
+                return orig_flip_double_sided(card, ...)
+            end
+        end
 
-    function scribe.can_use(...)
-        return orig_can_use(...) and
-            (SMODS.Mods.Roland.config.scribable_basket or f(G.jokers.highlighted):all(function(v)
-                return v.config.center.key ~= "j_Roland_basket"
-            end))
-    end
-end)
+        q(function()
+            local scribe = G.P_CENTERS.c_Bakery_Scribe
+
+            if not scribe then
+                return true
+            end
+
+            local orig_can_use = scribe.can_use
+
+            function scribe.can_use(...)
+                return orig_can_use(...) and
+                    (SMODS.Mods.Roland.config.scribable_basket or f(G.jokers.highlighted):all(function(v)
+                        return v.config.center.key ~= "j_Roland_basket"
+                    end))
+            end
+        end)
+    end,
+}
