@@ -1,0 +1,55 @@
+---@meta
+---@alias Attributes "mult"|"chips"|"xmult"|"xchips"|"score"|"xscore"|"blindsize"|"xblindsize"|"balance"|"swap"|"retrigger"|"scaling"|"reset"|"suit"|"diamonds"|"hearts"|"spades"|"clubs"|"hand_type"|"rank"|"ace"|"two"|"three"|"four"|"five"|"six"|"seven"|"eight"|"nine"|"ten"|"jack"|"queen"|"king"|"face"|"economy"|"generation"|"destroy_card"|"hands"|"discard"|"hand_size"|"chance"|"joker_slot"|"mod_chance"|"copying"|"full_deck"|"passive"|"joker"|"tarot"|"planet"|"spectral"|"enhancements"|"seals"|"editions"|"tag"|"skip"|"modify_card"|"perma_bonus"|"prevents_death"|"boss_blind"|"reroll"|"on_sell"|"sell_value"|"food"|"space"|"bakery_double_sided"|"bakery_usable"|"bakery_werewolf"
+SMODS.Mods.Roland.config = require "config"
+
+---@type Card[]
+CardArea.cards = CardArea.cards
+
+---@type userdata|{getWidth: fun(self: self): number}
+SMODS.Atlas.image_data = SMODS.Atlas.image_data
+
+--- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
+_G["Big"] = _G["Big"]
+
+--- @type fun(area: CardArea, ...: ...): Card
+create_card_for_shop = create_card_for_shop
+
+--- @overload fun(tbl: SMODS.Joker): SMODS.GameObject
+Bakery_API.Charm = Bakery_API.Charm
+
+--- @generic T: SMODS.GameObject
+--- @param obj T
+--- @return T
+function Bakery_API.credit(obj)
+    error(obj)
+end
+
+-- This exists to remove the @deprecated warning.
+---Returns the elements from the given `list`. This function is equivalent to
+---```lua
+---    return list[i], list[i+1], ···, list[j]
+---```
+---
+---
+---[View documents](command:extension.lua.doc?["en-us/52/manual.html/pdf-unpack"])
+---
+---@generic T1, T2, T3, T4, T5, T6, T7, T8, T9, T10
+---@param list {
+--- [1]?: T1,
+--- [2]?: T2,
+--- [3]?: T3,
+--- [4]?: T4,
+--- [5]?: T5,
+--- [6]?: T6,
+--- [7]?: T7,
+--- [8]?: T8,
+--- [9]?: T9,
+--- [10]?: T10,
+---}
+---@param i?   integer
+---@param j?   integer
+---@return T1, T2, T3, T4, T5, T6, T7, T8, T9, T10
+---@nodiscard
+function unpack(list, i, j)
+    error {list, i, j}
+end

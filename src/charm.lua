@@ -1,14 +1,15 @@
 local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 local mod = SMODS.current_mod
+local cool_phones = SMODS.Mods.Roland.config.cool_phones
 
 SMODS.Atlas {
     key = "charm",
-    path = "charm.png",
+    path = cool_phones and "phorm.png" or "charm.png",
     px = 68,
     py = 68,
 }
 
-SMODS.Sound {
+local _ = cool_phones and SMODS.Sound {
     key = "phone",
     path = "phone.ogg",
 }
@@ -16,7 +17,7 @@ SMODS.Sound {
 local charm = (function()
     local x = 0
 
-    ---@param tbl SMODS.Joker|{alerted?: boolean, equip?: fun(self: self, card: Card)}
+    ---@param tbl SMODS.Joker|{alerted?: boolean, artist?: string, equip?: fun(self: self, card: Card)}
     return function(tbl)
         q {
             blocking = false,
@@ -35,6 +36,7 @@ local charm = (function()
                 tbl.discovered = true
                 tbl.pos = {x = x, y = 0}
                 tbl.atlas = "charm"
+                tbl.artist = not cool_phones and "Roland_bakersdozenbagels" or nil
                 x = x + 1
 
                 local orig_equip = tbl.equip
@@ -47,7 +49,7 @@ local charm = (function()
                     end
                 end
 
-                local charm = Bakery_API.Charm(tbl)
+                local charm = Bakery_API.credit(Bakery_API.Charm(tbl))
                 charm:inject()
                 charm:process_loc_text()
                 SMODS.current_mod = current_mod

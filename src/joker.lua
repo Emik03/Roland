@@ -759,7 +759,7 @@ joker {
     key = "violet",
     pronouns = "she_they",
     idea = "hamester",
-    config = {extra = {before = 1 / 3, xmult = 9}},
+    config = {extra = {before = 0.1, xmult = 9}},
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
     cost = 6,
@@ -1201,7 +1201,10 @@ joker {
         local delta = (context.cardarea == G.play and not card.blueprint) and 1 or 0
         extra.scored = extra.scored + delta
 
-        if not extra.flipped and extra.scored == extra.required then
+        if not extra.getting_flipped and
+            not extra.flipped and
+            extra.scored == extra.required then
+            extra.getting_flipped = true
             Bakery_API.flip_double_sided(card)
 
             q(function()
@@ -1209,7 +1212,7 @@ joker {
             end)
         end
 
-        return extra.scored > extra.required and {card = card, xmult = card.ability.extra.xmult} or
+        return extra.scored >= extra.required and {card = card, xmult = card.ability.extra.xmult} or
             (delta > 0 and {
                 message = extra.scored .. "/" .. extra.required,
                 colour = G.C.JOKER_GREY,

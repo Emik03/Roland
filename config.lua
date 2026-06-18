@@ -1,5 +1,6 @@
 return {
     animated_icon = true,
+    cool_phones = true,
     equinox_assist = false,
     faster_planets = false,
     harsh_ante_scaling = false,

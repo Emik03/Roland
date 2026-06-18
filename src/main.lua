@@ -99,6 +99,7 @@ function SMODS.current_mod.config_tab()
             config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.CLEAR},
             nodes = {
                 toggle "animated_icon",
+                toggle "cool_phones",
                 toggle "faster_planets",
                 -- toggle "illusion_seal",
                 -- toggle "no_wild_debuff",

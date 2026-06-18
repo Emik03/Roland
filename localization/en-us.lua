@@ -23,7 +23,7 @@ return {
         },
         BakeryCharm = {
             BakeryCharm_Roland_cocacola = {
-                name = "coca cola phone",
+                name = SMODS.Mods.Roland.config.cool_phones and "coca cola phone" or "Pentagram",
                 text = {
                     "{C:attention}Discard 0 cards {}to",
                     "gain {C:red}#1# {}discards and",
@@ -32,7 +32,7 @@ return {
                 },
             },
             BakeryCharm_Roland_fat = {
-                name = "fat i phone",
+                name = SMODS.Mods.Roland.config.cool_phones and "fat i phone" or "Product",
                 text = {
                     "{C:attention}+#1# Booster Pack {}slots",
                     "All {C:attention}Booster Packs {}are {C:attention}Mega",
@@ -40,15 +40,15 @@ return {
                 },
             },
             BakeryCharm_Roland_flexible = {
-                name = "flexi ble phone",
+                name = SMODS.Mods.Roland.config.cool_phones and "flexi ble phone" or "Ring",
                 text = {unpack(G.localization.descriptions.Joker.j_ring_master.text)},
             },
             BakeryCharm_Roland_hand = {
-                name = "hand phone",
+                name = SMODS.Mods.Roland.config.cool_phones and "hand phone" or "Shell",
                 text = {"{C:attention}+#1# {}hand size", "{C:blue}#2# {}hands"},
             },
             BakeryCharm_Roland_wii = {
-                name = "wii phone",
+                name = SMODS.Mods.Roland.config.cool_phones and "wii phone" or "Tire",
                 text = {
                     "Enter the shop",
                     "when any {C:attention}Blind",
@@ -514,6 +514,7 @@ return {
             b_Roland_animated_icon = "Animated Icon (requires restart)",
             b_Roland_bye = "Bye!",
             b_Roland_comma = ", ",
+            b_Roland_cool_phones = "cool phones (requires restart)",
             b_Roland_debuffed = "DEBUFFED",
             b_Roland_disabled = "Disabled",
             b_Roland_enabled = "Enabled",
