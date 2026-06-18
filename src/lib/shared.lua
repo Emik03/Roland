@@ -31,7 +31,7 @@ local function protect_ev(fun)
             end,
         }
     else
-        fun.func = protect(fun.func)
+        fun.func = protect(fun.func or fun[1])
         return getmetatable(fun) == Event and fun or Event(fun)
     end
 end

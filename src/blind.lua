@@ -337,7 +337,6 @@ end
 
 function SMODS.current_mod:calculate(context)
     local _ = type(G.calccontext) == "function" and G.calccontext(context)
-    local _ = type(G.calckeys) == "function" and G.calckeys(f(context):keys())
 
     if type(G.calc) == "function" then
         G.calc = {G.calc}
