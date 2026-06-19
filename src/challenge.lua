@@ -46,7 +46,7 @@ SMODS.Challenge {
     key = "Glass",
     rules = {custom = {{id = "Roland_Glass1"}, {id = "Roland_Glass2"}}},
     pronouns = "they_them",
-    config = {extra = {odds = 4}},
+    config = {extra = {odds = 2}},
     calculate = function(self, context)
         if not context.after or context.blueprint_card then
             return

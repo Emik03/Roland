@@ -545,7 +545,7 @@ return {
             ch_c_Roland_Eternally_Verdant = {"{C:attention}Verdant Leaf{}'s effect is active every blind"},
             ch_c_Roland_Eternally_Violet = {"{C:attention}Violet Vessel{}'s effect is active every blind"},
             ch_c_Roland_Glass1 = {"Played cards with no seal have a"},
-            ch_c_Roland_Glass2 = {"{C:green}1 in 4{} chance to gain {C:dark_edition}Glass Seal"},
+            ch_c_Roland_Glass2 = {"{C:green}1 in 2{} chance to gain {C:dark_edition}Glass Seal"},
             ch_c_Roland_Go = {"Set money to {C:money}$0 {}when entering the shop"},
             ch_c_Roland_Jokerful = {"The only jokers are {C:mult}Joker{} and {C:chips}Ms. Joker"},
             ch_c_Roland_Pastries = {"All blinds, cards, and tags are of {C:gold}Bakery{} or {C:blue}Roland"},
