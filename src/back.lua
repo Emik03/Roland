@@ -27,9 +27,8 @@ local back = (function()
         tbl.atlas = "back"
         x = x + 1
         local back = q(SMODS.Back(tbl))
-        local sleeve = (_G["CardSleeves"] or {}).Sleeve
 
-        local _ = sleeve and sleeve {
+        local _ = CardSleeves and CardSleeves.Sleeve {
             key = key,
             pos = tbl.pos,
             atlas = "sleeve",
@@ -61,7 +60,7 @@ SMODS.Atlas {
     py = 95,
 }
 
-local _ = _G["CardSleeves"] and SMODS.Atlas {
+local _ = CardSleeves and SMODS.Atlas {
     key = "sleeve",
     path = "sleeve.png",
     px = 73,

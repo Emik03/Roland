@@ -63,7 +63,7 @@ f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "tar
         assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
     end)
 
-if _G["Balatest"] then
+if Balatest then
     f {"joker", "blind", "spectral"}:each(function(v)
         assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
     end)
@@ -107,7 +107,7 @@ function SMODS.current_mod.config_tab()
                 toggle "equinox_assist",
                 SMODS.Mods.DebugPlus and toggle "import_funky",
                 G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
-                _G["Talisman"] and toggle "harsh_ante_scaling",
+                Talisman and toggle "harsh_ante_scaling",
             },
         }},
     }

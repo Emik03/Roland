@@ -476,15 +476,15 @@ local venerable_visage = blind {
     vitriol = function(b)
         local vitriol = SMODS.Mods.Roland.config.vitriol
         local resize_to_w, resize_to_h = 320, 200
-        local is_fullscreen = _G["love"].window.getFullscreen()
+        local is_fullscreen = love.window.getFullscreen()
 
         if vitriol then
-            _G["love"].window.setFullscreen(false)
+            love.window.setFullscreen(false)
             delay(1.5)
         end
 
         local function jitter()
-            local x, y = _G["love"].window.getDesktopDimensions()
+            local x, y = love.window.getDesktopDimensions()
 
             return pseudorandom(pseudoseed "RolandVenerableVisageX", 0, x) - x / 2,
                 pseudorandom(pseudoseed "RolandVenerableVisageY", 0, y) - y / 2
@@ -512,15 +512,16 @@ local venerable_visage = blind {
             play_sound("gong", v)
         end)
 
+        ---@type number, number, table
+        local w, h, flags = love.window.getMode()
         local len = #G.playing_cards
-        local w, h, flags = _G["love"].window.getMode()
 
         if vitriol then
-            _G["love"].window.setMode(resize_to_w, resize_to_h)
-            _G["love"].resize(resize_to_w, resize_to_h)
+            love.window.setMode(resize_to_w, resize_to_h)
+            love.resize(resize_to_w, resize_to_h)
         end
 
-        local x, y = _G["love"].window.getPosition()
+        local x, y = love.window.getPosition()
 
         f(G.playing_cards):each(function(v, i)
             q {
@@ -529,7 +530,7 @@ local venerable_visage = blind {
                 func = function()
                     if vitriol then
                         local x_random, y_random = jitter()
-                        _G["love"].window.setPosition(x + x_random * i / len, y + y_random * i / len)
+                        love.window.setPosition(x + x_random * i / len, y + y_random * i / len)
                     end
 
                     v:start_dissolve()
@@ -543,10 +544,10 @@ local venerable_visage = blind {
             trigger = "before",
             delay = 1.5,
             func = function()
-                _G["love"].window.setPosition(x, y)
-                _G["love"].window.setMode(w, h, flags)
-                _G["love"].resize(w, h)
-                _G["love"].window.setFullscreen(is_fullscreen)
+                love.window.setPosition(x, y)
+                love.window.setMode(w, h, flags)
+                love.resize(w, h)
+                love.window.setFullscreen(is_fullscreen)
             end,
         }
 

@@ -21,14 +21,13 @@ local function protect_ev(fun)
         return Event {
             blocking = false,
             no_delete = true,
-            func = function()
+            func = protect(function()
                 if not Bakery_API or not Bakery_API.credit then
                     return false
                 end
 
                 Bakery_API.credit(fun)
-                return true
-            end,
+            end),
         }
     else
         fun.func = protect(fun.func or fun[1])

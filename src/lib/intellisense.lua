@@ -1,18 +1,7 @@
 ---@meta
 ---@alias Attributes "mult"|"chips"|"xmult"|"xchips"|"score"|"xscore"|"blindsize"|"xblindsize"|"balance"|"swap"|"retrigger"|"scaling"|"reset"|"suit"|"diamonds"|"hearts"|"spades"|"clubs"|"hand_type"|"rank"|"ace"|"two"|"three"|"four"|"five"|"six"|"seven"|"eight"|"nine"|"ten"|"jack"|"queen"|"king"|"face"|"economy"|"generation"|"destroy_card"|"hands"|"discard"|"hand_size"|"chance"|"joker_slot"|"mod_chance"|"copying"|"full_deck"|"passive"|"joker"|"tarot"|"planet"|"spectral"|"enhancements"|"seals"|"editions"|"tag"|"skip"|"modify_card"|"perma_bonus"|"prevents_death"|"boss_blind"|"reroll"|"on_sell"|"sell_value"|"food"|"space"|"bakery_double_sided"|"bakery_usable"|"bakery_werewolf"
-SMODS.Mods.Roland.config = require "config"
-
 ---@type Card[]
 CardArea.cards = CardArea.cards
-
----@type userdata|{getWidth: fun(self: self): number}
-SMODS.Atlas.image_data = SMODS.Atlas.image_data
-
---- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
-_G["Big"] = _G["Big"]
-
---- @type fun(area: CardArea, ...: ...): Card
-create_card_for_shop = create_card_for_shop
 
 --- @overload fun(tbl: SMODS.Joker): SMODS.GameObject
 Bakery_API.Charm = Bakery_API.Charm
@@ -23,6 +12,32 @@ Bakery_API.Charm = Bakery_API.Charm
 function Bakery_API.credit(obj)
     error(obj)
 end
+
+---@type table
+Balatest = Balatest
+
+--- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
+Big = Big
+
+--- @type table
+CardSleeves = CardSleeves
+
+--- @type fun(obj: SMODS.Back): SMODS.Back
+CardSleeves.Sleeve = CardSleeves.Sleeve
+
+--- @type fun(area: CardArea, ...: ...): Card
+create_card_for_shop = create_card_for_shop
+
+SMODS.Mods.Roland.config = require "config"
+
+---@type userdata|{getWidth: fun(self: self): number}
+SMODS.Atlas.image_data = SMODS.Atlas.image_data
+
+--- @type table
+Talisman = Talisman
+
+--- @type fun(obj: any): number
+to_number = to_number
 
 -- This exists to remove the @deprecated warning.
 ---Returns the elements from the given `list`. This function is equivalent to
