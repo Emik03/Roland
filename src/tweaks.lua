@@ -62,7 +62,10 @@ function G.FUNCS.use_card(e, ...)
     discover_card(ref.config.center)
     ref:use_consumeable(ref.area)
     SMODS.calculate_context {area = ref.area, consumeable = ref, using_consumeable = true}
-    ref:remove()
+
+    q(function()
+        ref:remove()
+    end)
 
     if normal then
         return
