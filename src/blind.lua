@@ -239,16 +239,16 @@ blind {
     disable = function(self)
         self:defeat()
     end,
-    calculate = function(self, b)
-        return not b.disabled and self.cards()
+    calculate = function(self, b, context)
+        return not b.disabled and
+            context.hand_drawn and
+            self.cards()
             :where("Roland_blizzard", false)
             :where("facing", "front")
             :each(set_freeze(true)) or nil
     end,
     cards = function()
-        return f(G):where(function(v)
-            return type(v) == "table" and type(v.cards) == "table"
-        end):flatmap("cards", ipairs)
+        return f(G):where(getmetatable, CardArea):flatmap("cards", ipairs)
     end,
 }
 

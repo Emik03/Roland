@@ -216,9 +216,9 @@ joker {
         SMODS.calculate_context {drawing_cards = true, draw = {G.deck.cards}}
 
         SMODS.calculate_context {
+            hand_drawn = facing_blind and {G.deck.cards[1]} and true,
+            other_drawn = not facing_blind and {G.deck.cards[1]} and true,
             first_hand_drawn = not current_round.any_hand_drawn and facing_blind or nil,
-            hand_drawn = facing_blind and {G.deck.cards[1]} --[[@as true]],
-            other_drawn = not facing_blind and {G.deck.cards[1]},
         }
 
         if type(facing_blind) == "table" then
@@ -941,7 +941,10 @@ joker {
             return {card = card, xmult = extra.odds}
         end
 
-        for _ = 1, 256 do
+        -- 2^38 is the first iteration displayed as scientific notation.
+        local max, overflown = 38, false
+
+        for i = 1, max do
             local key = "RolandMartingale" .. tostring(G.GAME.modifiers.Roland_martingale_seed or "")
 
             if SMODS.pseudorandom_probability(card, self.key, 1, extra.odds, key) then
@@ -953,9 +956,18 @@ joker {
             xmult = xmult * extra.odds
             local message = number_format(numerator) .. "/" .. number_format(xmult)
             SMODS.calculate_effect({card = card, repetitions = 1, message = message, message_card = card}, card)
+            overflown = overflown or i == max
         end
 
-        SMODS.calculate_effect({card = card, xmult = xmult}, card)
+        if overflown then
+            SMODS.calculate_effect({card = card, score = 1 / 0}, card)
+
+            q(function()
+                card:shatter()
+            end)
+        else
+            SMODS.calculate_effect({card = card, xmult = xmult}, card)
+        end
     end,
 }
 
