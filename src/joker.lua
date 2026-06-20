@@ -688,11 +688,13 @@ joker {
                 right.config.center.key == "j_Roland_crimson"
 
             if debuffed_by_crimson and v.ability.Roland_crimson == nil then
-                v.ability.Roland_crimson = not not v.debuff
+                local debuff = not not v.debuff
                 v:set_debuff(true)
+                v.ability.Roland_crimson = debuff
             elseif not debuffed_by_crimson and v.ability.Roland_crimson ~= nil then
-                v:set_debuff(v.ability.Roland_crimson)
+                local debuff = v.ability.Roland_crimson
                 v.ability.Roland_crimson = nil
+                v:set_debuff(debuff)
             end
         end)
     end,

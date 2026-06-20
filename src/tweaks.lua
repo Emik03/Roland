@@ -2,11 +2,16 @@ local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 local orig_set_debuff = Card.set_debuff
 
-function Card:set_debuff(...)
+function Card:set_debuff(should_debuff, ...)
+    if self.ability.Roland_crimson ~= nil then
+        self.ability.Roland_crimson = not not should_debuff
+        return
+    end
+
     if SMODS.get_enhancements(self).m_wild and SMODS.Mods.Roland.config.no_wild_debuff then
         self.debuff = false
     else
-        orig_set_debuff(self, ...)
+        orig_set_debuff(self, should_debuff, ...)
     end
 end
 
