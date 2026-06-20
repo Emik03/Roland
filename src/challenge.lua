@@ -179,7 +179,7 @@ SMODS.Challenge {
 SMODS.Challenge {
     key = "Eternally_Crimson",
     rules = {custom = {{id = "Roland_Eternally_Crimson"}, {id = "Roland_Showdown_Crimson"}}},
-    -- jokers = {{id = "j_Roland_crimson"}},
+    jokers = {{id = "j_Roland_crimson"}},
     restrictions = crimson,
     pronouns = "she_her",
     calculate = function(_, context)
@@ -188,7 +188,7 @@ SMODS.Challenge {
         end)
 
         local mod = G.GAME.modifiers
-        mod.Roland_Eternally_Crimson = not context.setting_blind and mod.Roland_Eternally_Crimson or nil
+        mod.Roland_Eternally_Crimson = context.setting_blind and true or mod.Roland_Eternally_Crimson
         local debuff = context.debuff_card
         local cards = G.jokers.cards
 
