@@ -22,10 +22,13 @@ SMODS.Atlas {
 voucher {
     key = "ceres",
     pronouns = "it_its",
-    config = {hand_type = "Flush House"},
+    config = {extra = {amount = 1, hand_type = "Flush House"}},
     attributes = {"planet", "passive", "hand_type", "space"},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.amount}}
+    end,
     in_pool = function(self)
-        return G.GAME.hands[self.config.hand_type].visible
+        return G.GAME.hands[self.config.extra.hand_type].visible
     end,
 }
 
@@ -33,6 +36,9 @@ voucher {
     key = "neptune",
     pronouns = "it_its",
     requires = {"v_Roland_ceres"},
-    config = {hand_type = "Straight Flush"},
+    config = {extra = {amount = 2, hand_type = "Straight Flush"}},
     attributes = {"planet", "passive", "hand_type", "space"},
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.amount}}
+    end,
 }

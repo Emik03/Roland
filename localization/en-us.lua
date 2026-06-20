@@ -500,14 +500,14 @@ return {
                 name = "Ceres",
                 text = {
                     "Level up {C:attention}Flush House",
-                    "when it is played",
+                    "by {C:attention}#1# {}when it is played",
                 },
             },
             v_Roland_neptune = {
                 name = "Neptune",
                 text = {
                     "Level up {C:attention}Straight Flush",
-                    "when it is played",
+                    "by {C:attention}#1# {}when it is played",
                 },
             },
         },
