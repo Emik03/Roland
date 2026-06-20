@@ -938,7 +938,8 @@ joker {
         local extra, numerator, xmult = card.ability.extra, 1, 1
 
         if G.GAME.blind.name == "bl_mp_nemesis" then
-            return {card = card, xmult = extra.odds}
+            local n, d = SMODS.get_probability_vars(card, 1, extra.odds, self.key)
+            return n < d and {card = card, xmult = extra.odds} or nil
         end
 
         -- 2^38 is the first iteration displayed as scientific notation.
