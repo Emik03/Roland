@@ -58,10 +58,22 @@ q {
     end,
 }
 
-f {"challenge", "spectral", "edition", "tweaks", "blind", "charm", "joker", "tarot", "back", "seal", "tag"}
-    :each(function(v)
-        assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
-    end)
+f {
+    "challenge",
+    "spectral",
+    "edition",
+    "tweaks",
+    "blind",
+    "charm",
+    "joker",
+    "tarot",
+    "back",
+    "seal",
+    "tag",
+    "voucher",
+}:each(function(v)
+    assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
+end)
 
 if Balatest then
     f {"joker", "blind", "spectral"}:each(function(v)

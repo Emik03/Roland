@@ -495,6 +495,22 @@ return {
                 },
             },
         },
+        Voucher = {
+            v_Roland_ceres = {
+                name = "Ceres",
+                text = {
+                    "Level up {C:attention}Flush House",
+                    "when it is played",
+                },
+            },
+            v_Roland_neptune = {
+                name = "Neptune",
+                text = {
+                    "Level up {C:attention}Straight Flush",
+                    "when it is played",
+                },
+            },
+        },
     },
     misc = {
         challenge_names = {

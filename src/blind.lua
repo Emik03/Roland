@@ -23,10 +23,7 @@ SMODS.Atlas {
     atlas_table = "ANIMATION_ATLAS",
 }
 
-SMODS.Sound {
-    key = "kick",
-    path = "kick.ogg",
-}
+SMODS.Sound {key = "kick", path = "kick.ogg"}
 
 local function common_rank()
     local tally, to_name = {}, {}
@@ -352,6 +349,18 @@ function SMODS.current_mod:calculate(context)
 
         local _ = not str and type(G.calc[1]) == "function" and G.calc[1](f(context):keys():string())
     end
+
+    local _ = context.before and
+        f {"v_Roland_ceres", "v_Roland_neptune"}
+        :where(f.index_into(G.GAME.used_vouchers))
+        :map(f.index_into(G.P_CENTERS))
+        :where("config.hand_type", context.scoring_name)
+        :any() and
+        SMODS.calculate_effect {
+            level_up = true,
+            message = localize "k_level_up_ex",
+            card = G.play.cards[math.ceil(#G.play.cards / 2)] or G.deck.cards[#G.deck.cards] or {},
+        }
 
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
 

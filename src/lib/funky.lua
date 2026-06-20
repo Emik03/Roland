@@ -9,81 +9,91 @@ local f = {}
 
 if not f then
     ---@generic I, O
-    ---@param first fun(v: I): O
+    ---@param first string|fun(v: I): O
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(first)
         error {first}
     end
 
     ---@generic I, T, O
-    ---@param first fun(v: I): T
-    ---@param second fun(v: T): O
+    ---@param first string|fun(v: I): T
+    ---@param second string|fun(v: T): O
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(first, second)
         error {first, second}
     end
 
     ---@generic I, T1, T2, O
-    ---@param first fun(v: I): T1
-    ---@param second fun(v: T1): T2
-    ---@param third fun(v: T2): O
+    ---@param first string|fun(v: I): T1
+    ---@param second string|fun(v: T1): T2
+    ---@param third string|fun(v: T2): O
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(first, second, third)
         error {first, second, third}
     end
 
     ---@generic I, T1, T2, T3, O
-    ---@param first fun(v: I): T1
-    ---@param second fun(v: T1): T2
-    ---@param third fun(v: T2): T3
-    ---@param fourth fun(v: T3): O
+    ---@param first string|fun(v: I): T1
+    ---@param second string|fun(v: T1): T2
+    ---@param third string|fun(v: T2): T3
+    ---@param fourth string|fun(v: T3): O
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(first, second, third, fourth)
         error {first, second, third, fourth}
     end
 
     ---@generic I, T1, T2, T3, T4, O
-    ---@param first fun(v: I): T1
-    ---@param second fun(v: T1): T2
-    ---@param third fun(v: T2): T3
-    ---@param fourth fun(v: T3): T4
-    ---@param fifth fun(v: T4): O
+    ---@param first string|fun(v: I): T1
+    ---@param second string|fun(v: T1): T2
+    ---@param third string|fun(v: T2): T3
+    ---@param fourth string|fun(v: T3): T4
+    ---@param fifth string|fun(v: T4): O
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(first, second, third, fourth, fifth)
         error {first, second, third, fourth, fifth}
     end
 
     ---@generic I, O
-    ---@param all {[1]: (fun(v: I): O)}
+    ---@param all { [1]: (string|fun(v: I): O) }
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(all)
         error(all)
     end
 
     ---@generic I, T, O
-    ---@param all {[1]: (fun(v: I): T), [2]: (fun(v: T): O)}
+    ---@param all { [1]: (string|fun(v: I): T), [2]: (string|fun(v: T): O) }
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(all)
         error(all)
     end
 
     ---@generic I, T1, T2, O
-    ---@param all {[1]: (fun(v: I): T1), [2]: (fun(v: T1): T2), [3]: (fun(v: T2): O)}
+    ---@param all { [1]: (string|fun(v: I): T1), [2]: (string|fun(v: T1): T2), [3]: (string|fun(v: T2): O) }
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(all)
         error(all)
     end
 
     ---@generic I, T1, T2, T3, O
-    ---@param all {[1]: (fun(v: I): T1), [2]: (fun(v: T1): T2), [3]: (fun(v: T2): T3), [4]: (fun(v: T3): O)}
+    ---@param all { [1]: (string|fun(v: I): T1), [2]: (string|fun(v: T1): T2), [3]: (string|fun(v: T2): T3), [4]: (string|fun(v: T3): O) }
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(all)
         error(all)
     end
 
     ---@generic I, T1, T2, T3, T4, O
-    ---@param all {[1]: (fun(v: I): T1), [2]: (fun(v: T1): T2), [3]: (fun(v: T2): T3), [4]: (fun(v: T3): T4), [4]: (fun(v: T4): O)}
+    ---@param all { [1]: (string|fun(v: I): T1), [2]: (string|fun(v: T1): T2), [3]: (string|fun(v: T2): T3), [4]: (string|fun(v: T3): T4), [4]: (string|fun(v: T4): O) }
     ---@return fun(v: I): O
+    ---@nodiscard
     function f.chain(all)
         error(all)
     end
@@ -104,7 +114,7 @@ local none
 ---@return T
 ---@nodiscard
 local function autofunc(func)
-    return type(func) == "string" and f.index(func) or func or f.id
+    return type(func) == "string" and f.indices(func) or func or f.id
 end
 
 ---@generic K, V
@@ -157,6 +167,7 @@ end
 ---@generic T
 ---@param value T
 ---@return fun(T): boolean
+---@nodiscard
 function f.eq(value)
     return function(v)
         return value == v
@@ -166,6 +177,7 @@ end
 ---@generic T
 ---@param value T
 ---@return fun(T): boolean
+---@nodiscard
 function f.nq(value)
     return function(v)
         return value ~= v
@@ -232,11 +244,15 @@ f[true and "chain"] = function(...)
     for _, v in ipairs(...) do
         if type(v) == "table" then
             for _, vv in ipairs(v) do
+                vv = autofunc(vv)
+
                 ret = ret and function(...)
                     return vv(ret(...))
                 end or vv
             end
         else
+            v = autofunc(v)
+
             ret = ret and function(...)
                 return v(ret(...))
             end or v
@@ -275,6 +291,7 @@ function f.new(fnext)
         next = fnext or f.noop,
         noop = f.noop,
         nq = f.nq,
+        peek = f.peek,
         pun = f.pun,
         skip = f.skip,
         slice = f.slice,
@@ -382,12 +399,30 @@ function f:concat(...)
     end)
 end
 
+---@generic K, V
+---@param self F|{ [K]: V }
+---@param func fun(v: V, k: K): any
+---@return F|{ [K]: V }
+---@nodiscard
+function f:peek(func)
+    func = autofunc(func)
+
+    return f.new(function()
+        local k, v = self:next()
+
+        if k ~= nil then
+            func(v, k)
+            return k, v
+        end
+    end)
+end
+
 ---@generic K, V, U
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): U
+---@param func fun(v: V, k: K): U
 ---@return F|{ [K]: U }
----@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: U }
+---@nodiscard
 function f:map(func)
     func = autofunc(func)
 
@@ -402,61 +437,11 @@ end
 
 ---@generic K, V, U
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): { [any]: U }
+---@param func fun(v: V, k: K): { [any]: U }
 ---@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
 ---@return F|{ [K]: U }
----@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)): F|{ [K]: U }
-function f:flatmap(func, fpairs)
-    -- local i = 0
-    local vt, vk, vv, vp
-    func = autofunc(func)
-
-    return f.new(function()
-        if vk then
-            vk, vv = vp(vt, vk)
-
-            if vk ~= nil then
-                -- i = i + 1
-                -- return i, vv
-                return vk, vv
-            end
-        end
-
-        while true do
-            local k, v = self:next()
-
-            if k == nil then
-                return
-            end
-
-            v = func(v, k)
-
-            if type(v) ~= "table" then
-                -- i = i + 1
-                -- return i, v
-                return k, v
-            end
-
-            vp, vt, vk = autopairs(v, fpairs)
-            vk, vv = vp(vt, vk)
-
-            if vk ~= nil then
-                -- i = i + 1
-                -- return i, vv
-                return vk, vv
-            end
-        end
-    end)
-end
-
----@generic K, V, U
----@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): { [any]: U }
----@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
----@return F|{ [K]: U }
 ---@nodiscard
----@overload fun(self: F|{ [K]: V }, func: string, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)): F|{ [K]: U }
 function f:flatmap(func, fpairs)
     -- local i = 0
     local vt, vk, vv, vp
@@ -502,7 +487,7 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): boolean
+---@param func fun(v: V, k: K): boolean
 ---@param is? any
 ---@return F|{ [K]: V }
 ---@nodiscard
@@ -665,10 +650,10 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): any
+---@param func fun(v: V, k: K): any
 ---@return boolean|V
----@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
+---@nodiscard
 function f:any(func)
     func = autofunc(func)
 
@@ -683,10 +668,10 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): any
+---@param func fun(v: V, k: K): any
 ---@return boolean|V
----@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
+---@nodiscard
 function f:all(func)
     func = autofunc(func)
 
@@ -701,10 +686,10 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
----@param func F|fun(v: V, k: K): any
+---@param func fun(v: V, k: K): any
 ---@return integer
----@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string): integer
+---@nodiscard
 function f:count(func)
     local ret = 0
     func = autofunc(func)
