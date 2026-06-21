@@ -52,7 +52,7 @@ end
 
 local function has_enhancement(card)
     local e = SMODS.get_enhancements(card)
-    return not not (e and next(e))
+    return e and next(e)
 end
 
 local function set_freeze(state)
