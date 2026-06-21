@@ -144,7 +144,7 @@ local function hook_proxy()
     local orig_calculate = proxy.calculate
 
     function proxy:calculate(card, context, ...)
-        if not card or not card.edition or not card.edition.Roland_frozen then
+        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
             return orig_calculate(self, card, context, ...)
         else
             return SMODS.blueprint_effect(card, get_proxied_joker(card), context)
@@ -154,7 +154,7 @@ local function hook_proxy()
     local orig_loc_vars = proxy.loc_vars
 
     function proxy:loc_vars(info_queue, card, ...)
-        if not card or not card.edition or not card.edition.Roland_frozen then
+        if not (card or {}).Roland_frozen or not (card.edition or {}).Roland_frozen then
             return orig_loc_vars(self, info_queue, card, ...)
         end
 
