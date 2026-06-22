@@ -158,19 +158,38 @@ spectral {
         return next(G.playing_cards) and u()
     end,
     use = function(_, card)
+        local function destructible(v)
+            return not v.ability or not (v.ability.eternal or v.ability.cry_absolute)
+        end
+
+        local function destroy(v)
+            if v.area then
+                v.area:remove_card(v)
+            end
+
+            v.rhm = false
+            v:start_dissolve()
+        end
+
+        local function void()
+            local cards = f(G.playing_cards):where(destructible):table()
+
+            local function calculate_joker(v)
+                v:calculate_joker {remove_playing_cards = true, removed = cards}
+            end
+
+            f(cards):each(destroy)
+            f(G.jokers.cards):each(calculate_joker)
+
+            f(card.ability.extra.amount):each(function()
+                local cryptid = create_card(nil, G.consumeables, nil, nil, nil, nil, "c_cryptid", "void")
+                cryptid:set_edition({negative = true}, true)
+                cryptid:add_to_deck()
+                G.consumeables:emplace(cryptid)
+            end)
+        end
+
         play_sound("Roland_void", 1, 0.7)
-
-        q {
-            delay = 0.28,
-            timer = "REAL",
-            trigger = "after",
-            func = function()
-                SMODS.destroy_cards(G.playing_cards)
-
-                f(card.ability.extra.amount):each(function()
-                    SMODS.add_card "c_cryptid":set_edition({negative = true}, true)
-                end)
-            end,
-        }
+        q {delay = 0.28, timer = "REAL", trigger = "after", func = void}
     end,
 }

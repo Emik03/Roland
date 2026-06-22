@@ -13,7 +13,7 @@ end
 
 frozen_sound "_click"
 local frozen_blocklist = {CardSleeve = true}
-local frozen_sounds = f(4):map(frozen_sound):map("key"):table()
+local frozen_sounds = f(4):map(frozen_sound):map "key":table()
 
 local needs_chip_mult_override = {
     Bull = true,

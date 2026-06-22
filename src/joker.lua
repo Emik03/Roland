@@ -488,11 +488,9 @@ joker {
             end
         end
 
-        local key = card.config.center.key
-
-        local merged = SMODS.merge_effects(
+        return SMODS.merge_effects(
             f(G.jokers.cards):where(is_frozen):where(function(v)
-                return v.config.center.key ~= key
+                return v.config.center.key ~= card.config.center.key
             end):map(function(v)
                 return SMODS.blueprint_effect(card, v, context)
             end):where(type, "table"):map(function(v)
@@ -500,8 +498,6 @@ joker {
                 return v
             end):values():table()
         )
-
-        return merged
     end,
 }
 

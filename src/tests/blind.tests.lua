@@ -192,9 +192,9 @@ Balatest.TestPlay {
 }
 
 Balatest.TestPlay {
-    category = {"blind", "xerox"},
-    name = "xerox",
-    blind = "bl_Roland_xerox",
+    category = {"blind", "mitotic"},
+    name = "mitotic",
+    blind = "bl_Roland_mitotic",
     execute = function()
         Balatest.discard {"2S"}
     end,
@@ -204,9 +204,9 @@ Balatest.TestPlay {
 }
 
 Balatest.TestPlay {
-    category = {"blind", "xerox"},
-    name = "xerox_disabled",
-    blind = "bl_Roland_xerox",
+    category = {"blind", "mitotic"},
+    name = "mitotic_disabled",
+    blind = "bl_Roland_mitotic",
     jokers = {"j_chicot"},
     execute = function()
         Balatest.discard {"2S"}
