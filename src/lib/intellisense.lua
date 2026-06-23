@@ -19,14 +19,17 @@ Balatest = Balatest
 --- @type { constants?: { TEN: table }, new: (fun(self: self, arr?: number[], sign?: number, noNormalize?: boolean): table), pow: (fun(x: number, y: number): number) }
 Big = Big
 
---- @type table
+--- @type table?
 CardSleeves = CardSleeves
 
---- @type fun(obj: SMODS.Back): SMODS.Back
+--- @type table|fun(obj: SMODS.Back): SMODS.Back
 CardSleeves.Sleeve = CardSleeves.Sleeve
 
 --- @type fun(area: CardArea, ...: ...): Card
 create_card_for_shop = create_card_for_shop
+
+--- @type boolean|table
+G.Bakery_charm_area.cards[1].ability.extra = G.Bakery_charm_area.cards[1].ability.extra
 
 SMODS.Mods.Roland.config = require "config"
 

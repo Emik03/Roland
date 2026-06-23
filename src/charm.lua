@@ -261,7 +261,7 @@ local orig_apply_to_run = Tag.apply_to_run
 
 function Tag:apply_to_run(...)
     if G.GAME.Bakery_charm == "BakeryCharm_Roland_wii" and
-        G.Bakery_charm_area.cards[1].config.center.ability.extra.active then
+        G.Bakery_charm_area.cards[1].ability.extra.active then
         return
     end
 
