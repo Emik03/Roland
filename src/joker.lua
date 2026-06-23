@@ -1258,7 +1258,7 @@ joker {
             return {card = card, numerator = extra.probability}
         end
 
-        if context.end_of_round and extra.probability ~= extra.reset then
+        if context.end_of_round and not context.repetition and extra.probability ~= extra.reset then
             extra.probability = extra.reset
             return {message = localize "k_reset", colour = G.C.RED, message_card = card, repetitions = 0}
         end
