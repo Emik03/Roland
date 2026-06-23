@@ -648,7 +648,7 @@ joker {
         local _ = card.area == G.jokers and self:cerulean(false)
     end,
     cerulean = function(_, value)
-        f(G.jokers.cards):each(function(v)
+        local _ = G.jokers and f(G.jokers.cards):each(function(v)
             f {"click", "drag", "focus", "hover"}:map(f.index_into(v.states)):each(function(s)
                 s.can = value or v.config.center.key == "j_Roland_cerulean"
             end)
@@ -675,7 +675,7 @@ joker {
             {card = card, xmult = card.ability.extra.xmult} or nil
     end,
     crimson = function()
-        f(G.jokers.cards, ipairs_reversed):where(is_frozen, false):each(function(v)
+        local _ = G.jokers and f(G.jokers.cards, ipairs_reversed):where(is_frozen, false):each(function(v)
             local right = G.jokers.cards[v.rank + 1]
 
             local debuffed_by_crimson = right and
@@ -757,7 +757,7 @@ joker {
     key = "violet",
     pronouns = "she_they",
     idea = "hamester",
-    config = {extra = {before = 0.1, xmult = 9}},
+    config = {extra = {before = 0.1, xmult = 6}},
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
     cost = 6,

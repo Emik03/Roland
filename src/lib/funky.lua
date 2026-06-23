@@ -128,13 +128,6 @@ local function autopairs(tbl, fpairs)
     return (fpairs or (tbl[#tbl] and ipairs or pairs))(tbl)
 end
 
----@param any any
----@return boolean
----@nodiscard
-local function is_f(any)
-    return type(any) == "table" and any.from == f.from and any.new == f.new
-end
-
 --- Always returns nil.
 ---@return nil
 ---@nodiscard
@@ -202,6 +195,15 @@ function f.const(v)
     end
 end
 
+---@param i integer
+---@return fun(...: any): any
+---@nodiscard
+function f.arg(i)
+    return function(...)
+        return ({...})[i]
+    end
+end
+
 ---@generic K, V
 ---@param v K
 ---@return fun(x: { [K]: V }): V
@@ -240,21 +242,32 @@ function f.indices(v)
     end
 end
 
+---@param any any
+---@return boolean
+---@nodiscard
+function f.isf(any)
+    return type(any) == "table" and any.from == f.from and any.new == f.new
+end
+
 f[true and "chain"] = function(...)
-    for _, v in ipairs(...) do
+    local ret
+
+    for _, v in ipairs {...} do
         if type(v) == "table" then
             for _, vv in ipairs(v) do
+                local copy = ret
                 vv = autofunc(vv)
 
                 ret = ret and function(...)
-                    return vv(ret(...))
+                    return vv(copy(...))
                 end or vv
             end
         else
+            local copy = ret
             v = autofunc(v)
 
             ret = ret and function(...)
-                return v(ret(...))
+                return v(copy(...))
             end or v
         end
     end
@@ -271,6 +284,7 @@ function f.new(fnext)
     return {
         all = f.all,
         any = f.any,
+        arg = f.arg,
         chain = f.chain,
         concat = f.concat,
         const = f.const,
@@ -285,6 +299,7 @@ function f.new(fnext)
         index = f.index,
         index_into = f.index_into,
         indices = f.indices,
+        isf = f.isf,
         keys = f.keys,
         map = f.map,
         new = f.new,
@@ -371,7 +386,7 @@ function f:concat(...)
     local sum, last = 0, 0
 
     for i = 1, #fs do
-        fs[i] = is_f(fs[i]) and fs[i] or f.from(fs[i])
+        fs[i] = f.isf(fs[i]) and fs[i] or f.from(fs[i])
     end
 
     return f.new(function()

@@ -52,9 +52,11 @@ q {
             -- G.ARGS.LOC_COLOURS["Bakery_credit_bg_Roland_" .. k] = v.bg
         end)
 
-        if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
-            _G.f, _G.q, _G.u = unpack(qol)
+        if not SMODS.Mods.DebugPlus or not SMODS.Mods.Roland.config.import_funky then
+            return
         end
+
+        _G.f, _G.q, _G.u, _G.c = unpack(qol)
     end,
 }
 

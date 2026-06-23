@@ -25,6 +25,9 @@ CardSleeves = CardSleeves
 --- @type table|fun(obj: SMODS.Back): SMODS.Back
 CardSleeves.Sleeve = CardSleeves.Sleeve
 
+--- @type {aliases: { [string]: [string] }}
+Cryptid = Cryptid
+
 --- @type fun(area: CardArea, ...: ...): Card
 create_card_for_shop = create_card_for_shop
 

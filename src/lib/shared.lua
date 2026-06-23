@@ -1,5 +1,40 @@
 local f = assert(SMODS.load_file "src/lib/funky.lua")() or require "lib.funky"
 
+local function add_card(v)
+    return SMODS.add_card {no_edition = true, key = v}
+end
+
+local function simplify(x)
+    return type(x) == "string" and x:lower():gsub("%s", ""):gsub("_", ""):gsub("^the", "") or x
+end
+
+local function flatten(v)
+    return type(v) ~= "table" and {v} or (f.isf(v) and v:table() or v)
+end
+
+---@param it string
+local function find(it)
+    if (G.P_CENTERS[it] or {}).config then
+        return it
+    end
+
+    if Cryptid and Cryptid.aliases and Cryptid.aliases[it] then
+        return Cryptid.aliases[it]
+    end
+
+    local match = simplify(it)
+
+    return f(G.localization.descriptions)
+        :flatmap(flatten)
+        :where(type, "table")
+        :where(f.chain(f.arg(2), f.index_into(G.P_CENTERS), "config"))
+        :where(function(v, k)
+            return match == simplify(k) or match == simplify(v.name)
+        end)
+        :keys()
+        :any()
+end
+
 local function protect(fun)
     return function()
         local res, ret = pcall(fun)
@@ -56,4 +91,31 @@ local function u()
         G.STATE ~= G.STATES.PLAY_TAROT)
 end
 
-return {f, q, u}
+--- Creates one or more cards.
+---@param ... any
+---@return Card|Card[]
+local function c(...)
+    local cards = f {...}
+        :flatmap(flatten)
+        :where(type, "string")
+        :map(string.lower)
+        :map(find)
+        :where(f.id)
+        :map(add_card)
+        :values()
+        :table()
+
+    return #cards > 1 and cards or cards[1]
+end
+
+return {f, q, u, setmetatable({}, {
+    __call = function(_, ...)
+        return c(...)
+    end,
+    __index = function(_, k)
+        return c(k)
+    end,
+    __newindex = function()
+        sendErrorMessage("`c` should not be assigned to.", "Roland")
+    end,
+})}
