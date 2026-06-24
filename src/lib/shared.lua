@@ -1,7 +1,21 @@
 local f = assert(SMODS.load_file "src/lib/funky.lua")() or require "lib.funky"
 
-local function add_card(v)
-    return SMODS.add_card {no_edition = true, key = v}
+---@param v string
+---@return Card|Tag
+local function add(v)
+    if not G.P_TAGS[v] then
+        return SMODS.add_card {no_edition = true, key = v}
+    end
+
+    local tag = Tag(v)
+
+    if tag.name == "Orbital Tag" then
+        local hands = f(G.GAME.hands):where "visible":keys():table()
+        tag.ability.orbital_hand = pseudorandom_element(hands, pseudoseed "Roland_c_orbital_tag")
+    end
+
+    add_tag(tag)
+    return tag
 end
 
 local function simplify(x)
@@ -18,11 +32,16 @@ local function find(it)
         return it
     end
 
+    local match = simplify(it)
+    local pool = f(G.P_CENTER_POOLS):any(f.chain(f.arg(2), simplify, f.eq(match)))
+
+    if type(pool) == "table" and next(pool) then
+        return pseudorandom_element(pool, pseudoseed "Roland_c").key
+    end
+
     if Cryptid and Cryptid.aliases and Cryptid.aliases[it] then
         return Cryptid.aliases[it]
     end
-
-    local match = simplify(it)
 
     return f(G.localization.descriptions)
         :flatmap(flatten)
@@ -93,7 +112,7 @@ end
 
 --- Creates one or more cards.
 ---@param ... any
----@return Card|Card[]
+---@return Card|Tag|(Card|Tag[])
 local function c(...)
     local cards = f {...}
         :flatmap(flatten)
@@ -101,7 +120,7 @@ local function c(...)
         :map(string.lower)
         :map(find)
         :where(f.id)
-        :map(add_card)
+        :map(add)
         :values()
         :table()
 
@@ -115,7 +134,11 @@ return {f, q, u, setmetatable({}, {
     __index = function(_, k)
         return c(k)
     end,
-    __newindex = function()
-        sendErrorMessage("`c` should not be assigned to.", "Roland")
+    __newindex = function(_, k, v)
+        local n = tonumber(v)
+
+        for _ = 1, type(n) == "number" and n or 1 do
+            c(k)
+        end
     end,
 })}
