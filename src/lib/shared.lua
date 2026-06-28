@@ -3,6 +3,16 @@ local f = assert(SMODS.load_file "src/lib/funky.lua")() or require "lib.funky"
 ---@param v string
 ---@return Card|Tag
 local function add(v)
+    if v == "op" then
+        local op = SMODS.add_card {no_edition = true, key = "j_joker"}
+        op.ability.mult = 1e100
+        return op
+    elseif v == "xop" then
+        local xop = SMODS.add_card {no_edition = true, key = "j_Roland_jokersr"}
+        xop.ability.extra.xmult = 1e100
+        return xop
+    end
+
     if not G.P_TAGS[v] then
         return SMODS.add_card {no_edition = true, key = v}
     end
@@ -28,7 +38,7 @@ end
 
 ---@param it string
 local function find(it)
-    if (G.P_CENTERS[it] or {}).config then
+    if ({op = true, xop = true})[it] or (G.P_CENTERS[it] or {}).config then
         return it
     end
 

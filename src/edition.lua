@@ -287,7 +287,7 @@ end
 
 local orig_get_probability_vars = SMODS.get_probability_vars
 
-function G.P_CENTERS.j_bootstraps:mult(card)
+function SMODS.current_mod.bootstraps_mult(card)
     local ability = card.Roland_frozen_ability
     local ret = math.floor((G.GAME.dollars + (G.GAME.dollar_buffer or 0)) / card.ability.extra.dollars)
 
