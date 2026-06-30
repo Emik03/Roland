@@ -680,8 +680,8 @@ joker {
 
             local debuffed_by_crimson = right and
                 not right.debuff and
-                v.config.center.key ~= "j_turtle_bean" and
-                right.config.center.key == "j_Roland_crimson"
+                right.config.center.key == "j_Roland_crimson" and
+                not ({j_mp_turtle_bean = true, j_turtle_bean = true})[v.config.center.key]
 
             if debuffed_by_crimson and v.ability.Roland_crimson == nil then
                 local debuff = not not v.debuff
