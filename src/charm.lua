@@ -250,7 +250,13 @@ charm {
                 delay(1)
 
                 q(function()
-                    card.ability.extra.active = false
+                    f((G.GAME.modifiers.extra_boosters or 0) + 2)
+                        :map(f.const(nil))
+                        :each(SMODS.add_booster_to_shop)
+
+                    q(function()
+                        card.ability.extra.active = false
+                    end)
                 end)
             end)
         end)
