@@ -332,23 +332,47 @@ if cry_prob then
     end
 end
 
-function SMODS.current_mod:calculate(context)
-    local _ = type(G.calccontext) == "function" and G.calccontext(context)
+local function call(key, value)
+    local obj = G[key .. "obj"]
+    local _ = type(obj) == "function" and obj(value)
 
-    if type(G.calc) == "function" then
-        G.calc = {G.calc}
+    if not G[key] or value == "Bakery_nothing" then
+        return
     end
 
-    if type(G.calc) == "table" then
-        local str
+    if type(G[key]) == "function" then
+        G[key] = {G[key]}
+    end
 
-        f(context):keys():map(f.index_into(G.calc)):where(type, "function"):each(function(v)
-            str = str or f(context):keys():string()
+    if type(G[key]) ~= "table" then
+        return
+    end
+
+    local str
+
+    local _ = f(type(value) == "table" and value or {[value] = true})
+        :keys()
+        :map(f.index_into(G[key]))
+        :where(type, "function")
+        :each(function(v)
+            str = str or type(value) == "table" and f(value):keys():string() or value
             v(str)
         end)
 
-        local _ = not str and type(G.calc[1]) == "function" and G.calc[1](f(context):keys():string())
-    end
+    local _ = not str and
+        type(G[key][1]) == "function" and
+        G[key][1](type(value) == "table" and f(value):keys():string() or value)
+end
+
+local orig_check_for_unlock = check_for_unlock
+
+function check_for_unlock(args, ...)
+    call("lock", type(args) == "table" and args.type or args)
+    return orig_check_for_unlock(args, ...)
+end
+
+function SMODS.current_mod:calculate(context)
+    call("calc", context)
 
     local _ = context.before and
         f {"v_Roland_ceres", "v_Roland_neptune"}
