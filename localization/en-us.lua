@@ -165,8 +165,8 @@ return {
             j_Roland_bulldozer = {
                 name = "Bulldozer",
                 text = {
-                    "Give {X:red,C:white}XMult{} equal to",
-                    "the current {C:attention}Blind Size{C:attention}",
+                    "Give the {C:attention}Blind",
+                    "{C:attention}Base {}as {X:red,C:white}XMult",
                     "{C:inactive}(Currently {X:red,C:white}X#1#{C:inactive})",
                 },
             },
@@ -212,6 +212,7 @@ return {
                     "to {C:attention}pull {}this {C:attention}Joker",
                     "{C:inactive}(Currently {C:attention}#2#{C:inactive})",
                 },
+                unlock = {"Have only {C:enhanced}Stone", "cards in your deck"},
             },
             j_Roland_excalibur_Back = {
                 name = "Excalibur",
