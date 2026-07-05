@@ -20,6 +20,17 @@ return {
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
+            b_Roland_wish = {
+                name = "Wish Deck",
+                text = {
+                    "Redeem a random {C:attention}Voucher",
+                    "after {C:attention}Small {}and {C:attention}Big Blinds",
+                    "{C:attention}Vouchers {}no longer",
+                    "appear in the shop",
+                    --"",
+                    --"{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
+                },
+            },
         },
         BakeryCharm = {
             BakeryCharm_Roland_cocacola = {
@@ -440,6 +451,27 @@ return {
                     "Swap {C:attention}all {}consumables",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
+                },
+            },
+            sleeve_Roland_wish = {
+                name = "Wish Sleeve",
+                text = {
+                    "A random {C:attention}voucher{} is",
+                    "{C:attention}redeemed {}at the end",
+                    "of {C:attention}Small {}and {C:attention}Big Blinds",
+                    "{C:attention}Vouchers {}no longer",
+                    "appear in the shop",
+                    --"",
+                    --"{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
+                },
+            },
+            sleeve_Roland_wish_alt = {
+                name = "Miracle Sleeve",
+                text = {
+                    "All {C:attention}vouchers",
+                    "start {C:attention}redeemed",
+                    --"",
+                    --"{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
         },

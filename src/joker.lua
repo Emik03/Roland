@@ -1202,11 +1202,6 @@ joker {
     eternal_compat = true,
     blueprint_compat = false,
     perishable_compat = true,
-    check_for_unlock = function(_, args)
-        return args.type == "modify_deck" and f(G.playing_cards):all(function(v)
-            return SMODS.has_enhancement(v, "m_stone")
-        end)
-    end,
     loc_vars = function(_, info_queue, card)
         local extra = card.ability.extra
         local _ = card.fake_card or table.insert(info_queue, G.P_CENTERS.m_stone)

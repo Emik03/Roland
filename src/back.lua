@@ -8,7 +8,7 @@ end
 local back = (function()
     local x = 0
 
-    ---@param tbl SMODS.Back|{is_alt: (fun(self: self): boolean), alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
+    ---@param tbl SMODS.Back|{attributes?: Attributes[], is_alt: (fun(self: self): boolean), alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
     return function(tbl)
         local key = tbl.key
         local apply = tbl.apply
@@ -71,7 +71,7 @@ back {
     key = "blossom",
     pronouns = "any_all",
     config = {extra = {alt_times = 4, times = 2}},
-    attributes = {"boss_blind"},
+    attributes = {"passive", "boss_blind"},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.alt_times}}
     end,
@@ -79,13 +79,15 @@ back {
         G.GAME.modifiers.Roland_blossom_deck = true
     end,
     calculate = function(self, card, context)
-        if not context.setting_blind then
+        if not context.forcetrigger and not context.setting_blind then
             return
         end
 
         local blinds = G.GAME.round_resets.blind_states
 
-        if blinds.Small ~= "Current" and blinds.Big ~= "Current" then
+        if not context.forcetrigger and
+            blinds.Small ~= "Current" and
+            blinds.Big ~= "Current" then
             return
         end
 
@@ -112,7 +114,7 @@ back {
 back {
     key = "swapper",
     pronouns = "he_him",
-    attributes = {"spectral", "tarot"},
+    attributes = {"passive", "spectral", "tarot"},
     apply = function(self)
         local modifiers = G.GAME.modifiers
         modifiers.Roland_swapper_deck = true
@@ -139,4 +141,67 @@ function create_card(_type, ...)
 
     local has_type = SMODS.ConsumableTypes[_type]
     return orig_create_card(has_type and pseudorandom_element(type, pseudoseed "Roland_alt_swapper_deck") or _type, ...)
+end
+
+local function redeem(key, fast)
+    if fast then
+        G.GAME.used_vouchers[key] = true
+    end
+
+    q {
+        delay = 1,
+        func = function()
+            local voucher = SMODS.create_card {key = key, set = "Voucher"}
+            voucher.T.y = (fast and pseudorandom(pseudoseed "Roland_wish_deck") + 0.5 or 1) * 4.25
+            voucher.T.x = (fast and pseudorandom(pseudoseed "Roland_wish_deck") + 0.5 or 1) * 9
+            voucher.cost = 0
+            voucher:start_materialize()
+
+            q {
+                delay = 1,
+                front = true,
+                func = function()
+                    if fast then
+                        play_sound "card1"
+                        voucher:apply_to_run()
+                        voucher:juice_up(0.3, 0.5)
+                    else
+                        voucher:redeem()
+                    end
+
+                    q {
+                        delay = 1,
+                        func = function()
+                            voucher:start_dissolve()
+                        end,
+                    }
+                end,
+            }
+        end,
+    }
+end
+
+back {
+    key = "wish",
+    pronouns = "he_him",
+    attributes = {"passive", "generation"},
+    apply = function(self)
+        G.GAME.modifiers.Roland_no_voucher = true
+        local _ = self:is_alt() and f(G.P_CENTER_POOLS.Voucher):map "key":each(redeem)
+    end,
+    calculate = function(_, _, context)
+        local _ = (context.forcetrigger or
+                context.blind_defeated and
+                not context.repetition and
+                not G.GAME.blind.boss) and
+            redeem(get_next_voucher_key())
+    end,
+}
+
+local orig_add_voucher_to_shop = SMODS.add_voucher_to_shop
+
+function SMODS.add_voucher_to_shop(...)
+    if not G.GAME.modifiers.Roland_no_voucher then
+        return orig_add_voucher_to_shop(...)
+    end
 end

@@ -116,6 +116,9 @@ SMODS.Challenge {
     jokers = {{id = "j_Roland_amber"}},
     restrictions = amber,
     pronouns = "they_them",
+    unlocked = function()
+        return G.P_CENTERS.j_Roland_amber and G.P_CENTERS.j_Roland_amber.check_for_unlock()
+    end,
     calculate = function(_, context)
         local function slide(pitch)
             q(function()
@@ -155,6 +158,9 @@ SMODS.Challenge {
     jokers = {{id = "j_Roland_cerulean"}},
     restrictions = cerulean,
     pronouns = "she_her",
+    unlocked = function()
+        return G.P_CENTERS.j_Roland_cerulean and G.P_CENTERS.j_Roland_cerulean.check_for_unlock()
+    end,
     calculate = function(_, context)
         if not context.hand_drawn then
             return
@@ -182,6 +188,9 @@ SMODS.Challenge {
     jokers = {{id = "j_Roland_crimson"}},
     restrictions = crimson,
     pronouns = "she_her",
+    unlocked = function()
+        return G.P_CENTERS.j_Roland_crimson and G.P_CENTERS.j_Roland_crimson.check_for_unlock()
+    end,
     calculate = function(_, context)
         local _ = context.blind_defeated and f(G.jokers.cards):each(function(v)
             v.ability.Roland_crimson_heart_chosen = nil
@@ -242,6 +251,9 @@ SMODS.Challenge {
     jokers = {{id = "j_Roland_verdant"}},
     restrictions = verdant,
     pronouns = "she_her",
+    unlocked = function()
+        return G.P_CENTERS.j_Roland_verdant and G.P_CENTERS.j_Roland_verdant.check_for_unlock()
+    end,
     calculate = function(_, context)
         if context.setting_blind then
             G.GAME.modifiers.Roland_Eternally_Verdant = true
@@ -265,6 +277,9 @@ SMODS.Challenge {
     jokers = {{id = "j_joker"}, {id = "j_Roland_violet"}},
     restrictions = violet,
     pronouns = "she_they",
+    unlocked = function()
+        return G.P_CENTERS.j_Roland_violet and G.P_CENTERS.j_Roland_violet.check_for_unlock()
+    end,
     calculate = function(_, context)
         if not context.setting_blind then
             return
