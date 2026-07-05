@@ -138,6 +138,7 @@ return {
                     "Moves before",
                     "hand is played",
                 },
+                unlock = {"Defeat {C:attention}#1#"},
             },
             j_Roland_arctic = {
                 name = "Arctic Circle",
@@ -184,6 +185,7 @@ return {
                     "All other {C:attention}Jokers {}cannot",
                     "be selected or dragged",
                 },
+                unlock = {"Defeat {C:blue}#1#"},
             },
             j_Roland_crimson = {
                 name = "Crimson Heart",
@@ -192,6 +194,7 @@ return {
                     "{C:red}Debuffs {C:attention}Joker",
                     "to the left",
                 },
+                unlock = {"Defeat {C:red}#1#"},
             },
             j_Roland_domino = {
                 name = "Domino",
@@ -366,6 +369,7 @@ return {
                     "{C:red}Debuffs {}the {C:attention}first",
                     "{C:attention}#2# {}scored cards",
                 },
+                unlock = {"Defeat {C:green}#1#"},
             },
             j_Roland_violet = {
                 name = "Violet Vessel",
@@ -374,10 +378,12 @@ return {
                     "but {X:mult,C:white}X#2#{} Mult",
                     "{C:attention}before {}scoring",
                 },
+                unlock = {"Defeat {C:purple}#1#"},
             },
             j_Roland_venerable = {
                 name = "Venerable Visage",
                 text = {"{X:red,C:white}X#1#{} discards each round"},
+                unlock = {"Defeat {C:dark_edition}#1#"},
             },
             j_Roland_yard = {
                 name = "Yard Sale",

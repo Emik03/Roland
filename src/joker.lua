@@ -22,7 +22,7 @@ local joker = (function()
         return ret
     end
 
-    ---@param tbl SMODS.Joker|{artist?: string, idea?: string, Bakery_can_use: (fun(self: self, card: Card): boolean?), Bakery_use_button_text: (fun(self: self, card: Card): string|table|nil), Bakery_use_joker: fun(self: self, card: Card), attributes?: Attributes[]}
+    ---@param tbl SMODS.Joker|{artist?: string, defeated_blind: string?, idea?: string, Bakery_can_use: (fun(self: self, card: Card): boolean?), Bakery_use_button_text: (fun(self: self, card: Card): string|table|nil), Bakery_use_joker: fun(self: self, card: Card), attributes?: Attributes[]}
     return function(tbl)
         tbl.pos = inc()
         tbl.atlas = "joker"
@@ -32,6 +32,20 @@ local joker = (function()
         if ((tbl.config or {}).extra or {}).flipped ~= nil then
             tbl.config.extra.front_pos = tbl.pos
             tbl.config.extra.back_pos = inc()
+        end
+
+        if tbl.defeated_blind then
+            tbl.discovered, tbl.unlocked = false, false
+
+            function tbl.check_for_unlock()
+                return Bakery_API.defeated_blinds[tbl.defeated_blind] > 0
+            end
+
+            function tbl.locked_loc_vars()
+                return G.P_BLINDS[tbl.defeated_blind].discovered and
+                    {vars = {localize {type = "name_text", key = tbl.defeated_blind, set = "Blind"}}} or
+                    {vars = {localize "k_unknown"}}
+            end
         end
 
         return q(SMODS.Joker(tbl))
@@ -579,6 +593,7 @@ joker {
 joker {
     key = "amber",
     pronouns = "they_them",
+    defeated_blind = "bl_final_acorn",
     config = {extra = {xmult = 3}},
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
@@ -626,6 +641,7 @@ joker {
 joker {
     key = "cerulean",
     pronouns = "she_her",
+    defeated_blind = "bl_final_bell",
     config = {extra = {xmult = 3}},
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
@@ -659,6 +675,7 @@ joker {
 joker {
     key = "crimson",
     pronouns = "she_her",
+    defeated_blind = "bl_final_heart",
     config = {extra = {xmult = 3}},
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
@@ -706,6 +723,7 @@ end
 joker {
     key = "verdant",
     pronouns = "she_her",
+    defeated_blind = "bl_final_leaf",
     config = {extra = {debuffs = 2, xmult = 3}},
     pixel_size = {w = 68, h = 68},
     attributes = {"xmult"},
@@ -756,6 +774,7 @@ end
 joker {
     key = "violet",
     pronouns = "she_they",
+    defeated_blind = "bl_final_vessel",
     idea = "hamester",
     config = {extra = {before = 0.1, xmult = 6}},
     pixel_size = {w = 68, h = 68},
@@ -781,6 +800,7 @@ joker {
 joker {
     key = "venerable",
     pronouns = "any_all",
+    defeated_blind = "bl_Roland_venerable_visage",
     config = {extra = {xdiscard = 3}},
     pixel_size = {w = 68, h = 68},
     attributes = {"discard", "passive"},
