@@ -70,7 +70,7 @@ local _ = CardSleeves and SMODS.Atlas {
 back {
     key = "blossom",
     pronouns = "any_all",
-    config = {extra = {alt_times = 4, times = 2}},
+    config = {extra = {alt_times = 9, times = 3}},
     attributes = {"passive", "boss_blind"},
     loc_vars = function(self, _, _)
         return {vars = {self.config.extra.alt_times}}
@@ -78,7 +78,7 @@ back {
     apply = function(_, _)
         G.GAME.modifiers.Roland_blossom_deck = true
     end,
-    calculate = function(self, card, context)
+    calculate = function(self, b, context)
         if not context.forcetrigger and not context.setting_blind then
             return
         end
@@ -91,23 +91,25 @@ back {
             return
         end
 
-        local count = self:is_alt() and
+        local function debuff(times)
+            return function()
+                if times <= 0 then
+                    return
+                end
+
+                G.GAME.blind:disable()
+                SMODS.calculate_effect({message = localize "ph_boss_disabled"}, b)
+                G.GAME.blind:wiggle()
+                play_sound "timpani"
+                q {func = debuff(times - 1)}
+            end
+        end
+
+        local times = self:is_alt() and
             G.GAME.round_resets.ante * self.config.extra.alt_times or
             self.config.extra.times
 
-        f(count):each(function(i)
-            local _ = i == 1 and G.GAME.blind:disable()
-
-            q {
-                delay = 0.4,
-                func = function()
-                    local _ = i ~= 1 and G.GAME.blind:disable()
-                    SMODS.calculate_effect({message = localize "ph_boss_disabled"}, card)
-                    G.GAME.blind:wiggle()
-                    play_sound "timpani"
-                end,
-            }
-        end)
+        debuff(times)()
     end,
 }
 

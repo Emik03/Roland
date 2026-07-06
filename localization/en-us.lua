@@ -6,7 +6,7 @@ return {
                 text = {
                     "{C:attention}Small{} and {C:attention}Big Blinds{} are",
                     "replaced with {C:attention}Boss Blinds",
-                    "that are {C:dark_edition}debuffed twice",
+                    "that are {C:dark_edition}debuffed thrice",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
@@ -422,7 +422,7 @@ return {
                 text = {
                     "{C:attention}Small{} and {C:attention}Big Blinds{} are",
                     "replaced with {C:attention}Boss Blinds",
-                    "that are {C:dark_edition}debuffed twice",
+                    "that are {C:dark_edition}debuffed thrice",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
@@ -431,7 +431,7 @@ return {
                 name = "Efflorescent Sleeve",
                 text = {
                     "{C:dark_edition}Debuff {X:dark_edition,C:white}#1#X<ante>{C:dark_edition} times",
-                    "{C:inactive}(Instead of twice)",
+                    "{C:inactive}(Instead of thrice)",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
