@@ -145,6 +145,7 @@ spectral {
     key = "void",
     pronouns = "it_its",
     artist = "aster",
+    hidden = true,
     soul_rate = 0.003,
     soul_set = "Spectral",
     config = {extra = {amount = 2}},
