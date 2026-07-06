@@ -663,7 +663,7 @@ joker {
             {card = card, xmult = card.ability.extra.xmult} or nil
     end,
     update = function(self, card)
-        local _ = card.area == G.jokers and self:cerulean(false)
+        local _ = card.area == G.jokers and self:cerulean(not not card.debuff)
     end,
     cerulean = function(_, value)
         local _ = G.jokers and f(G.jokers.cards):each(function(v)
