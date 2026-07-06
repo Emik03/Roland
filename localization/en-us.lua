@@ -30,6 +30,7 @@ return {
                     --"",
                     --"{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
+                unlock = {"Discover all {C:attention}Vouchers"},
             },
         },
         BakeryCharm = {
@@ -223,7 +224,6 @@ return {
                     "to {C:attention}pull {}this {C:attention}Joker",
                     "{C:inactive}(Currently {C:attention}#2#{C:inactive})",
                 },
-                unlock = {"Have only {C:enhanced}Stone", "cards in your deck"},
             },
             j_Roland_excalibur_Back = {
                 name = "Excalibur",
@@ -464,6 +464,7 @@ return {
                     --"",
                     --"{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
+                unlock = {"Discover all {C:attention}Vouchers"},
             },
             sleeve_Roland_wish_alt = {
                 name = "Miracle Sleeve",
@@ -473,6 +474,7 @@ return {
                     --"",
                     --"{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
+                unlock = {"Discover all {C:attention}Vouchers"},
             },
         },
         Spectral = {

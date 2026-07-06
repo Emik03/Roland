@@ -185,6 +185,11 @@ back {
     key = "wish",
     pronouns = "he_him",
     attributes = {"passive", "generation"},
+    unlocked = false,
+    discovered = false,
+    check_for_unlock = function(_, args)
+        return args ~= "Bakery_nothing" and f(G.P_CENTER_POOLS.Voucher):all "discovered"
+    end,
     apply = function(self)
         G.GAME.modifiers.Roland_no_voucher = true
         local _ = self:is_alt() and f(G.P_CENTER_POOLS.Voucher):map "key":each(redeem)
@@ -194,6 +199,10 @@ back {
                 context.blind_defeated and
                 not context.repetition and
                 not G.GAME.blind.boss) and
+            f(G.P_CENTER_POOLS.Voucher)
+            :map "key"
+            :where(f.index_into(G.GAME.used_vouchers), false)
+            :any() and
             redeem(get_next_voucher_key())
     end,
 }
