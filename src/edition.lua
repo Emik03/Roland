@@ -269,8 +269,6 @@ function Card:save(...)
         self.Roland_frozen_ability,
         self.Roland_frozen_current_round
 
-    ret.base = self.Roland_frozen_base or ret.base
-    ret.ability = self.Roland_frozen_ability or ret.ability
     return ret
 end
 
