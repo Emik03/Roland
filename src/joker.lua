@@ -414,6 +414,71 @@ joker {
 }
 
 joker {
+    key = "misfortune",
+    pronouns = "she_they",
+    artist = "char",
+    attributes = {"discard", "passive", "tarot", "planet", "generation", "seals"},
+    cost = 6,
+    rarity = 2,
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_SEALS.Purple)
+        table.insert(info_queue, G.P_SEALS.Blue)
+        table.insert(info_queue, negative)
+    end,
+    in_pool = function()
+        return not not f(G.playing_cards):map "seal":any(f.index_into {Blue = true, Purple = true})
+    end,
+}
+
+joker {
+    key = "polaris",
+    pronouns = "he_him",
+    attributes = {"editions", "space"},
+    cost = 6,
+    rarity = 1,
+    eternal_compat = true,
+    blueprint_compat = false,
+    perishable_compat = true,
+    loc_vars = function(_, info_queue)
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
+        return {vars = {}}
+    end,
+    calculate = function(_, card, context)
+        if context.end_of_round then
+            card.Roland_polaris = nil
+            return
+        end
+
+        local no = context.blueprint or not context.before or card.Roland_polaris
+
+        if no and not context.forcetrigger then
+            return
+        end
+
+        card.Roland_polaris = true
+        local first = context.scoring_hand[1]
+
+        if not first or first.edition and first.edition.Roland_frozen then
+            return
+        end
+
+        q {
+            delay = 0.1,
+            func = function()
+                card:juice_up()
+                first:juice_up()
+                first:set_edition {Roland_frozen = true}
+            end,
+        }
+
+        return {message = localize {type = "variable", key = "b_Roland_frozen"}, colour = G.C.DARK_EDITION}
+    end,
+}
+
+joker {
     key = "cold",
     pronouns = "he_him",
     artist = "ghostlyfield",
@@ -549,45 +614,6 @@ joker {
         if f(SMODS.Suits):count(count) >= card.ability.extra.suits or context.forcetrigger then
             return {card = card, mult = extra.mult}
         end
-    end,
-}
-
-joker {
-    key = "yard",
-    pronouns = "he_him",
-    config = {extra = {money = 2}},
-    attributes = {"economy"},
-    cost = 4,
-    rarity = 1,
-    eternal_compat = true,
-    blueprint_compat = true,
-    perishable_compat = true,
-    loc_vars = function(_, _, card)
-        return {vars = {card.ability.extra.money}}
-    end,
-    calculate = function(_, card, context)
-        return (context.remove_playing_cards or context.forcetrigger) and
-            {dollars = card.ability.extra.money * #context.removed, card = card} or nil
-    end,
-}
-
-joker {
-    key = "misfortune",
-    pronouns = "she_they",
-    artist = "char",
-    attributes = {"discard", "passive", "tarot", "planet", "generation", "seals"},
-    cost = 6,
-    rarity = 2,
-    eternal_compat = true,
-    blueprint_compat = false,
-    perishable_compat = true,
-    loc_vars = function(_, info_queue)
-        table.insert(info_queue, G.P_SEALS.Purple)
-        table.insert(info_queue, G.P_SEALS.Blue)
-        table.insert(info_queue, negative)
-    end,
-    in_pool = function()
-        return not not f(G.playing_cards):map "seal":any(f.index_into {Blue = true, Purple = true})
     end,
 }
 

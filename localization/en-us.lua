@@ -325,6 +325,14 @@ return {
                 name = "Phytoestrogens",
                 text = {"{C:mult}+Chips{} Mult, {X:mult,C:white}X#1#{} Mult"},
             },
+            j_Roland_polaris = {
+                name = "Polaris",
+                text = {
+                    "The {C:attention}first {}scored",
+                    "card each round",
+                    "becomes {C:dark_edition}Frozen",
+                },
+            },
             j_Roland_sapling = {
                 name = "Sapling",
                 text = {
@@ -395,14 +403,6 @@ return {
                 name = "Venerable Visage",
                 text = {"{X:red,C:white}X#1#{} discards each round"},
                 unlock = {"Defeat {C:dark_edition}#1#"},
-            },
-            j_Roland_yard = {
-                name = "Yard Sale",
-                text = {
-                    "Gain {C:money}$#1#{} when a",
-                    "card is {C:attention}removed",
-                    "from the deck",
-                },
             },
         },
         Other = {
@@ -577,6 +577,7 @@ return {
             b_Roland_entering_shop = "Entering shop!",
             b_Roland_equinox_assist = "Assist: Only hide text (Equinox)",
             b_Roland_faster_planets = "Faster Planets",
+            b_Roland_frozen = "Frozen!",
             b_Roland_full = "FULL",
             b_Roland_scribable_basket = "Scribable Basket (overpowered)",
             b_Roland_harsh_ante_scaling = "Harsh ante scaling (Ante 40+)",
