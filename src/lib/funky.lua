@@ -289,6 +289,7 @@ function f.new(fnext)
         concat = f.concat,
         const = f.const,
         count = f.count,
+        diff = f.diff,
         each = f.each,
         eq = f.eq,
         fals = f.fals,
@@ -716,6 +717,20 @@ function f:count(func)
     end
 
     return ret
+end
+
+---@generic K, V
+---@param self F|{ [K]: V }
+---@param other { [K]: V }
+---@return K?
+---@overload fun(self: F|{ [K]: V }, func: string): integer
+---@nodiscard
+function f:diff(other)
+    for k, v in self.next do
+        if other[k] ~= v then
+            return k
+        end
+    end
 end
 
 ---@generic K, V, T

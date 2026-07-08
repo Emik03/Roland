@@ -54,9 +54,22 @@ local function freeze(card)
     end
 
     (card.ability or {}).Roland_crimson = not not (card.ability or {}).Roland_crimson
+    local config = card.config or {}
+
+    card.Roland_frozen_base = card.Roland_frozen_base or copy(card.base)
+    card.Roland_frozen_card = card.Roland_frozen_card or copy(config.card)
     card.Roland_frozen_ability = card.Roland_frozen_ability or copy(card.ability)
+
+    card.base = card.Roland_frozen_base and copy(card.Roland_frozen_base) or card.base
+    config.card = card.Roland_frozen_card and copy(card.Roland_frozen_card) or config.card
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
     card.Roland_frozen = card.Roland_frozen or {probability = SMODS.get_probability_vars(card, 1, 1)}
+
+    if type(card.set_sprites) == "function" and
+        f(card.Roland_frozen_card):diff(config.card) then
+        card:set_sprites(card.config.center, card.config.card)
+    end
+
     local ability, ret = card.ability, card.Roland_frozen_ability
     ability.extra = ability.extra == nil and {} or ability.extra
 
@@ -196,10 +209,14 @@ SMODS.Edition {
         local _ = not context.fix_probability and not context.mod_probability and freeze(card)
     end,
     on_remove = function(card)
-        card.Roland_frozen, card.Roland_frozen_ability, card.Roland_frozen_current_round = nil, nil, nil
+        card.Roland_frozen,
+        card.Roland_frozen_base,
+        card.Roland_frozen_card,
+        card.Roland_frozen_ability,
+        card.Roland_frozen_current_round = nil, nil, nil, nil, nil
     end,
     get_weight = function(self)
-        return G.GAME.edition_rate * self.weight
+        return self.weight * G.GAME.edition_rate
     end,
 }
 
@@ -228,6 +245,32 @@ function Card:click(...)
         play_sound("Roland_frozen_click", highlight and 0 or 0.5, 0.6)
     end
 
+    return ret
+end
+
+local orig_save = Card.save
+
+function Card:save(...)
+    if false then
+        ---@type Card|{Roland_frozen: table, Roland_frozen_ability: table, Roland_frozen_base: table, Roland_frozen_card: table, Roland_frozen_current_round: table}
+        self = self
+    end
+
+    local ret = orig_save(self, ...)
+
+    ret.Roland_frozen,
+    ret.Roland_frozen_base,
+    ret.Roland_frozen_card,
+    ret.Roland_frozen_ability,
+    ret.Roland_frozen_current_round =
+        self.Roland_frozen,
+        self.Roland_frozen_base,
+        self.Roland_frozen_card,
+        self.Roland_frozen_ability,
+        self.Roland_frozen_current_round
+
+    ret.base = self.Roland_frozen_base or ret.base
+    ret.ability = self.Roland_frozen_ability or ret.ability
     return ret
 end
 
