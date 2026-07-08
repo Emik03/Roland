@@ -575,7 +575,7 @@ joker {
     key = "misfortune",
     pronouns = "she_they",
     artist = "char",
-    attributes = {"discard", "generation", "seals"},
+    attributes = {"discard", "passive", "tarot", "planet", "generation", "seals"},
     cost = 6,
     rarity = 2,
     eternal_compat = true,
@@ -583,12 +583,11 @@ joker {
     perishable_compat = true,
     loc_vars = function(_, info_queue)
         table.insert(info_queue, G.P_SEALS.Purple)
+        table.insert(info_queue, G.P_SEALS.Blue)
         table.insert(info_queue, negative)
     end,
     in_pool = function()
-        return f(G.playing_cards):any(function(v)
-            return v.seal == "Purple"
-        end)
+        return not not f(G.playing_cards):map "seal":any(f.index_into {Blue = true, Purple = true})
     end,
 }
 

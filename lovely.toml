@@ -89,6 +89,28 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "card.lua"
+pattern = "if self.seal == 'Blue' and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit and not self.ability.extra_enhancement then"
+position = "at"
+payload = """if self.seal == 'Blue' and
+    (next(SMODS.find_card "j_Roland_misfortune") or
+    #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit and
+    not self.ability.extra_enhancement) then
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "local card = create_card(card_type,G.consumeables, nil, nil, nil, nil, _planet, 'blusl')"
+position = "after"
+payload = """if next(SMODS.find_card "j_Roland_misfortune") then
+    card:set_edition "e_negative"
+end"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
 pattern = """if self.ability.name == 'Throwback' then
     self.ability.x_mult = 1 + G.GAME.skips*self.ability.extra
 end

@@ -278,9 +278,8 @@ return {
             j_Roland_misfortune = {
                 name = "Misfortune Cookie",
                 text = {
-                    "{C:tarot}Tarot{} cards created",
-                    "by {C:tarot}Purple Seals",
-                    "become {C:dark_edition}Negative",
+                    "Cards created by",
+                    "{C:attention}Seals {}become {C:dark_edition}Negative",
                 },
             },
             j_Roland_monomino = {

@@ -34,6 +34,9 @@ create_card_for_shop = create_card_for_shop
 --- @type boolean|table
 G.Bakery_charm_area.cards[1].ability.extra = G.Bakery_charm_area.cards[1].ability.extra
 
+---@type Card[]
+G.playing_cards = G.playing_cards
+
 SMODS.Mods.Roland.config = require "config"
 
 ---@type userdata|{getWidth: fun(self: self): number}
