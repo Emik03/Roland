@@ -163,7 +163,7 @@ blind {
         local _ = not b.disabled and context.drawing_cards and table.sort(G.deck.cards, sort_by_enhancement)
     end,
     in_pool = function()
-        return G.playing_cards and f(G.playing_cards):any(has_enhancement)
+        return G.playing_cards and not not f(G.playing_cards):any(has_enhancement)
     end,
 }
 
