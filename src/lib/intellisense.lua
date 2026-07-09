@@ -31,6 +31,9 @@ Cryptid = Cryptid
 --- @type fun(area: CardArea, ...: ...): Card
 create_card_for_shop = create_card_for_shop
 
+--- @type CardArea
+G.Bakery_charm_area = G.Bakery_charm_area
+
 --- @type boolean|table
 G.Bakery_charm_area.cards[1].ability.extra = G.Bakery_charm_area.cards[1].ability.extra
 
