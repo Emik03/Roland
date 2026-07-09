@@ -404,7 +404,7 @@ function SMODS.current_mod:calculate(context)
 
     local normal = orig.normal
 
-    local mt = {
+    G.GAME.probabilities = setmetatable({}, {
         orig = orig,
         __index = function(_, k)
             return k == "normal" and 0 or orig[k]
@@ -412,11 +412,7 @@ function SMODS.current_mod:calculate(context)
         __newindex = function(_, k, v)
             orig[k] = (k == "normal" and v == 0) and normal or v
         end,
-    }
-
-    local proxy = {}
-    setmetatable(proxy, mt)
-    G.GAME.probabilities = proxy
+    })
 end
 
 blind {

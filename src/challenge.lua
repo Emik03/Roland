@@ -345,12 +345,10 @@ q {
 
         local orig = Bakery_API.no_money_decks
 
-        Bakery_API.no_money_decks = setmetatable(orig, {
+        Bakery_API.no_money_decks = setmetatable({}, {
             orig = orig,
             __index = function(_, k)
-                return (G.GAME or {}).challenge == "c_Roland_Yard_Sale" and
-                    not yard_sale or
-                    (getmetatable(orig) or orig)[k]
+                return (G.GAME or {}).challenge == "c_Roland_Yard_Sale" and not yard_sale or orig[k]
             end,
         })
 
