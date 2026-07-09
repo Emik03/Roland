@@ -1,19 +1,26 @@
 local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
+---@return {banned_cards: {}, banned_tags: {}, banned_other: {}}
 local function bans()
     return {banned_cards = {}, banned_tags = {}, banned_other = {}}
 end
 
+---@param tbl table
+---@return fun(v: SMODS.GameObject)
 local function adder(tbl)
     return function(v)
         table.insert(tbl, {id = v.key, type = "blind"})
     end
 end
 
+---@param v SMODS.GameObject
+---@return boolean
 local function is_banned_from_pastry(v)
     return not ({Bakery = true, Roland = true})[(v.mod or {}).id]
 end
 
+---@param v SMODS.Center
+---@return boolean
 local function is_center_banned_from_pastry(v)
     local arcana_boosters = {
         p_arcana_normal_1 = true,
@@ -30,21 +37,35 @@ local function is_center_banned_from_pastry(v)
     return arcana_boosters[v.key] or pastries_targets[v.set] and is_banned_from_pastry(v)
 end
 
+---@param v SMODS.GameObject
+---@return boolean|string
+local function is_economy(v)
+    return f(Bakery_API.econ_only_items):where(f.id, v.key):any()
+end
+
+---@param key string
+---@return fun(v: SMODS.Blind, k: string): boolean?
 local function is_showdown_except(key)
-    ---@param v SMODS.Blind
-    ---@param k string
-    ---@return boolean?
     return function(v, k)
         return v.boss and v.boss.showdown and key ~= k
     end
 end
 
-local pastries, amber, cerulean, crimson, verdant, violet =
-    bans(), bans(), bans(), bans(), bans(), bans()
+---@param name string
+---@param amount number
+---@return {id: string}[]
+local function multirule(name, amount)
+    return f(amount):map(function(v)
+        return {id = "Roland_" .. name .. v}
+    end):table()
+end
+
+local pastries, amber, cerulean, crimson, verdant, violet, yard =
+    bans(), bans(), bans(), bans(), bans(), bans(), bans()
 
 SMODS.Challenge {
     key = "Glass",
-    rules = {custom = {{id = "Roland_Glass1"}, {id = "Roland_Glass2"}}},
+    rules = {custom = multirule("Glass", 2)},
     pronouns = "they_them",
     config = {extra = {odds = 2}},
     calculate = function(self, context)
@@ -58,6 +79,28 @@ SMODS.Challenge {
         end):each(function(v)
             v:set_seal "Roland_glass"
         end)
+    end,
+}
+
+local yard_sale
+
+SMODS.Challenge {
+    key = "Yard_Sale",
+    config = {extra = {dollars = 5}, no_interest = true},
+    vouchers = {{id = "v_magic_trick"}, {id = "v_overstock_norm"}},
+    rules = {custom = multirule("Yard_Sale", 2), modifiers = {{id = "dollars", value = 14}}},
+    restrictions = yard,
+    apply = function()
+        G.GAME.modifiers.no_blind_reward = {Small = true, Big = true, Boss = true}
+        G.GAME.modifiers.no_extra_hand_money = true
+
+        f(Bakery_API.econ_only_items):keys():each(function(v)
+            G.GAME.banned_keys[v] = true
+        end)
+    end,
+    calculate = function(self, context)
+        yard_sale = (context.playing_card_added or context.remove_playing_cards) and not context.blueprint
+        return yard_sale and {dollars = self.config.extra.dollars * #(context.cards or context.removed or {})} or nil
     end,
 }
 
@@ -291,27 +334,44 @@ SMODS.Challenge {
     end,
 }
 
-q(function()
-    f {
-        {G.P_TAGS,    is_banned_from_pastry,                pastries.banned_tags},
-        {G.P_BLINDS,  is_banned_from_pastry,                pastries.banned_other},
-        {G.P_CENTERS, is_center_banned_from_pastry,         pastries.banned_cards},
-        {G.P_BLINDS,  is_showdown_except "bl_final_acorn",  amber.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_bell",   cerulean.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_heart",  crimson.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_leaf",   verdant.banned_other},
-        {G.P_BLINDS,  is_showdown_except "bl_final_vessel", violet.banned_other},
-    }:each(function(v)
-        f(v[1]):where(v[2]):each(adder(v[3]))
-    end)
-end)
+q {
 
-q(function()
-    if not G.P_CENTERS.j_Bakery_Spinner then
-        return true
-    end
+    blocking = false,
+    no_delete = true,
+    func = function()
+        if not Bakery_API or not Bakery_API.no_money_decks then
+            return false
+        end
 
-    f(spin_to_win.jokers):each(function(v)
-        v.id = "j_Bakery_Spinner"
-    end)
-end)
+        local orig = Bakery_API.no_money_decks
+
+        Bakery_API.no_money_decks = setmetatable(orig, {
+            orig = orig,
+            __index = function(_, k)
+                return (G.GAME or {}).challenge == "c_Roland_Yard_Sale" and
+                    not yard_sale or
+                    (getmetatable(orig) or orig)[k]
+            end,
+        })
+
+        f(spin_to_win.jokers):each(function(v)
+            v.id = G.P_CENTERS.j_Bakery_Spinner and "j_Bakery_Spinner" or v.id
+        end)
+
+        f {
+            {G.P_TAGS,    is_economy,                           yard.banned_tags},
+            {G.P_BLINDS,  is_economy,                           yard.banned_other},
+            {G.P_CENTERS, is_economy,                           yard.banned_cards},
+            {G.P_TAGS,    is_banned_from_pastry,                pastries.banned_tags},
+            {G.P_BLINDS,  is_banned_from_pastry,                pastries.banned_other},
+            {G.P_CENTERS, is_center_banned_from_pastry,         pastries.banned_cards},
+            {G.P_BLINDS,  is_showdown_except "bl_final_acorn",  amber.banned_other},
+            {G.P_BLINDS,  is_showdown_except "bl_final_bell",   cerulean.banned_other},
+            {G.P_BLINDS,  is_showdown_except "bl_final_heart",  crimson.banned_other},
+            {G.P_BLINDS,  is_showdown_except "bl_final_leaf",   verdant.banned_other},
+            {G.P_BLINDS,  is_showdown_except "bl_final_vessel", violet.banned_other},
+        }:each(function(v)
+            f(v[1]):where(v[2]):each(adder(v[3]))
+        end)
+    end,
+}
