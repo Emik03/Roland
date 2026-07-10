@@ -381,7 +381,7 @@ function SMODS.current_mod:calculate(context)
         :where("config.extra.hand_type", context.scoring_name)
         :pun "SMODS.Voucher"
         :each(function(v, _)
-            SMODS.smart_level_up_hand(nil, v.config.extra.hand_type, nil, v.config.extra.amount)
+            SMODS.smart_level_up_hand(nil, v.config.extra.hand_type, false, v.config.extra.amount)
         end)
 
     local improbable, orig = G.GAME.modifiers.Roland_improbable, G.GAME.probabilities
