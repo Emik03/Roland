@@ -61,16 +61,17 @@ function G.FUNCS.use_card(e, ...)
         return orig_use_card(e, ...)
     end
 
-    local normal = ref.area ~= G.pack_cards or not G.GAME.pack_choices or G.GAME.pack_choices <= 0
+    local normal = G.STATE == G.STATES.SHOP or
+        ref.area ~= G.pack_cards or
+        not G.GAME.pack_choices or
+        G.GAME.pack_choices <= 0
+
     ref.from_area = ref.from_area or ref.area
     play_sound("tarot1", percent, 0.6)
     discover_card(ref.config.center)
     ref:use_consumeable(ref.area)
     SMODS.calculate_context {area = ref.area, consumeable = ref, using_consumeable = true}
-
-    q(function()
-        ref:remove()
-    end)
+    ref:remove()
 
     if normal then
         return
