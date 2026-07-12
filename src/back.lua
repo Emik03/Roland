@@ -154,21 +154,22 @@ local function redeem(key, fast)
         delay = 1,
         func = function()
             local voucher = SMODS.create_card {key = key, set = "Voucher"}
-            voucher.T.y = (fast and pseudorandom(pseudoseed "Roland_wish_deck") + 0.5 or 1) * 4.25
-            voucher.T.x = (fast and pseudorandom(pseudoseed "Roland_wish_deck") + 0.5 or 1) * 9
             voucher.cost = 0
+            voucher.T.x = (fast and pseudorandom(pseudoseed "Roland_wish_deck") + 0.5 or 1) * 9
+            voucher.T.y = (fast and pseudorandom(pseudoseed "Roland_wish_deck") + 0.5 or 1) * 4.25
             voucher:start_materialize()
 
             q {
                 delay = 1,
-                front = true,
                 func = function()
                     if fast then
                         play_sound "card1"
                         voucher:apply_to_run()
                         voucher:juice_up(0.3, 0.5)
                     else
+                        local state = G.STATE
                         voucher:redeem()
+                        G.STATE = state
                     end
 
                     q {
