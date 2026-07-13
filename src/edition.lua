@@ -272,6 +272,7 @@ function Card:save(...)
     return ret
 end
 
+local is_bean = {["Turtle Bean"] = true, j_mp_turtle_bean = true}
 local orig_calculate_joker = Card.calculate_joker
 
 ---@param self Card|{Roland_frozen_ability?: table}
@@ -283,7 +284,7 @@ function Card:calculate_joker(context, ...)
             {xmult = self.ability.extra.Xmult} or nil
     end
 
-    if is_frozen and self.ability.name == "Turtle Bean" then
+    if is_frozen and is_bean[self.ability.name] then
         return
     end
 
