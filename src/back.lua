@@ -134,6 +134,7 @@ back {
     check_for_unlock = function(_, args)
         return args ~= "Bakery_nothing" and
             G.jokers and
+            next((G.jokers or {}).cards) and
             not not f(G.jokers.cards):map "ability":all "perishable"
     end,
     apply = function(self)
