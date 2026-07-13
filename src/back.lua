@@ -116,7 +116,7 @@ back {
 back {
     key = "swapper",
     pronouns = "he_him",
-    attributes = {"passive", "spectral", "tarot"},
+    attributes = {"passive", "editions", "sell_value"},
     apply = function(self)
         local modifiers = G.GAME.modifiers
         modifiers.Roland_swapper_deck = true
@@ -125,16 +125,52 @@ back {
     calculate = f.noop,
 }
 
+back {
+    key = "dropship",
+    pronouns = "he_him",
+    attributes = {"passive", "generation"},
+    unlocked = false,
+    discovered = false,
+    check_for_unlock = function(_, args)
+        return args ~= "Bakery_nothing" and
+            G.jokers and
+            not not f(G.jokers.cards):map "ability":all "perishable"
+    end,
+    apply = function(self)
+        G.GAME.modifiers.Roland_dropship = true
+        G.GAME.modifiers.Roland_dropship_alt = self:is_alt()
+    end,
+    calculate = f.noop,
+}
+
 local swapper = {Spectral = "Tarot", Tarot = "Spectral"}
 local orig_create_card = create_card
 
+local function create_dropshipped_card(_type, ...)
+    local ret = orig_create_card(_type, ...)
+    local ok = _type == "Joker" and ret.ability
+
+    if ok and G.GAME.modifiers.Roland_dropship_alt then
+        ret:set_edition({negative = true}, true)
+        ret.ability.perish_tally = 1 / 0
+    end
+
+    if ok and G.GAME.modifiers.Roland_dropship then
+        ret.ability.perishable = true
+        ret.cost, ret.sell_cost = 0, 0
+        ret.ability.perish_tally = G.GAME.modifiers.Roland_dropship_alt and 1 / 0 or 5
+    end
+
+    return ret
+end
+
 function create_card(_type, ...)
     if not G.GAME.modifiers.Roland_swapper_deck then
-        return orig_create_card(_type, ...)
+        return create_dropshipped_card(_type, ...)
     end
 
     if not G.GAME.modifiers.Roland_alt_swapper_deck then
-        return orig_create_card(swapper[_type] or _type, ...)
+        return create_dropshipped_card(swapper[_type] or _type, ...)
     end
 
     local type = f(SMODS.ConsumableTypes):keys():where(function(v)
@@ -142,7 +178,8 @@ function create_card(_type, ...)
     end):table()
 
     local has_type = SMODS.ConsumableTypes[_type]
-    return orig_create_card(has_type and pseudorandom_element(type, pseudoseed "Roland_alt_swapper_deck") or _type, ...)
+    return create_dropshipped_card(
+        has_type and pseudorandom_element(type, pseudoseed "Roland_alt_swapper_deck") or _type, ...)
 end
 
 local function redeem(key, fast)

@@ -335,7 +335,6 @@ SMODS.Challenge {
 }
 
 q {
-
     blocking = false,
     no_delete = true,
     func = function()

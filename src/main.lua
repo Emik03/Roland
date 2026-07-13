@@ -5,6 +5,7 @@ q {
     front = true,
     no_delete = true,
     blocking = false,
+    blockable = false,
     func = function()
         local contributors = (Bakery_API or {}).contributors
 

@@ -11,6 +11,16 @@ return {
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
             },
+            b_Roland_dropship = {
+                name = "Dropship Deck",
+                text = {
+                    "{C:attention}Jokers {}are {C:money}free",
+                    "and {C:attention}Perishable",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
+                },
+                unlock = {"Have exclusively", "{C:attention}Perishable Jokers"},
+            },
             b_Roland_swapper = {
                 name = "Swapper Deck",
                 text = {
@@ -434,6 +444,26 @@ return {
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
                 },
+            },
+            sleeve_Roland_dropship = {
+                name = "Dropship Sleeve",
+                text = {
+                    "{C:attention}Jokers {}are {C:money}free",
+                    "and {C:attention}Perishable",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
+                },
+                unlock = {"Have exclusively", "{C:attention}Perishable Jokers"},
+            },
+            sleeve_Roland_dropship_alt = {
+                name = "Business Sleeve",
+                text = {
+                    "{C:attention}Jokers {}are {C:dark_edition}Negative",
+                    "{C:attention}Perishable {}lasts forever",
+                    "",
+                    "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",
+                },
+                unlock = {"Have exclusively", "{C:attention}Perishable Jokers"},
             },
             sleeve_Roland_swapper = {
                 name = "Swapper Sleeve",
