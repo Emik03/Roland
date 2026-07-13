@@ -53,20 +53,22 @@ local function freeze(card)
         return card.ability
     end
 
-    (card.ability or {}).Roland_crimson = not not (card.ability or {}).Roland_crimson
     local config = card.config or {}
 
+    (card.ability or {}).Roland_crimson = not not (card.ability or {}).Roland_crimson
     card.Roland_frozen_base = card.Roland_frozen_base or copy(card.base)
     card.Roland_frozen_card = card.Roland_frozen_card or copy(config.card)
     card.Roland_frozen_ability = card.Roland_frozen_ability or copy(card.ability)
-
     card.base = card.Roland_frozen_base and copy(card.Roland_frozen_base) or card.base
+
+    local diff = type(card.set_sprites) == "function" and
+        f(card.Roland_frozen_card):diff(config.card, f.chain(type, f.nq "table"))
+
     config.card = card.Roland_frozen_card and copy(card.Roland_frozen_card) or config.card
     card.ability = card.Roland_frozen_ability and copy(card.Roland_frozen_ability) or card.ability
     card.Roland_frozen = card.Roland_frozen or {probability = SMODS.get_probability_vars(card, 1, 1)}
 
-    if type(card.set_sprites) == "function" and
-        f(card.Roland_frozen_card):diff(config.card) then
+    if diff then
         card:set_sprites(card.config.center, card.config.card)
     end
 

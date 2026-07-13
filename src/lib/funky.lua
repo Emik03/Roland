@@ -9,7 +9,7 @@ local f = {}
 
 if not f then
     ---@generic I, O
-    ---@param first string|fun(v: I): O
+    ---@param first integer|string|fun(v: I): O
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(first)
@@ -17,8 +17,8 @@ if not f then
     end
 
     ---@generic I, T, O
-    ---@param first string|fun(v: I): T
-    ---@param second string|fun(v: T): O
+    ---@param first integer|string|fun(v: I): T
+    ---@param second integer|string|fun(v: T): O
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(first, second)
@@ -26,9 +26,9 @@ if not f then
     end
 
     ---@generic I, T1, T2, O
-    ---@param first string|fun(v: I): T1
-    ---@param second string|fun(v: T1): T2
-    ---@param third string|fun(v: T2): O
+    ---@param first integer|string|fun(v: I): T1
+    ---@param second integer|string|fun(v: T1): T2
+    ---@param third integer|string|fun(v: T2): O
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(first, second, third)
@@ -36,10 +36,10 @@ if not f then
     end
 
     ---@generic I, T1, T2, T3, O
-    ---@param first string|fun(v: I): T1
-    ---@param second string|fun(v: T1): T2
-    ---@param third string|fun(v: T2): T3
-    ---@param fourth string|fun(v: T3): O
+    ---@param first integer|string|fun(v: I): T1
+    ---@param second integer|string|fun(v: T1): T2
+    ---@param third integer|string|fun(v: T2): T3
+    ---@param fourth integer|string|fun(v: T3): O
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(first, second, third, fourth)
@@ -47,11 +47,11 @@ if not f then
     end
 
     ---@generic I, T1, T2, T3, T4, O
-    ---@param first string|fun(v: I): T1
-    ---@param second string|fun(v: T1): T2
-    ---@param third string|fun(v: T2): T3
-    ---@param fourth string|fun(v: T3): T4
-    ---@param fifth string|fun(v: T4): O
+    ---@param first integer|string|fun(v: I): T1
+    ---@param second integer|string|fun(v: T1): T2
+    ---@param third integer|string|fun(v: T2): T3
+    ---@param fourth integer|string|fun(v: T3): T4
+    ---@param fifth integer|string|fun(v: T4): O
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(first, second, third, fourth, fifth)
@@ -59,7 +59,7 @@ if not f then
     end
 
     ---@generic I, O
-    ---@param all { [1]: (string|fun(v: I): O) }
+    ---@param all { [1]: (integer|string|fun(v: I): O) }
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(all)
@@ -67,7 +67,7 @@ if not f then
     end
 
     ---@generic I, T, O
-    ---@param all { [1]: (string|fun(v: I): T), [2]: (string|fun(v: T): O) }
+    ---@param all { [1]: (integer|string|fun(v: I): T), [2]: (integer|string|fun(v: T): O) }
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(all)
@@ -75,7 +75,7 @@ if not f then
     end
 
     ---@generic I, T1, T2, O
-    ---@param all { [1]: (string|fun(v: I): T1), [2]: (string|fun(v: T1): T2), [3]: (string|fun(v: T2): O) }
+    ---@param all { [1]: (integer|string|fun(v: I): T1), [2]: (integer|string|fun(v: T1): T2), [3]: (integer|string|fun(v: T2): O) }
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(all)
@@ -83,7 +83,7 @@ if not f then
     end
 
     ---@generic I, T1, T2, T3, O
-    ---@param all { [1]: (string|fun(v: I): T1), [2]: (string|fun(v: T1): T2), [3]: (string|fun(v: T2): T3), [4]: (string|fun(v: T3): O) }
+    ---@param all { [1]: (integer|string|fun(v: I): T1), [2]: (integer|string|fun(v: T1): T2), [3]: (integer|string|fun(v: T2): T3), [4]: (integer|string|fun(v: T3): O) }
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(all)
@@ -91,7 +91,7 @@ if not f then
     end
 
     ---@generic I, T1, T2, T3, T4, O
-    ---@param all { [1]: (string|fun(v: I): T1), [2]: (string|fun(v: T1): T2), [3]: (string|fun(v: T2): T3), [4]: (string|fun(v: T3): T4), [4]: (string|fun(v: T4): O) }
+    ---@param all { [1]: (integer|string|fun(v: I): T1), [2]: (integer|string|fun(v: T1): T2), [3]: (integer|string|fun(v: T2): T3), [4]: (integer|string|fun(v: T3): T4), [4]: (integer|string|fun(v: T4): O) }
     ---@return fun(v: I): O
     ---@nodiscard
     function f.chain(all)
@@ -114,7 +114,17 @@ local none
 ---@return T
 ---@nodiscard
 local function autofunc(func)
-    return type(func) == "string" and f.indices(func) or func or f.id
+    if func == false then
+        return f.fals
+    elseif func == true then
+        return f.tru
+    elseif type(func) == "number" then
+        return f.arg(func)
+    elseif type(func) == "string" then
+        return f.indices(func)
+    else
+        return func or f.id
+    end
 end
 
 ---@generic K, V
@@ -722,12 +732,15 @@ end
 ---@generic K, V
 ---@param self F|{ [K]: V }
 ---@param other { [K]: V }
+---@param func? fun(v: V, k: K): any
 ---@return K?
 ---@overload fun(self: F|{ [K]: V }, func: string): integer
 ---@nodiscard
-function f:diff(other)
+function f:diff(other, func)
+    func = autofunc(func)
+
     for k, v in self.next do
-        if other[k] ~= v then
+        if (not func or func(v, k)) and other[k] ~= v then
             return k
         end
     end
