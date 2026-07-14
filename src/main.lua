@@ -13,44 +13,8 @@ q {
             return false
         end
 
-        -- Special shoutout to all contributors. <3
-        local credits = {
-            aster = {
-                name = "asterSSH",
-                fg = HEX "f8f8f2ff",
-                bg = HEX "bd93f9ff",
-            },
-            bakersdozenbagels = {
-                name = "BakersDozenBagels",
-                fg = HEX "362708ff",
-                bg = HEX "edd198ff",
-            },
-            char = {
-                name = "char (@irregulester)",
-                fg = HEX "f8f8f2ff",
-                bg = HEX "ff79c6ff",
-            },
-            ghostlyfield = {
-                name = "ghostlyfield",
-                fg = HEX "ffffffff",
-                bg = HEX "b290e6ff",
-            },
-            hamester = {
-                name = "Hamester",
-                fg = HEX "ffffffff",
-                bg = HEX "ffa100ff",
-            },
-            redstoad = {
-                name = "RedsToad",
-                fg = HEX "ffffffff",
-                bg = HEX "da4044ff",
-            },
-        }
-
-        f(credits):each(function(v, k)
+        f(assert(SMODS.load_file "src/credits.lua")() or require "credits"):each(function(v, k)
             contributors["Roland_" .. k] = v
-            -- G.ARGS.LOC_COLOURS["Bakery_credit_fg_Roland_" .. k] = v.fg
-            -- G.ARGS.LOC_COLOURS["Bakery_credit_bg_Roland_" .. k] = v.bg
         end)
 
         if not SMODS.Mods.DebugPlus or not SMODS.Mods.Roland.config.import_funky then
@@ -65,6 +29,7 @@ f {
     "challenge",
     "spectral",
     "edition",
+    "voucher",
     "tweaks",
     "blind",
     "charm",
@@ -73,16 +38,13 @@ f {
     "back",
     "seal",
     "tag",
-    "voucher",
 }:each(function(v)
     assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
 end)
 
-if Balatest then
-    f {"joker", "blind", "spectral"}:each(function(v)
-        assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
-    end)
-end
+local _ = Balatest and f {"joker", "blind", "spectral"}:each(function(v)
+    assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
+end)
 
 local function toggle(id)
     return create_toggle {
@@ -93,6 +55,7 @@ local function toggle(id)
     }
 end
 
+SMODS.current_mod.qol = qol
 local animated = SMODS.Mods.Roland.config.animated_icon
 
 SMODS.Atlas {
@@ -127,5 +90,3 @@ function SMODS.current_mod.config_tab()
         }},
     }
 end
-
-SMODS.current_mod.qol = qol
