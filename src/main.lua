@@ -13,46 +13,44 @@ q {
             return false
         end
 
-        f(assert(SMODS.load_file "src/credits.lua")() or require "credits"):each(function(v, k)
+        f(assert(SMODS.load_file("src/credits.lua", "Roland"))() or require "credits"):each(function(v, k)
             contributors["Roland_" .. k] = v
         end)
 
-        if not SMODS.Mods.DebugPlus or not SMODS.Mods.Roland.config.import_funky then
-            return
+        if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
+            _G.f, _G.q, _G.u, _G.c = unpack(qol)
         end
-
-        _G.f, _G.q, _G.u, _G.c = unpack(qol)
     end,
 }
 
-f {
-    "challenge",
-    "spectral",
-    "edition",
-    "voucher",
-    "tweaks",
-    "blind",
-    "charm",
-    "joker",
-    "tarot",
-    "back",
-    "seal",
-    "tag",
-}:each(function(v)
-    assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
-end)
+f {"challenge", "spectral", "edition", "voucher", "tweaks", "blind", "charm", "joker", "tarot", "back", "seal", "tag"}
+    :each(function(v)
+        assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
+    end)
 
 local _ = Balatest and f {"joker", "blind", "spectral"}:each(function(v)
     assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
 end)
 
+local function realign(tbl, align)
+    f(tbl):where(function(v, k)
+        if k == "align" and type(v) == "string" then
+            tbl[k] = align
+        end
+
+        return k ~= "nodes" and type(v) == "table"
+    end):each(realign)
+
+    return tbl
+end
+
 local function toggle(id)
-    return create_toggle {
+    return realign(create_toggle {
         label = localize {type = "variable", key = "b_Roland_" .. id},
         ref_table = SMODS.Mods.Roland.config,
         ref_value = id,
         scale = 1.5,
-    }
+    }, "tr")
 end
 
 SMODS.current_mod.qol = qol
@@ -71,22 +69,30 @@ SMODS.Atlas {
 function SMODS.current_mod.config_tab()
     return {
         n = G.UIT.ROOT,
-        config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.BLACK},
-        nodes = {{
-            n = G.UIT.C,
-            config = {minw = 1, minh = 1, align = "tl", padding = 0.1, colour = G.C.CLEAR},
-            nodes = {
-                toggle "animated_icon",
-                toggle "cool_phones",
-                toggle "faster_planets",
-                -- toggle "illusion_seal",
-                -- toggle "no_wild_debuff",
-                toggle "vitriol",
-                toggle "equinox_assist",
-                SMODS.Mods.DebugPlus and toggle "import_funky",
-                G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
-                Talisman and toggle "harsh_ante_scaling",
+        config = {minw = 1, minh = 1, align = "tr", padding = 0.1, colour = G.C.BLACK},
+        nodes = {
+            {
+                n = G.UIT.C,
+                config = {minw = 1, minh = 1, align = "tr", padding = 0.1, colour = G.C.CLEAR},
+                nodes = {
+                    toggle "animated_icon",
+                    toggle "cool_phones",
+                    toggle "vitriol",
+                    toggle "equinox_assist",
+                    G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
+                },
             },
-        }},
+            {
+                n = G.UIT.C,
+                config = {minw = 1, minh = 1, align = "tr", padding = 0.1, colour = G.C.CLEAR},
+                nodes = {
+                    toggle "faster_planets",
+                    toggle "illusion_seal",
+                    toggle "no_wild_debuff",
+                    SMODS.Mods.DebugPlus and toggle "import_funky",
+                    Talisman and toggle "harsh_ante_scaling",
+                },
+            },
+        },
     }
 end
