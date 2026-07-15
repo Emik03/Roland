@@ -154,7 +154,6 @@ target = "card.lua"
 pattern = "math\\.floor\\(\\(G\\.GAME\\.dollars \\+ \\(G\\.GAME\\.dollar_buffer or 0\\)\\)/self\\.ability\\.extra\\.dollars\\)"
 position = "at"
 payload = "SMODS.Mods.Roland.bootstraps_mult(self)"
-match_indent = true
 
 [[patches]]
 [patches.regex]
@@ -177,3 +176,27 @@ pattern = "value = value + card.ability[property]"
 position = "at"
 payload = "value = value + (card.ability[property] or 0)"
 match_indent = true
+
+# [[patches]]
+# [patches.pattern]
+# target = '=[SMODS DebugPlus "debugplus/console.lua"]'
+# pattern = "if toCheck == '/' or toCheck == 'kp/' then"
+# position = "at"
+# payload = "if toCheck == '/' or toCheck == 'kp/' or toCheck == 'f' then"
+# match_indent = true
+
+# [[patches]]
+# [patches.pattern]
+# target = '=[SMODS DebugPlus "debugplus/console.lua"]'
+# pattern = 'local cmdName = string.lower(string.gsub(inputText, "^(%S+).*", "%1"))'
+# position = "at"
+# payload = 'local cmdName = "eval"'
+# match_indent = true
+
+# [[patches]]
+# [patches.pattern]
+# target = '=[SMODS DebugPlus "debugplus/console.lua"]'
+# pattern = 'local rawArgs = string.gsub(inputText, "^%S+%s*(.*)", "%1")'
+# position = "at"
+# payload = 'local cmdName = inputText'
+# match_indent = true

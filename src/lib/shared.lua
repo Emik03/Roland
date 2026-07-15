@@ -13,6 +13,14 @@ local function add(v)
         return xop
     end
 
+    if G.P_BLINDS[v] then
+        G.from_boss_tag = true
+        G.GAME.perscribed_bosses = G.GAME.perscribed_bosses or {}
+        G.GAME.perscribed_bosses[G.GAME.round_resets.ante] = v
+        G.FUNCS.reroll_boss()
+        return G.P_BLINDS[v]
+    end
+
     if not G.P_TAGS[v] then
         return SMODS.add_card {no_edition = true, key = v}
     end
@@ -43,7 +51,9 @@ local function find(it)
     end
 
     local match = simplify(it)
-    local pool = f(G.P_CENTER_POOLS):any(f.chain(f.arg(2), simplify, f.eq(match)))
+
+    local pool = match == "Blind" and G.P_BLINDS or
+        f(G.P_CENTER_POOLS):any(f.chain(f.arg(2), simplify, f.eq(match)))
 
     if type(pool) == "table" and next(pool) then
         return pseudorandom_element(pool, pseudoseed "Roland_c").key
@@ -56,9 +66,9 @@ local function find(it)
     return f(G.localization.descriptions)
         :flatmap(flatten)
         :where(type, "table")
-        :where(f.chain(f.arg(2), f.index_into(G.P_CENTERS), "config"))
         :where(function(v, k)
-            return match == simplify(k) or match == simplify(v.name)
+            return ((G.P_CENTERS[k] or {}).config or G.P_BLINDS[k]) and
+                match == simplify(k) or match == simplify(v.name)
         end)
         :keys()
         :any()
