@@ -1,5 +1,7 @@
 local qol = assert(SMODS.load_file "src/lib/shared.lua")() or require "lib.shared"
 local f, q = qol[1], qol[2]
+SMODS.current_mod.qol = qol
+local animated = SMODS.Mods.Roland.config.animated_icon
 
 q {
     front = true,
@@ -52,9 +54,6 @@ local function toggle(id)
         scale = 1.5,
     })
 end
-
-SMODS.current_mod.qol = qol
-local animated = SMODS.Mods.Roland.config.animated_icon
 
 SMODS.Atlas {
     px = 256,
