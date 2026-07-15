@@ -32,10 +32,10 @@ local _ = Balatest and f {"joker", "blind", "spectral"}:each(function(v)
     assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
 end)
 
-local function realign(tbl, align)
+local function realign(tbl)
     f(tbl):where(function(v, k)
         if k == "align" and type(v) == "string" then
-            tbl[k] = align
+            tbl[k] = "tr"
         end
 
         return k ~= "nodes" and type(v) == "table"
@@ -50,7 +50,7 @@ local function toggle(id)
         ref_table = SMODS.Mods.Roland.config,
         ref_value = id,
         scale = 1.5,
-    }, "tr")
+    })
 end
 
 SMODS.current_mod.qol = qol
