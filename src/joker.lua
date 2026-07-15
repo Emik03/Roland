@@ -721,11 +721,12 @@ joker {
     crimson = function()
         local _ = G.jokers and f(G.jokers.cards, ipairs_reversed):where(is_frozen, false):each(function(v)
             local right = G.jokers.cards[v.rank + 1]
+            local is_bean = {j_mp_turtle_bean = true, j_turtle_bean = true}
 
             local debuffed_by_crimson = right and
                 not right.debuff and
                 right.config.center.key == "j_Roland_crimson" and
-                not ({j_mp_turtle_bean = true, j_turtle_bean = true})[v.config.center.key]
+                (SMODS.Mods.Roland.config.crimson_bean or not is_bean[v.config.center.key])
 
             if debuffed_by_crimson and v.ability.Roland_crimson == nil then
                 local debuff = not not v.debuff

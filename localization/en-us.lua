@@ -602,6 +602,7 @@ return {
             b_Roland_bye = "Bye!",
             b_Roland_comma = ", ",
             b_Roland_cool_phones = "cool phones (requires restart)",
+            b_Roland_crimson_bean = "Crimson Bean (overpowered)",
             b_Roland_debuffed = "DEBUFFED",
             b_Roland_disabled = "Disabled",
             b_Roland_enabled = "Enabled",

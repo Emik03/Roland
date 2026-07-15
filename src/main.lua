@@ -1,5 +1,7 @@
 local qol = assert(SMODS.load_file "src/lib/shared.lua")() or require "lib.shared"
 local f, q = qol[1], qol[2]
+SMODS.current_mod.qol = qol
+local animated = SMODS.current_mod.config.animated_icon
 
 q {
     front = true,
@@ -53,9 +55,6 @@ local function toggle(id)
     })
 end
 
-SMODS.current_mod.qol = qol
-local animated = SMODS.Mods.Roland.config.animated_icon
-
 SMODS.Atlas {
     px = 256,
     py = 256,
@@ -79,7 +78,7 @@ function SMODS.current_mod.config_tab()
                     toggle "cool_phones",
                     toggle "vitriol",
                     toggle "equinox_assist",
-                    G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
+                    toggle "crimson_bean",
                 },
             },
             {
@@ -90,6 +89,7 @@ function SMODS.current_mod.config_tab()
                     toggle "illusion_seal",
                     toggle "no_wild_debuff",
                     SMODS.Mods.DebugPlus and toggle "import_funky",
+                    G.P_CENTERS.c_Bakery_Scribe and toggle "scribable_basket",
                     Talisman and toggle "harsh_ante_scaling",
                 },
             },
