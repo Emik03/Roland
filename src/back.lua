@@ -8,7 +8,7 @@ end
 local back = (function()
     local x = 0
 
-    ---@param tbl SMODS.Back|{attributes?: Attributes[], is_alt: (fun(self: self): boolean), alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
+    ---@param tbl SMODS.Back|{attributes?: Attributes[], pronouns: string, is_alt: (fun(self: self): boolean), alt_apply?: fun(self: SMODS.Back|table, back: Back|table), alt_calculate?: fun(self: SMODS.Back|table, back: Back|table, context: CalcContext|table): table?, boolean?}
     return function(tbl)
         local key = tbl.key
         local apply = tbl.apply
@@ -32,6 +32,7 @@ local back = (function()
             key = key,
             pos = tbl.pos,
             atlas = "sleeve",
+            pronouns = tbl.pronouns,
             config = tbl.config and f(tbl.config):table() or nil,
             loc_vars = function(self, ...)
                 local ret = tbl.loc_vars and tbl.loc_vars(self, ...) or {}
