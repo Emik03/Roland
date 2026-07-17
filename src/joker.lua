@@ -1221,7 +1221,7 @@ joker {
     }},
     attributes = {"xmult", "enhancements", "bakery_double_sided"},
     eternal_compat = true,
-    blueprint_compat = false,
+    blueprint_compat = true,
     perishable_compat = true,
     loc_vars = function(_, info_queue, card)
         local extra = card.ability.extra

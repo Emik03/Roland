@@ -154,13 +154,18 @@ local b_dropship = back {
 
 local dropship_tape
 
-q(function()
-    dropship_tape = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, extra_atlas, {x = 0, y = 0})
-end)
+q {
+    blocking = false,
+    no_delete = true,
+    func = function()
+        dropship_tape = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, extra_atlas, {x = 0, y = 0})
+    end,
+}
 
 SMODS.DrawStep {
     key = "dropship_tape",
     order = 5,
+    conditions = {vortex = false, facing = "back"},
     func = function(self)
         if self.children.back.atlas ~= back_atlas or self.children.back.sprite_pos.x ~= b_dropship.pos.x then
             return
@@ -184,7 +189,6 @@ SMODS.DrawStep {
             sticker_offset.y
         )
     end,
-    conditions = {vortex = false, facing = "back"},
 }
 
 local swapper = {Spectral = "Tarot", Tarot = "Spectral"}
