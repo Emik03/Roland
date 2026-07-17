@@ -53,9 +53,16 @@ local back = (function()
     end
 end)()
 
-SMODS.Atlas {
+local back_atlas = SMODS.Atlas {
     key = "back",
     path = "back.png",
+    px = 71,
+    py = 95,
+}
+
+local extra_atlas = SMODS.Atlas {
+    key = "back_extra",
+    path = "backExtra.png",
     px = 71,
     py = 95,
 }
@@ -125,7 +132,7 @@ back {
     calculate = f.noop,
 }
 
-back {
+local b_dropship = back {
     key = "dropship",
     pronouns = "he_him",
     attributes = {"passive", "generation"},
@@ -142,6 +149,41 @@ back {
         G.GAME.modifiers.Roland_dropship_alt = self:is_alt()
     end,
     calculate = f.noop,
+}
+
+local dropship_tape
+
+q(function()
+    dropship_tape = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, extra_atlas, {x = 0, y = 0})
+end)
+
+SMODS.DrawStep {
+    key = "dropship_tape",
+    order = 5,
+    func = function(self)
+        if self.children.back.atlas ~= back_atlas or self.children.back.sprite_pos.x ~= b_dropship.pos.x then
+            return
+        end
+
+        dropship_tape.role.draw_major = self
+        local deck = self.area.config.type == "deck"
+        local sticker_offset = self.sticker_offset or {}
+
+        -- Don't draw dissolve since it's baked into the sprite already. Also, I had to boost its alpha for the
+        -- shine to look correct, so drawing this would look *awful*.
+        -- dropship_tape:draw_shader("dissolve", nil, nil, deck, self.children.center, self.sticker_rotation, sticker_offset.x, sticker_offset.y)
+        dropship_tape:draw_shader(
+            "voucher",
+            nil,
+            self.ARGS.send_to_shader,
+            deck,
+            self.children.center,
+            self.sticker_rotation,
+            sticker_offset.x,
+            sticker_offset.y
+        )
+    end,
+    conditions = {vortex = false, facing = "back"},
 }
 
 local swapper = {Spectral = "Tarot", Tarot = "Spectral"}
