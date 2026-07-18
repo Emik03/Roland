@@ -459,6 +459,7 @@ return {
                 name = "Business Sleeve",
                 text = {
                     "{C:attention}Jokers {}are {C:dark_edition}Negative",
+                    "and {C:money}Rental",
                     "{C:attention}Perishable {}lasts forever",
                     "",
                     "{C:Bakery_credit_fg_Roland_bakersdozenbagels,s:0.75}Art: BakersDozenBagels",

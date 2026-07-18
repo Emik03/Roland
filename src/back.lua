@@ -199,8 +199,9 @@ local function create_dropshipped_card(_type, ...)
     local ok = _type == "Joker" and ret.ability
 
     if ok and G.GAME.modifiers.Roland_dropship_alt then
-        ret:set_edition({negative = true}, true, true)
+        ret.ability.rental = true
         ret.ability.perish_tally = 1 / 0
+        local _ = ret:set_edition({negative = true}, true, true)
     end
 
     if ok and G.GAME.modifiers.Roland_dropship then
