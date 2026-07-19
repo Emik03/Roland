@@ -70,8 +70,9 @@ local function ipairs_reversed(tbl)
 end
 
 ---@param card Card
+---@return boolean
 local function is_frozen(card)
-    return card.edition and card.edition.key == "e_Roland_frozen"
+    return card and card.edition and card.edition.key == "e_Roland_frozen"
 end
 
 ---@param card? Card|false|{suit: string, value: string}
@@ -461,7 +462,7 @@ joker {
         card.Roland_polaris = true
         local first = context.scoring_hand[1]
 
-        if not first or first.edition and first.edition.Roland_frozen then
+        if not first or first.edition then
             return
         end
 
