@@ -40,10 +40,15 @@ G.Bakery_charm_area.cards[1].ability.extra = G.Bakery_charm_area.cards[1].abilit
 ---@type Card[]
 G.playing_cards = G.playing_cards
 
-SMODS.Mods.Roland.config = require "config"
-
 ---@type userdata|{getWidth: fun(self: self): number}
 SMODS.Atlas.image_data = SMODS.Atlas.image_data
+
+---@return Card
+function copy_card(...)
+    error(...)
+end
+
+SMODS.Mods.Roland.config = require "config"
 
 --- @type table
 Talisman = Talisman

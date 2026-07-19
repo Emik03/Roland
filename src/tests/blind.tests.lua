@@ -68,8 +68,7 @@ Balatest.TestPlay {
             }
         end)
 
-        Balatest.wait_for_input()
-        Balatest.wait()
+        Balatest.wait_for_input(G.STATES.ROUND_EVAL)
     end,
     assert = function()
         Balatest.assert_chips(2720)
