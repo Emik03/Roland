@@ -22,7 +22,12 @@ local function add(v)
     end
 
     if not G.P_TAGS[v] then
-        return SMODS.add_card {no_edition = true, key = v}
+        return SMODS.add_card {
+            no_edition = true,
+            key = v,
+            area = (G.P_CENTERS[v] or {}).set == "Booster" and G.shop_booster or
+                (G.P_CENTERS[v] or {}).set == "Voucher" and G.shop_vouchers or nil,
+        }
     end
 
     local tag = Tag(v)
@@ -68,7 +73,7 @@ local function find(it)
         :where(type, "table")
         :where(function(v, k)
             return ((G.P_CENTERS[k] or {}).config or G.P_BLINDS[k]) and
-                match == simplify(k) or match == simplify(v.name)
+                (match == simplify(k) or match == simplify(v.name))
         end)
         :keys()
         :any()

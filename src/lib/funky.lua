@@ -135,7 +135,7 @@ end
 ---@return V
 ---@nodiscard
 local function autopairs(tbl, fpairs)
-    return (fpairs or (tbl[#tbl] and ipairs or pairs))(tbl)
+    return (fpairs or (tbl[1] and ipairs or pairs))(tbl)
 end
 
 --- Always returns nil.
@@ -240,11 +240,11 @@ end
 ---@nodiscard
 function f.indices(v)
     return function(x)
-        if type(x) ~= "table" then
-            return x
-        end
-
         for i in v:gmatch "[^.]+" do
+            if type(x) ~= "table" then
+                return x
+            end
+
             x = x[i]
         end
 
