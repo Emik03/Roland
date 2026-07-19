@@ -25,8 +25,10 @@ local function add(v)
         return SMODS.add_card {
             no_edition = true,
             key = v,
-            area = (G.P_CENTERS[v] or {}).set == "Booster" and G.shop_booster or
-                (G.P_CENTERS[v] or {}).set == "Voucher" and G.shop_vouchers or nil,
+            area = G.P_CENTERS[v] and
+                (({Default = true, Enhanced = true})[G.P_CENTERS[v].set] and G.hand or
+                    G.P_CENTERS[v].set == "Booster" and G.shop_booster or
+                    G.P_CENTERS[v].set == "Voucher" and G.shop_vouchers) or nil,
         }
     end
 

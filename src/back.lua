@@ -146,7 +146,7 @@ local b_dropship = back {
             not not f(G.jokers.cards):map "ability":all "perishable"
     end,
     apply = function(self)
-        G.GAME.modifiers.Roland_dropship = true
+        G.GAME.modifiers.Roland_dropship = not self:is_alt()
         G.GAME.modifiers.Roland_dropship_alt = self:is_alt()
     end,
     calculate = f.noop,
@@ -200,14 +200,13 @@ local function create_dropshipped_card(_type, ...)
 
     if ok and G.GAME.modifiers.Roland_dropship_alt then
         ret.ability.rental = true
-        ret.ability.perish_tally = 1 / 0
         local _ = ret:set_edition({negative = true}, true, true)
     end
 
     if ok and G.GAME.modifiers.Roland_dropship then
+        ret.ability.perish_tally = 5
         ret.ability.perishable = true
         ret.cost, ret.sell_cost = 0, 0
-        ret.ability.perish_tally = G.GAME.modifiers.Roland_dropship_alt and 1 / 0 or 5
     end
 
     return ret
