@@ -116,7 +116,7 @@ SMODS.current_mod.harsh_ante_scaling = {
         return (Big.constants and Big.constants.TEN or Big:new {10}):pow(blind(rem + 1))
     end,
     function(rem)
-        return Big:new {1, rem + 1}
+        return Big:new {1, rem + 2}
     end,
     function(rem)
         return Big:new {1, 1, [rem + 2] = 1}
