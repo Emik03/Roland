@@ -40,7 +40,7 @@ local back = (function()
                 return ret
             end,
             apply = function(self, ...)
-                return (tbl.alt_apply and self:is_alt() and tbl.alt_apply or apply)(self, ...)
+                return save((tbl.alt_apply and self:is_alt() and tbl.alt_apply or apply)(self, ...))
             end,
             calculate = function(self, ...)
                 return (tbl.alt_calculate and self:is_alt() and tbl.alt_calculate or calculate)(self, ...)

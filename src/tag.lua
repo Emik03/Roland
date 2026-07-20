@@ -60,8 +60,8 @@ SMODS.Tag {
     pos = {x = 0, y = 0},
     config = {amount = 5},
     loc_vars = function(self, info_queue, tag)
-        info_queue[#info_queue + 1] = G.P_CENTERS.e_Roland_frozen
         tag.ability = tag.ability or {}
+        table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
         return {vars = {tag.ability.amount or self.config.amount}}
     end,
     apply = function(self, tag, context)
