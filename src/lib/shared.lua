@@ -137,6 +137,21 @@ local function u()
         G.STATE ~= G.STATES.PLAY_TAROT)
 end
 
+---@generic T
+---@param tbl T[]
+---@return fun(t: T[], i: integer): integer, T
+---@return T[]
+local function r(tbl)
+    return function(t, i)
+        local k = i and i - 1 or #t
+        local v = t[k]
+
+        if v ~= nil then
+            return k, v
+        end
+    end, tbl
+end
+
 --- Creates one or more cards.
 ---@param ... any
 ---@return Card|Tag|(Card|Tag[])
@@ -154,7 +169,7 @@ local function c(...)
     return #cards > 1 and cards or cards[1]
 end
 
-return {f, q, u, setmetatable({}, {
+return {f, q, u, r, setmetatable({}, {
     __call = function(_, ...)
         return c(...)
     end,

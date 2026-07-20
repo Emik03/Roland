@@ -1,4 +1,4 @@
-local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
+local f, q, r = (... or require "lib.shared")[1], (... or require "lib.shared")[2], (... or require "lib.shared")[4]
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 local orig_set_debuff = Card.set_debuff
 
@@ -110,21 +110,35 @@ local function no_harsh_ante_scaling()
     return not Talisman or not SMODS.Mods.Roland.config.harsh_ante_scaling
 end
 
-function get_blind_amount(ante, ...)
-    local loop = 39
+---@type (fun(rem: number): number|table)[]
+SMODS.current_mod.harsh_ante_scaling = {
+    function(rem)
+        return (Big.constants and Big.constants.TEN or Big:new {10}):pow(blind(rem + 1))
+    end,
+    function(rem)
+        return Big:new {1, rem + 1}
+    end,
+    function(rem)
+        return Big:new {1, 1, [rem + 2] = 1}
+    end,
+    function(rem)
+        return Big:new {1, 1, [blind(rem) + 2] = 1}
+    end,
+    function(rem)
+        return rem <= 1 and Big:new {1.7976931348623157e308, 1, [1.7975e308] = 1} or 1 / 0
+    end,
+}
 
-    if ante < loop or no_harsh_ante_scaling() then
+function get_blind_amount(ante, ...)
+    local offset = 40
+
+    if ante < offset or no_harsh_ante_scaling() then
         return orig_get_blind_amount(ante, ...)
     end
 
-    if (ante - 9) / 15 >= loop then
-        return 1 / 0
-    end
+    local loop = 10
 
-    local rem = tonumber(blind((ante % loop) + 1))
-
-    return ante / 15 >= loop and Big:new(f(blind(ante - (loop * 15))):map(f.const(10)):table()) or
-        (ante / 9 >= loop and Big:new(f(ante / loop - 8):map(f.const(10)):concat {rem}:table()) or
-            (ante / 2 >= loop and Big:new {rem, ante / loop} or
-                (Big.constants and Big.constants.TEN or Big:new {10}):pow(rem)))
+    return f(SMODS.Mods.Roland.harsh_ante_scaling, r):any(function(_, k)
+        return (ante - offset) / loop + 1 >= k
+    end)((ante - offset) % loop + 1)
 end

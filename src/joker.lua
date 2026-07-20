@@ -1,4 +1,4 @@
-local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
+local f, q, r = (... or require "lib.shared")[1], (... or require "lib.shared")[2], (... or require "lib.shared")[4]
 
 local atlas = SMODS.Atlas {
     key = "joker",
@@ -53,21 +53,6 @@ local joker = (function()
         return q(SMODS.Joker(tbl))
     end
 end)()
-
----@generic T
----@param tbl T[]
----@return fun(t: T[], i: integer): integer, T
----@return T[]
-local function ipairs_reversed(tbl)
-    return function(t, i)
-        local k = i and i - 1 or #t
-        local v = t[k]
-
-        if v ~= nil then
-            return k, v
-        end
-    end, tbl
-end
 
 ---@param card Card
 ---@return boolean
@@ -720,9 +705,9 @@ joker {
             {card = card, xmult = card.ability.extra.xmult} or nil
     end,
     crimson = function()
-        local _ = G.jokers and f(G.jokers.cards, ipairs_reversed):where(is_frozen, false):each(function(v)
-            local r = G.jokers.cards[v.rank + 1]
-            local debuffed_by_crimson = r and not r.debuff and r.config.center.key == "j_Roland_crimson"
+        local _ = G.jokers and f(G.jokers.cards, r):where(is_frozen, false):each(function(v)
+            local right = G.jokers.cards[v.rank + 1]
+            local debuffed_by_crimson = right and not right.debuff and right.config.center.key == "j_Roland_crimson"
 
             if debuffed_by_crimson and v.ability.Roland_crimson == nil then
                 local debuff = not not v.debuff

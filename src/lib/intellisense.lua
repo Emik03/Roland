@@ -50,6 +50,9 @@ end
 
 SMODS.Mods.Roland.config = require "config"
 
+---@type (fun(rem: number): number|table)[]
+SMODS.Mods.Roland.harsh_ante_scaling = SMODS.Mods.Roland.harsh_ante_scaling
+
 --- @type table
 Talisman = Talisman
 
