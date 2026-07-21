@@ -243,14 +243,15 @@ joker {
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
     end,
     calculate = function(_, _, context)
-        return (context.selling_self or context.forcetrigger) and f(G.hand.cards):each(function(v)
-            q {
-                delay = 0.1,
-                func = function()
-                    v:set_edition {Roland_frozen = true}
-                end,
-            }
-        end) or nil
+        return (context.selling_self or context.forcetrigger) and
+            f(G.hand.cards):where("edition", false):each(function(v)
+                q {
+                    delay = 0.1,
+                    func = function()
+                        v:set_edition {Roland_frozen = true}
+                    end,
+                }
+            end) or nil
     end,
 }
 
