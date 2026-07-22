@@ -1,8 +1,9 @@
 local qol = assert(SMODS.load_file "src/lib/shared.lua")() or require "lib.shared"
 local animated = SMODS.current_mod.config.animated_icon
 SMODS.current_mod.qol = qol
+local f, q = qol[1], qol[2]
 
-qol[2] {
+q {
     front = true,
     no_delete = true,
     blocking = false,
@@ -14,22 +15,22 @@ qol[2] {
             return false
         end
 
-        qol[1](assert(SMODS.load_file("src/credits.lua", "Roland"))() or require "credits"):each(function(v, k)
+        f(assert(SMODS.load_file("src/credits.lua", "Roland"))() or require "credits"):each(function(v, k)
             contributors["Roland_" .. k] = v
         end)
 
         if SMODS.Mods.DebugPlus and SMODS.Mods.Roland.config.import_funky then
-            _G.f, _G.q, _G.u, _G.r, _G.c = unpack(qol)
+            _G.f, _G.q, _G.u, _G.c = unpack(qol)
         end
     end,
 }
 
-qol[1] {"challenge", "spectral", "edition", "voucher", "tweaks", "blind", "charm", "joker", "tarot", "back", "seal", "tag"}
+f {"challenge", "spectral", "edition", "voucher", "tweaks", "blind", "charm", "joker", "tarot", "back", "seal", "tag"}
     :each(function(v)
         assert(SMODS.load_file("src/" .. v .. ".lua"))(qol)
     end)
 
-local _ = Balatest and qol[1] {"joker", "blind", "spectral"}:each(function(v)
+local _ = Balatest and f {"joker", "blind", "spectral"}:each(function(v)
     assert(SMODS.load_file("src/tests/" .. v .. ".tests.lua"))(qol)
 end)
 

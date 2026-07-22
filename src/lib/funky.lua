@@ -8,6 +8,42 @@
 local f = {}
 
 if not f then
+    ---@generic T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R
+    ---@param self F
+    ---@param first? T1
+    ---@param second? T2
+    ---@param third? T3
+    ---@param fourth? T4
+    ---@param fifth? T5
+    ---@param sixth? T6
+    ---@param seventh? T7
+    ---@param eighth? T8
+    ---@param ninth? T9
+    ---@param tenth? T10
+    ---@return fun(v: fun(first: T1, second: T2, third: T3, fourth: T4, fifth: T5, sixth: T6, seventh: T7, eighth: T8, ninth: T9, tenth: T10): R): R
+    ---@nodiscard
+    function f:call(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth)
+        error {first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth}
+    end
+
+    ---@generic T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R
+    ---@param self string
+    ---@param first? T1
+    ---@param second? T2
+    ---@param third? T3
+    ---@param fourth? T4
+    ---@param fifth? T5
+    ---@param sixth? T6
+    ---@param seventh? T7
+    ---@param eighth? T8
+    ---@param ninth? T9
+    ---@param tenth? T10
+    ---@return fun(v: {[string]: fun(self: self, first: T1, second: T2, third: T3, fourth: T4, fifth: T5, sixth: T6, seventh: T7, eighth: T8, ninth: T9, tenth: T10): R}): R
+    ---@nodiscard
+    function f.call(self, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth)
+        error {self, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth}
+    end
+
     ---@generic I, O
     ---@param first integer|string|fun(v: I): O
     ---@return fun(v: I): O
@@ -98,6 +134,96 @@ if not f then
         error(all)
     end
 
+    ---@generic I, O
+    ---@param first integer|string|fun(v: I): O
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(first)
+        error {first}
+    end
+
+    ---@generic I, T, O
+    ---@param first integer|string|fun(v: T): O
+    ---@param second integer|string|fun(v: I): T
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(first, second)
+        error {first, second}
+    end
+
+    ---@generic I, T1, T2, O
+    ---@param first integer|string|fun(v: T2): O
+    ---@param second integer|string|fun(v: T1): T2
+    ---@param third integer|string|fun(v: I): T1
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(first, second, third)
+        error {first, second, third}
+    end
+
+    ---@generic I, T1, T2, T3, O
+    ---@param first integer|string|fun(v: T3): O
+    ---@param second integer|string|fun(v: T2): T3
+    ---@param third integer|string|fun(v: T1): T2
+    ---@param fourth integer|string|fun(v: I): T1
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(first, second, third, fourth)
+        error {first, second, third, fourth}
+    end
+
+    ---@generic I, T1, T2, T3, T4, O
+    ---@param first integer|string|fun(v: T4): O
+    ---@param second integer|string|fun(v: T3): T4
+    ---@param third integer|string|fun(v: T2): T3
+    ---@param fourth integer|string|fun(v: T1): T2
+    ---@param fifth integer|string|fun(v: I): T1
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(first, second, third, fourth, fifth)
+        error {first, second, third, fourth, fifth}
+    end
+
+    ---@generic I, O
+    ---@param all { [1]: (integer|string|fun(v: I): O) }
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(all)
+        error(all)
+    end
+
+    ---@generic I, T, O
+    ---@param all { [1]: (integer|string|fun(v: T): O), [2]: (integer|string|fun(v: I): T) }
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(all)
+        error(all)
+    end
+
+    ---@generic I, T1, T2, O
+    ---@param all { [1]: (integer|string|fun(v: T2): O), [2]: (integer|string|fun(v: T1): T2), [3]: (integer|string|fun(v: I): T1) }
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(all)
+        error(all)
+    end
+
+    ---@generic I, T1, T2, T3, O
+    ---@param all { [1]: (integer|string|fun(v: T3): O), [2]: (integer|string|fun(v: T2): T3), [3]: (integer|string|fun(v: T1): T2), [4]: (integer|string|fun(v: I): T1) }
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(all)
+        error(all)
+    end
+
+    ---@generic I, T1, T2, T3, T4, O
+    ---@param all { [1]: (integer|string|fun(v: T4): O), [2]: (integer|string|fun(v: T3): T4), [3]: (integer|string|fun(v: T2): T3), [4]: (integer|string|fun(v: T1): T2), [4]: (integer|string|fun(v: I): T1) }
+    ---@return fun(v: I): O
+    ---@nodiscard
+    function f.compose(all)
+        error(all)
+    end
+
     ---@generic K, V
     ---@param self F | { [K]: V }
     ---@return K?, V?
@@ -169,7 +295,7 @@ end
 
 ---@generic T
 ---@param value T
----@return fun(T): boolean
+---@return fun(v: T): boolean
 ---@nodiscard
 function f.eq(value)
     return function(v)
@@ -252,6 +378,21 @@ function f.indices(v)
     end
 end
 
+---@generic T
+---@param tbl T[]
+---@return fun(t: T[], i?: integer): integer, T
+---@return T[]
+function f.revpairs(tbl)
+    return function(t, i)
+        local k = i and i - 1 or #t
+        local v = t[k]
+
+        if v ~= nil then
+            return k, v
+        end
+    end, tbl
+end
+
 ---@param any any
 ---@return boolean
 ---@nodiscard
@@ -259,10 +400,24 @@ function f.isf(any)
     return type(any) == "table" and any.from == f.from and any.new == f.new
 end
 
+local unpack = table.unpack or unpack
+
+f[true and "call"] = function(self, ...)
+    local args = {...}
+
+    return type(self) == "string" and function(v)
+        return v[self](self, unpack(args))
+    end or function(v)
+        return v(unpack(args))
+    end
+end
+
 f[true and "chain"] = function(...)
     local ret
 
     for _, v in ipairs {...} do
+        v = f.isf(v) and v:table() or v
+
         if type(v) == "table" then
             for _, vv in ipairs(v) do
                 local copy = ret
@@ -285,6 +440,10 @@ f[true and "chain"] = function(...)
     return ret or f.noop
 end
 
+f[true and "compose"] = function(...)
+    return f.chain(f.from({...}, f.revpairs):values())
+end
+
 ---@generic K, V
 ---@param fnext? fun(): K?, V?
 ---@return F|{ [K]: V }
@@ -295,7 +454,9 @@ function f.new(fnext)
         all = f.all,
         any = f.any,
         arg = f.arg,
+        call = f.call,
         chain = f.chain,
+        compose = f.compose,
         concat = f.concat,
         const = f.const,
         count = f.count,
@@ -319,6 +480,8 @@ function f.new(fnext)
         nq = f.nq,
         peek = f.peek,
         pun = f.pun,
+        rev = f.rev,
+        revpairs = f.revpairs,
         skip = f.skip,
         slice = f.slice,
         string = f.string,
@@ -377,10 +540,10 @@ function f.from(iter, fpairs, step)
             end
         end)
     else
-        local next, context, k, v = autopairs(iter, type(fpairs) == "function" and fpairs or nil)
+        local next, tbl, k, v = autopairs(iter, type(fpairs) == "function" and fpairs or nil)
 
         return f.new(function()
-            k, v = next(context, k)
+            k, v = next(tbl, k)
             return k, v
         end)
     end
@@ -392,12 +555,14 @@ end
 ---@return F|{ [K]: V }
 ---@nodiscard
 function f:concat(...)
+    self = f.isf(self) and self or f.from(self)
     local fsi = 0
     local fs = {...}
     local sum, last = 0, 0
 
     for i = 1, #fs do
-        fs[i] = f.isf(fs[i]) and fs[i] or f.from(fs[i])
+        local s = fs[i]
+        fs[i] = f.isf(s) and s or f.from(s)
     end
 
     return f.new(function()
@@ -431,6 +596,7 @@ end
 ---@return F|{ [K]: V }
 ---@nodiscard
 function f:peek(func)
+    self = f.isf(self) and self or f.from(self)
     func = autofunc(func)
 
     return f.new(function()
@@ -450,6 +616,7 @@ end
 ---@overload fun(self: F|{ [K]: V }, func: string): F|{ [K]: U }
 ---@nodiscard
 function f:map(func)
+    self = f.isf(self) and self or f.from(self)
     func = autofunc(func)
 
     return f.new(function()
@@ -469,11 +636,14 @@ end
 ---@overload fun(self: F|{ [K]: V }, func: string, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)): F|{ [K]: U }
 ---@nodiscard
 function f:flatmap(func, fpairs)
+    self = f.isf(self) and self or f.from(self)
     -- local i = 0
-    local vt, vk, vv, vp
+    local vt, vk, vp
     func = autofunc(func)
 
     return f.new(function()
+        local vv
+
         if vk then
             vk, vv = vp(vt, vk)
 
@@ -519,6 +689,7 @@ end
 ---@nodiscard
 ---@overload fun(self: F|{ [K]: V }, func: string, is?: any): F|{ [K]: V }
 function f:where(func, is)
+    self = f.isf(self) and self or f.from(self)
     func = autofunc(func)
 
     return f.new(function()
@@ -551,6 +722,7 @@ end
 ---@return F|{ [integer]: K }
 ---@nodiscard
 function f:keys()
+    self = f.isf(self) and self or f.from(self)
     local i = 0
 
     return f.new(function()
@@ -568,6 +740,7 @@ end
 ---@return F|{ [integer]: V }
 ---@nodiscard
 function f:values()
+    self = f.isf(self) and self or f.from(self)
     local i = 0
 
     return f.new(function()
@@ -585,6 +758,8 @@ end
 ---@return F|{ [V]: K }
 ---@nodiscard
 function f:swap()
+    self = f.isf(self) and self or f.from(self)
+
     return f.new(function()
         local k, v = self:next()
 
@@ -596,11 +771,35 @@ end
 
 ---@generic K, V
 ---@param self F|{ [K]: V }
+---@return F|{ [K]: V }
+---@nodiscard
+function f:rev()
+    self = f.isf(self) and self or f.from(self)
+    local t, p, k
+
+    return f.new(function()
+        if not t then
+            p, t = f.revpairs(self:table())
+        end
+
+        local v
+        k, v = p(t, k)
+
+        if k ~= nil then
+            return k, v
+        end
+    end)
+end
+
+---@generic K, V
+---@param self F|{ [K]: V }
 ---@param skip? integer
 ---@param take? integer
 ---@return F|{ [K]: V }
 ---@nodiscard
 function f:slice(skip, take)
+    self = f.isf(self) and self or f.from(self)
+
     if (not skip or skip <= 0) and not take then
         return self
     end
@@ -632,6 +831,7 @@ end
 ---@return F|{ [K]: V }
 ---@nodiscard
 function f:skip(n)
+    self = f.isf(self) and self or f.from(self)
     return self:slice(n)
 end
 
@@ -641,6 +841,7 @@ end
 ---@return F|{ [K]: V }
 ---@nodiscard
 function f:take(n)
+    self = f.isf(self) and self or f.from(self)
     return self:slice(0, n)
 end
 
@@ -652,6 +853,7 @@ end
 ---@overload fun(self: F|{ [K]: V }, seed: fun(a: A, v: V, k: K): A): A
 ---@nodiscard
 function f:fold(seed, func)
+    self = f.isf(self) and self or f.from(self)
     local k, v
 
     if not func then
@@ -681,6 +883,7 @@ end
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
 ---@nodiscard
 function f:any(func)
+    self = f.isf(self) and self or f.from(self)
     func = autofunc(func)
 
     for k, v in self.next do
@@ -699,6 +902,7 @@ end
 ---@overload fun(self: F|{ [K]: V }, func: string?): boolean|V
 ---@nodiscard
 function f:all(func)
+    self = f.isf(self) and self or f.from(self)
     func = autofunc(func)
 
     for k, v in self.next do
@@ -717,8 +921,9 @@ end
 ---@overload fun(self: F|{ [K]: V }, func: string): integer
 ---@nodiscard
 function f:count(func)
-    local ret = 0
+    self = f.isf(self) and self or f.from(self)
     func = autofunc(func)
+    local ret = 0
 
     for k, v in self.next do
         if not func or func(v, k) then
@@ -733,15 +938,16 @@ end
 ---@param self F|{ [K]: V }
 ---@param other { [K]: V }
 ---@param func? fun(v: V, k: K): any
----@return K?
+---@return K?, V?
 ---@overload fun(self: F|{ [K]: V }, func: string): integer
 ---@nodiscard
 function f:diff(other, func)
+    self = f.isf(self) and self or f.from(self)
     func = autofunc(func)
 
     for k, v in self.next do
         if (not func or func(v, k)) and other[k] ~= v then
-            return k
+            return k, v
         end
     end
 end
@@ -760,6 +966,7 @@ end
 ---@return string
 ---@nodiscard
 function f:string()
+    self = f.isf(self) and self or f.from(self)
     local k, v = self:next()
 
     if k == nil then
@@ -784,6 +991,7 @@ end
 ---@return { [K]: V }
 ---@nodiscard
 function f:table()
+    self = f.isf(self) and self or f.from(self)
     local ret = {}
 
     for k, v in self.next do
@@ -797,6 +1005,8 @@ end
 ---@param self F|{ [K]: V }
 ---@param func? fun(v: V, k: K): nil
 function f:each(func)
+    self = f.isf(self) and self or f.from(self)
+
     for k, v in self.next do
         if func then
             func(v, k)

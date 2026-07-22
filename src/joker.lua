@@ -1,4 +1,4 @@
-local f, q, r = (... or require "lib.shared")[1], (... or require "lib.shared")[2], (... or require "lib.shared")[4]
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 
 local atlas = SMODS.Atlas {
     key = "joker",
@@ -706,7 +706,7 @@ joker {
             {card = card, xmult = card.ability.extra.xmult} or nil
     end,
     crimson = function()
-        local _ = G.jokers and f(G.jokers.cards, r):where(is_frozen, false):each(function(v)
+        local _ = G.jokers and f(G.jokers.cards, f.revpairs):where(is_frozen, false):each(function(v)
             local right = G.jokers.cards[v.rank + 1]
             local debuffed_by_crimson = right and not right.debuff and right.config.center.key == "j_Roland_crimson"
 
