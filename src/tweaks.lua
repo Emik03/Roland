@@ -1,4 +1,4 @@
-local f, q, r = (... or require "lib.shared")[1], (... or require "lib.shared")[2], (... or require "lib.shared")[4]
+local f, q = (... or require "lib.shared")[1], (... or require "lib.shared")[2]
 SMODS.Joker:take_ownership("joker", {cost = 1}, true)
 local orig_set_debuff = Card.set_debuff
 
@@ -138,7 +138,7 @@ function get_blind_amount(ante, ...)
 
     local loop = 10
 
-    return f(SMODS.Mods.Roland.harsh_ante_scaling, r):any(function(_, k)
+    return f(SMODS.Mods.Roland.harsh_ante_scaling, f.revpairs):any(function(_, k)
         return (ante - offset) / loop + 1 >= k
     end)((ante - offset) % loop + 1)
 end
