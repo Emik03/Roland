@@ -27,7 +27,7 @@ q(SMODS.Consumable {
 
         local highlighted = Bakery_API.get_highlighted()
 
-        return #G.jokers.highlighted + #highlighted == card.ability.extra.amount and
+        return #G.jokers.highlighted + #highlighted <= card.ability.extra.amount and
             f(G.jokers.highlighted):concat(highlighted):all(function(v)
                 return not v.edition
             end)

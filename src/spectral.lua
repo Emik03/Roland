@@ -77,7 +77,7 @@ spectral {
             delay = 0.4,
             func = function()
                 card:juice_up(0.3, 0.5)
-                play_sound("tarot1")
+                play_sound "tarot1"
             end,
         }
 
@@ -132,7 +132,7 @@ spectral {
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function(_, card)
-        return u() and #Bakery_API.get_highlighted() == card.ability.extra.amount
+        return u() and #Bakery_API.get_highlighted() <= card.ability.extra.amount
     end,
     use = function(_, _, _)
         f(Bakery_API.get_highlighted()):each(function(v)
