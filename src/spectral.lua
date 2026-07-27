@@ -50,17 +50,19 @@ spectral {
                 options = f(G.P_SEALS):keys():where(f.nq "Roland_glass"):values():table(),
             }
 
-            q {
+            local _ = not card.Roland_immediate and q {
                 delay = 0.5,
                 trigger = "after",
                 func = function()
                     v:set_seal(seal, nil, true)
                 end,
-            }
+            } or v:set_seal(seal, true, true)
         end)
     end,
     bulk_use = function(self, card, area, copier, number)
+        card.Roland_immediate = true
         f(number):map(f.const(self)):each(f.call("use", card, area, copier))
+        card.Roland_immediate = nil
     end,
 }
 
