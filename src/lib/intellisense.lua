@@ -28,6 +28,11 @@ CardSleeves.Sleeve = CardSleeves.Sleeve
 --- @type {aliases: { [string]: [string] }}
 Cryptid = Cryptid
 
+---@return Card
+function copy_card(...)
+    error(...)
+end
+
 --- @type fun(area: CardArea, ...: ...): Card
 create_card_for_shop = create_card_for_shop
 
@@ -43,9 +48,11 @@ G.playing_cards = G.playing_cards
 ---@type userdata|{getWidth: fun(self: self): number}
 SMODS.Atlas.image_data = SMODS.Atlas.image_data
 
----@return Card
-function copy_card(...)
-    error(...)
+---@param context CalcContext|table|{hand_drawn: true, other_drawn: true}
+---@param return_table? table
+---@return table?
+function SMODS.calculate_context(context, return_table)
+    error {context, return_table}
 end
 
 SMODS.Mods.Roland.config = require "config"

@@ -218,8 +218,8 @@ joker {
         SMODS.calculate_context {drawing_cards = true, draw = {G.deck.cards}}
 
         SMODS.calculate_context {
-            hand_drawn = facing_blind and {G.deck.cards[1]} and true,
-            other_drawn = not facing_blind and {G.deck.cards[1]} and true,
+            hand_drawn = facing_blind and {G.deck.cards[1]} or true,
+            other_drawn = not facing_blind and {G.deck.cards[1]} or true,
             first_hand_drawn = not current_round.any_hand_drawn and facing_blind or nil,
         }
 
@@ -274,7 +274,7 @@ joker {
                 delay = 1,
                 func = function()
                     play_sound "timpani"
-                    SMODS.add_card {edition = "e_negative", key = v.config.center.key}
+                    SMODS.add_card {edition = "e_negative", key = v.config.center.key, silent = true}
                 end,
             }
         end) or nil

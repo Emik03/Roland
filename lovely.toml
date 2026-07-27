@@ -83,7 +83,7 @@ pattern = "local card = create_card('Tarot',G.consumeables, nil, nil, nil, nil, 
 position = "after"
 times = 1
 payload = """if next(SMODS.find_card "j_Roland_misfortune") then
-    card:set_edition "e_negative"
+    card:set_edition("e_negative", true, true)
 end"""
 match_indent = true
 
@@ -105,7 +105,7 @@ target = "card.lua"
 pattern = "local card = create_card(card_type,G.consumeables, nil, nil, nil, nil, _planet, 'blusl')"
 position = "after"
 payload = """if next(SMODS.find_card "j_Roland_misfortune") then
-    card:set_edition "e_negative"
+    card:set_edition("e_negative", true, true)
 end"""
 match_indent = true
 
