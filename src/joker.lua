@@ -274,7 +274,9 @@ joker {
                 delay = 1,
                 func = function()
                     play_sound "timpani"
+
                     SMODS.add_card {edition = "e_negative", key = v.config.center.key, silent = true}
+                    .ability.qty = v.ability.qty
                 end,
             }
         end) or nil
