@@ -65,6 +65,18 @@ position = "at"
 payload = "elseif G.GAME.blind_on_deck == 'Big' then"
 match_indent = true
 
+# Prevent Incantation from overriding Faster Planets
+[[patches]]
+[patches.pattern]
+target = '=[SMODS incantation "Incantation.lua"]'
+pattern = "function Card:use_consumeable(area, copier)"
+position = "after"
+payload = """if SMODS.Mods.Roland.config.faster_planets and 
+    self.ability.consumeable.hand_type then
+    return useconsumeref(self, area, copier)
+end"""
+match_indent = true
+
 # Misfortune Cookie
 [[patches]]
 [patches.pattern]
