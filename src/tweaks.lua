@@ -20,7 +20,7 @@ local orig_use_consumeable = Card.use_consumeable
 function Card:use_consumeable(area, copier, ...)
     if SMODS.Mods.Roland.config.faster_planets and self.ability.consumeable.hand_type then
         set_consumeable_usage(self)
-        level_up_hand(copier or self, self.ability.consumeable.hand_type, true)
+        level_up_hand(copier or self, self.ability.consumeable.hand_type, true, self.ability.qty or 1)
         return
     end
 
