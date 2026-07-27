@@ -341,6 +341,19 @@ function f.arg(i)
 end
 
 ---@generic K, V
+---@param v V
+---@param k K
+---@return fun(x: { [K]: V })
+---@nodiscard
+function f.assign(v, k)
+    return function(x)
+        if type(x) == "table" then
+            x[k] = v
+        end
+    end
+end
+
+---@generic K, V
 ---@param v K
 ---@return fun(x: { [K]: V }): V
 ---@nodiscard
@@ -406,7 +419,7 @@ f[true and "call"] = function(self, ...)
     local args = {...}
 
     return type(self) == "string" and function(v)
-        return v[self](self, unpack(args))
+        return v[self](v, unpack(args))
     end or function(v)
         return v(unpack(args))
     end
@@ -454,6 +467,7 @@ function f.new(fnext)
         all = f.all,
         any = f.any,
         arg = f.arg,
+        assign = f.assign,
         call = f.call,
         chain = f.chain,
         compose = f.compose,

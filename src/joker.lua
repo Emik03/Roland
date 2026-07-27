@@ -57,7 +57,7 @@ end)()
 ---@param card Card
 ---@return boolean
 local function is_frozen(card)
-    return card and card.edition and card.edition.key == "e_Roland_frozen"
+    return card and card.edition and card.edition.Roland_frozen
 end
 
 ---@param card? Card|false|{suit: string, value: string}
@@ -531,8 +531,8 @@ joker {
     pronouns = "they_them",
     cost = 10,
     rarity = 3,
-    config = {extra = {frozen = 1, non_frozen = 0, max_stack = 6, color = "DARK_EDITION"}},
-    attributes = {"retrigger", "editions"},
+    config = {extra = {frozen = 1, non_frozen = 0, color = "DARK_EDITION"}},
+    attributes = {"retrigger", "editions", "copying"},
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
@@ -542,9 +542,9 @@ joker {
     calculate = function(_, card, context)
         local extra = card.ability.extra
 
-        if extra.max_stack and
-            context.blueprint_copiers_stack and
-            extra.max_stack < #context.blueprint_copiers_stack then
+        if f(context.blueprint_copiers_stack)
+            :where("config.center.key", card.config.center.key)
+            :any() then
             return
         end
 
@@ -557,14 +557,15 @@ joker {
         end
 
         return SMODS.merge_effects(
-            f(G.jokers.cards):where(is_frozen):where(function(v)
-                return v.config.center.key ~= card.config.center.key
-            end):map(function(v)
+            f(G.jokers.cards)
+            :where(is_frozen)
+            :map(function(v)
                 return SMODS.blueprint_effect(card, v, context)
-            end):where(type, "table"):map(function(v)
-                v.colour = G.C[extra.color]
-                return v
-            end):values():table()
+            end)
+            :where(type, "table")
+            :map(f.assign(G.C[extra.color], "colour"))
+            :values()
+            :table()
         )
     end,
 }
