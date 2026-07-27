@@ -26,8 +26,9 @@ q(SMODS.Consumable {
         end
 
         local highlighted = Bakery_API.get_highlighted()
+        local count = #G.jokers.highlighted + #highlighted
 
-        return #G.jokers.highlighted + #highlighted <= card.ability.extra.amount and
+        return count > 0 and count <= card.ability.extra.amount and
             f(G.jokers.highlighted):concat(highlighted):all(function(v)
                 return not v.edition
             end)

@@ -38,7 +38,7 @@ spectral {
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function()
-        return u() and #G.hand.cards > 0
+        return next(G.hand.cards) and u()
     end,
     use = function(_, card, _)
         local cards = f(G.hand.cards):table()
@@ -132,7 +132,8 @@ spectral {
         return {vars = {card.ability.extra.amount}}
     end,
     can_use = function(_, card)
-        return u() and #Bakery_API.get_highlighted() <= card.ability.extra.amount
+        local count = #Bakery_API.get_highlighted()
+        return u() and count > 0 and count <= card.ability.extra.amount
     end,
     use = function(_, _, _)
         f(Bakery_API.get_highlighted()):each(function(v)
