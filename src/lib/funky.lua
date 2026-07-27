@@ -341,19 +341,6 @@ function f.arg(i)
 end
 
 ---@generic K, V
----@param v V
----@param k K
----@return fun(x: { [K]: V })
----@nodiscard
-function f.assign(v, k)
-    return function(x)
-        if type(x) == "table" then
-            x[k] = v
-        end
-    end
-end
-
----@generic K, V
 ---@param v K
 ---@return fun(x: { [K]: V }): V
 ---@nodiscard
@@ -385,6 +372,21 @@ function f.indices(v)
             end
 
             x = x[i]
+        end
+
+        return x
+    end
+end
+
+---@generic K, V
+---@param v V
+---@param k K
+---@return fun(x: { [K]: V }): { [K]: V }
+---@nodiscard
+function f.insert(v, k)
+    return function(x)
+        if type(x) == "table" then
+            x[k] = v
         end
 
         return x
@@ -467,7 +469,6 @@ function f.new(fnext)
         all = f.all,
         any = f.any,
         arg = f.arg,
-        assign = f.assign,
         call = f.call,
         chain = f.chain,
         compose = f.compose,
@@ -485,6 +486,7 @@ function f.new(fnext)
         index = f.index,
         index_into = f.index_into,
         indices = f.indices,
+        insert = f.insert,
         isf = f.isf,
         keys = f.keys,
         map = f.map,

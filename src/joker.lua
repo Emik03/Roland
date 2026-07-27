@@ -526,6 +526,29 @@ joker {
     end,
 }
 
+---comment
+---@param card Card
+---@param context table|CalcContext
+---@return function
+local function copy(card, context)
+    ---@param v Card
+    return function(v)
+        local override_compat = v.config.center.blueprint_compat == nil
+
+        if override_compat then
+            v.config.center.blueprint_compat = true
+        end
+
+        local ret = SMODS.blueprint_effect(card, v, context)
+
+        if override_compat then
+            v.config.center.blueprint_compat = nil
+        end
+
+        return ret
+    end
+end
+
 joker {
     key = "arctic",
     pronouns = "they_them",
@@ -557,13 +580,13 @@ joker {
         end
 
         return SMODS.merge_effects(
-            f(G.jokers.cards)
+            f(G)
+            :where(getmetatable, CardArea)
+            :flatmap("cards", ipairs)
             :where(is_frozen)
-            :map(function(v)
-                return SMODS.blueprint_effect(card, v, context)
-            end)
+            :map(copy(card, context))
             :where(type, "table")
-            :map(f.assign(G.C[extra.color], "colour"))
+            :map(f.insert(G.C[extra.color], "colour"))
             :values()
             :table()
         )
