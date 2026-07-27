@@ -257,7 +257,7 @@ blind {
     boss = {min = 6},
     boss_colour = HEX "bdaeccff",
     pronouns = "they_them",
-    collection_loc_vars = function(_)
+    collection_loc_vars = function()
         return {
             vars = {localize {
                 type = "variable",
@@ -265,7 +265,7 @@ blind {
             }},
         }
     end,
-    loc_vars = function(_)
+    loc_vars = function()
         local _, name = common_rank()
         return {vars = {localize(name or "Ace", "ranks")}}
     end,
@@ -319,7 +319,7 @@ blind {
     dollars = 5,
     defeat = disable_improbable,
     disable = disable_improbable,
-    set_blind = function(_)
+    set_blind = function()
         G.GAME.modifiers.Roland_improbable = true
     end,
 }
@@ -380,7 +380,7 @@ function SMODS.current_mod:calculate(context)
         :map(f.index_into(G.P_CENTERS))
         :where("config.extra.hand_type", context.scoring_name)
         :pun "SMODS.Voucher"
-        :each(function(v, _)
+        :each(function(v)
             SMODS.smart_level_up_hand(nil, v.config.extra.hand_type, false, v.config.extra.amount)
         end)
 

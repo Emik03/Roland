@@ -40,14 +40,17 @@ spectral {
     can_use = function()
         return next(G.hand.cards) and u()
     end,
-    use = function(_, card, _)
+    use = function(self, card)
+        self:bulk_use(card, card.area, nil, 1)
+    end,
+    bulk_use = function(_, card, _, _, number)
         local cards = f(G.hand.cards):table()
         pseudoshuffle(cards, pseudoseed "RolandDual")
 
-        f(cards):take(card.ability.extra.amount):each(function(v)
+        f(cards):take(card.ability.extra.amount * number):each(function(v)
             local seal
 
-            for _ = 1, 64 do
+            for _ = 1, 38 do
                 seal = SMODS.poll_seal {guaranteed = true}
 
                 if seal ~= "Roland_glass" then
@@ -135,7 +138,7 @@ spectral {
         local count = #Bakery_API.get_highlighted()
         return u() and count > 0 and count <= card.ability.extra.amount
     end,
-    use = function(_, _, _)
+    use = function()
         f(Bakery_API.get_highlighted()):each(function(v)
             v:set_seal "Roland_glass"
         end)

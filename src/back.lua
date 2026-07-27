@@ -80,10 +80,10 @@ back {
     pronouns = "any_all",
     config = {extra = {alt_times = 9, times = 3}},
     attributes = {"passive", "boss_blind"},
-    loc_vars = function(self, _, _)
+    loc_vars = function(self)
         return {vars = {self.config.extra.alt_times}}
     end,
-    apply = function(_, _)
+    apply = function()
         G.GAME.modifiers.Roland_blossom_deck = true
     end,
     calculate = function(self, b, context)
