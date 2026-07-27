@@ -40,7 +40,7 @@ end
 ---@param v SMODS.GameObject
 ---@return boolean|string
 local function is_economy(v)
-    return f(Bakery_API.econ_only_items):where(f.id, v.key):any()
+    return f(Bakery_API.econ_only_items):where(f.eq(v.key)):any()
 end
 
 ---@param key string

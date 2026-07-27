@@ -40,26 +40,27 @@ spectral {
     can_use = function()
         return next(G.hand.cards) and u()
     end,
-    use = function(self, card)
-        self:bulk_use(card, card.area, nil, 1)
-    end,
-    bulk_use = function(_, card, _, _, number)
+    use = function(_, card)
         local cards = f(G.hand.cards):table()
         pseudoshuffle(cards, pseudoseed "RolandDual")
 
-        f(cards):take(card.ability.extra.amount * number):each(function(v)
-            local seal
+        f(cards):take(card.ability.extra.amount):each(function(v)
+            local seal = SMODS.poll_seal {
+                guaranteed = true,
+                options = f(G.P_SEALS):keys():where(f.nq "Roland_glass"):values():table(),
+            }
 
-            for _ = 1, 38 do
-                seal = SMODS.poll_seal {guaranteed = true}
-
-                if seal ~= "Roland_glass" then
-                    break
-                end
-            end
-
-            v:set_seal(seal == "Roland_glass" and "Red" or seal)
+            q {
+                delay = 0.5,
+                trigger = "after",
+                func = function()
+                    v:set_seal(seal, nil, true)
+                end,
+            }
         end)
+    end,
+    bulk_use = function(self, card, area, copier, number)
+        f(number):map(f.const(self)):each(f.call("use", card, area, copier))
     end,
 }
 
