@@ -14,10 +14,13 @@ local function add(v)
     end
 
     if G.P_BLINDS[v] then
-        G.from_boss_tag = true
-        G.GAME.perscribed_bosses = G.GAME.perscribed_bosses or {}
-        G.GAME.perscribed_bosses[G.GAME.round_resets.ante] = v
-        G.FUNCS.reroll_boss()
+        if G.STATE ~= G.STATES.MENU then
+            G.from_boss_tag = true
+            G.GAME.perscribed_bosses = G.GAME.perscribed_bosses or {}
+            G.GAME.perscribed_bosses[G.GAME.round_resets.ante] = v
+            G.FUNCS.reroll_boss()
+        end
+
         return G.P_BLINDS[v]
     end
 

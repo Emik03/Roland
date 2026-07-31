@@ -122,6 +122,7 @@ SMODS.Tag {
         ab.total_rounds = ab.total_rounds or self.config.total_rounds
 
         if tag.triggered or
+            not G.jokers or
             not next(G.jokers.cards) or
             ab.invis_rounds < ab.total_rounds or
             #G.jokers.cards + (modifiers.Roland_invisible or 0) >= G.jokers.config.card_limit then

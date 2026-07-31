@@ -329,8 +329,6 @@ function Card:calculate_dollar_bonus(...)
     return orig_calculate_dollar_bonus(self, ...)
 end
 
-local orig_get_probability_vars = SMODS.get_probability_vars
-
 function SMODS.current_mod.bootstraps_mult(card)
     local ability = card.Roland_frozen_ability
     local ret = math.floor((G.GAME.dollars + (G.GAME.dollar_buffer or 0)) / card.ability.extra.dollars)
@@ -343,9 +341,17 @@ function SMODS.current_mod.bootstraps_mult(card)
     return ability.Roland_bootstraps_mult
 end
 
+local orig_get_probability_vars = SMODS.get_probability_vars
+
 function SMODS.get_probability_vars(trigger_obj, ...)
     local numerator, denominator = orig_get_probability_vars(trigger_obj, ...)
-    return trigger_obj and (trigger_obj.Roland_frozen or {}).probability or numerator, denominator
+    local override = ((trigger_obj or {}).Roland_frozen or {}).probability
+
+    if override then
+        return type(denominator) == "table" and to_big(override) or override, denominator
+    else
+        return numerator, denominator
+    end
 end
 
 q {
