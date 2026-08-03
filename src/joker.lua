@@ -889,7 +889,7 @@ joker {
         return {vars = {card.ability.extra.dollars}}
     end,
     calculate = function(_, card, c)
-        local ret = (c.forcetrigger or not c.blueprint and (c.playing_card_added or c.remove_playing_cards)) and
+        local ret = (c.forcetrigger and (c.playing_card_added or c.remove_playing_cards)) and
             {dollars = card.ability.extra.dollars * #(c.cards or c.removed or {c.forcetrigger})} or nil
 
         if ret and (G.GAME or {}).challenge == "c_Roland_Spring_Cleaning" then
