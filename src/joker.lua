@@ -196,8 +196,8 @@ joker {
 joker {
     key = "sunny",
     pronouns = "it_its",
-    artist = "char",
     idea = "redstoad",
+    artist = "ghostlyfield",
     attributes = {"food", "on_sell"},
     cost = 2,
     rarity = 1,
@@ -286,7 +286,7 @@ joker {
 joker {
     key = "monomino",
     pronouns = "it_its",
-    artist = "char",
+    artist = "ghostlyfield",
     config = {extra = {price = 4, hand_name = "Four of a Kind"}},
     attributes = {"sell_value", "scaling", "economy", "hand_type"},
     cost = 4,
@@ -315,7 +315,7 @@ joker {
 joker {
     key = "domino",
     pronouns = "it_its",
-    artist = "char",
+    artist = "ghostlyfield",
     config = {extra = {mult_gain = 4, hand_name = "Four of a Kind", mult = 0}},
     attributes = {"mult", "scaling", "hand_type"},
     cost = 4,
@@ -346,7 +346,7 @@ joker {
 joker {
     key = "trimino",
     pronouns = "it_its",
-    artist = "char",
+    artist = "ghostlyfield",
     config = {extra = {times = 4, hand_name = "Four of a Kind"}},
     attributes = {"generation", "hand_type"},
     cost = 8,
@@ -405,7 +405,7 @@ joker {
 joker {
     key = "misfortune",
     pronouns = "she_they",
-    artist = "char",
+    artist = "ghostlyfield",
     attributes = {"discard", "passive", "tarot", "planet", "generation", "seals"},
     cost = 6,
     rarity = 2,
@@ -425,6 +425,7 @@ joker {
 joker {
     key = "polaris",
     pronouns = "he_him",
+    artist = "ghostlyfield",
     attributes = {"editions", "space"},
     cost = 6,
     rarity = 1,
@@ -497,6 +498,7 @@ joker {
 joker {
     key = "snowsquall",
     pronouns = "he_they",
+    artist = "ghostlyfield",
     config = {extra = {mult_gain = 3, mult = 0}},
     attributes = {"mult", "scaling", "hand_type"},
     cost = 6,
@@ -554,6 +556,7 @@ end
 joker {
     key = "arctic",
     pronouns = "they_them",
+    artist = "ghostlyfield",
     cost = 10,
     rarity = 3,
     config = {extra = {frozen = 1, non_frozen = 0, color = "DARK_EDITION"}},
@@ -598,8 +601,8 @@ joker {
 joker {
     key = "sapling",
     pronouns = "they_them",
-    artist = "char",
     idea = "redstoad",
+    artist = "ghostlyfield",
     attributes = {"mult", "suit"},
     cost = 4,
     rarity = 1,
@@ -836,6 +839,7 @@ joker {
 joker {
     key = "venerable",
     pronouns = "any_all",
+    artist = "ghostlyfield",
     defeated_blind = "bl_Roland_venerable_visage",
     config = {extra = {xdiscard = 3}},
     pixel_size = {w = 68, h = 68},
@@ -862,11 +866,45 @@ joker {
         ease_discard(round_resets.discards - discards)
     end,
 }
+joker {
+    key = "yard",
+    pronouns = "he_him",
+    artist = "ghostlyfield",
+    config = {extra = {dollars = 3}},
+    attributes = {"economy"},
+    cost = 6,
+    rarity = 1,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    blueprint_compat = true,
+    perishable_compat = true,
+    check_for_unlock = function()
+        return not not f.indices "challenge_progress.completed.c_Roland_Spring_Cleaning" (G.PROFILES[G.SETTINGS.profile])
+    end,
+    locked_loc_vars = function()
+        return {vars = {localize("c_Roland_Spring_Cleaning", "challenge_names")}}
+    end,
+    loc_vars = function(_, _, card)
+        return {vars = {card.ability.extra.dollars}}
+    end,
+    calculate = function(_, card, c)
+        local ret = (c.forcetrigger or not c.blueprint and (c.playing_card_added or c.remove_playing_cards)) and
+            {dollars = card.ability.extra.dollars * #(c.cards or c.removed or {c.forcetrigger})} or nil
+
+        if ret and (G.GAME or {}).challenge == "c_Roland_Spring_Cleaning" then
+            G.GAME.dollars = G.GAME.dollars + ret.dollars
+        else
+            return ret
+        end
+    end,
+}
 
 joker {
     key = "bulldozer",
     pronouns = "she_her",
     idea = "redstoad",
+    artist = "ghostlyfield",
     attributes = {"xmult"},
     cost = 6,
     rarity = 2,
@@ -929,8 +967,8 @@ joker {
 joker {
     key = "nilly",
     pronouns = "any_all",
-    artist = "ghostlyfield",
     idea = "redstoad",
+    artist = "ghostlyfield",
     config = {extra = {flipped = false}},
     attributes = {"xmult", "bakery_double_sided"},
     cost = 0,
@@ -966,6 +1004,7 @@ joker {
     key = "martingale",
     pronouns = "he_him",
     idea = "redstoad",
+    artist = "ghostlyfield",
     config = {extra = {odds = 2}},
     attributes = {"xmult", "chance"},
     cost = 8,
@@ -1029,6 +1068,7 @@ joker {
 joker {
     key = "idle",
     pronouns = "any_all",
+    artist = "ghostlyfield",
     rarity = 2,
     Roland_idle_capacity = 6,
     cost = G.P_CENTERS.j_idol.cost,
@@ -1105,6 +1145,7 @@ joker {
 joker {
     key = "suitable",
     pronouns = "she_they",
+    artist = "ghostlyfield",
     attributes = {"suit", "passive", "hearts", "diamonds", "spades", "clubs"},
     cost = 4,
     rarity = 2,
@@ -1157,8 +1198,8 @@ end
 joker {
     key = "artemis",
     pronouns = "any_all",
-    artist = "hamester",
     idea = "redstoad",
+    artist = "hamester",
     cost = 6,
     rarity = 2,
     config = {extra = {
@@ -1224,6 +1265,7 @@ joker {
     key = "excalibur",
     pronouns = "he_him",
     idea = "redstoad",
+    artist = "ghostlyfield",
     cost = 8,
     rarity = 3,
     config = {extra = {
@@ -1295,7 +1337,7 @@ joker {
 joker {
     key = "oops",
     pronouns = "she_they",
-    artist = "char",
+    artist = "ghostlyfield",
     cost = 7,
     rarity = 3,
     config = {extra = {probability = 1, probability_mult = 2, reset = 1}},
@@ -1338,6 +1380,7 @@ q {
             return false
         end
 
+        table.insert(Bakery_API.econ_only_items, "j_Roland_yard")
         table.insert(Bakery_API.econ_only_items, "j_Roland_artemis")
     end,
 }

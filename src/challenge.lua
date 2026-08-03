@@ -85,22 +85,20 @@ SMODS.Challenge {
 local yard_sale
 
 SMODS.Challenge {
-    key = "Yard_Sale",
-    config = {extra = {dollars = 5}, no_interest = true},
+    key = "Spring_Cleaning",
+    config = {no_interest = true},
+    consumeables = {{id = "c_hanged_man"}},
+    jokers = {{id = "j_Roland_yard"}, {id = "j_Roland_yard"}},
     vouchers = {{id = "v_magic_trick"}, {id = "v_overstock_norm"}},
-    rules = {custom = multirule("Yard_Sale", 2), modifiers = {{id = "dollars", value = 14}}},
+    rules = {custom = {{id = "Roland_Spring_Cleaning"}}},
     restrictions = yard,
     apply = function()
         G.GAME.modifiers.no_blind_reward = {Small = true, Big = true, Boss = true}
         G.GAME.modifiers.no_extra_hand_money = true
 
-        f(Bakery_API.econ_only_items):keys():each(function(v)
+        f(Bakery_API.econ_only_items):keys():where(f.nq "j_Roland_yard"):each(function(v)
             G.GAME.banned_keys[v] = true
         end)
-    end,
-    calculate = function(self, context)
-        yard_sale = (context.playing_card_added or context.remove_playing_cards) and not context.blueprint
-        return yard_sale and {dollars = self.config.extra.dollars * #(context.cards or context.removed or {})} or nil
     end,
 }
 
@@ -347,7 +345,7 @@ q {
         Bakery_API.no_money_decks = setmetatable({}, {
             orig = orig,
             __index = function(_, k)
-                return (G.GAME or {}).challenge == "c_Roland_Yard_Sale" and not yard_sale or orig[k]
+                return (G.GAME or {}).challenge == "c_Roland_Spring_Cleaning" and not yard_sale or orig[k]
             end,
         })
 

@@ -10,11 +10,6 @@ return {
         fg = HEX "362708ff",
         bg = HEX "edd198ff",
     },
-    char = {
-        name = "char (@irregulester)",
-        fg = HEX "f8f8f2ff",
-        bg = HEX "ff79c6ff",
-    },
     ghostlyfield = {
         name = "ghostlyfield",
         fg = HEX "ffffffff",
