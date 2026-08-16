@@ -1371,16 +1371,3 @@ joker {
         end
     end,
 }
-
-q {
-    blocking = false,
-    no_delete = true,
-    func = function()
-        if not Bakery_API then
-            return false
-        end
-
-        table.insert(Bakery_API.econ_only_items, "j_Roland_yard")
-        table.insert(Bakery_API.econ_only_items, "j_Roland_artemis")
-    end,
-}

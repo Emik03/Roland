@@ -82,8 +82,6 @@ SMODS.Challenge {
     end,
 }
 
-local yard_sale
-
 SMODS.Challenge {
     key = "Spring_Cleaning",
     config = {no_interest = true},
@@ -340,12 +338,14 @@ q {
             return false
         end
 
+        table.insert(Bakery_API.econ_only_items, "j_Roland_yard")
+        table.insert(Bakery_API.econ_only_items, "j_Roland_artemis")
         local orig = Bakery_API.no_money_decks
 
         Bakery_API.no_money_decks = setmetatable({}, {
             orig = orig,
             __index = function(_, k)
-                return (G.GAME or {}).challenge == "c_Roland_Spring_Cleaning" and not yard_sale or orig[k]
+                return (G.GAME or {}).challenge == "c_Roland_Spring_Cleaning" or orig[k]
             end,
         })
 
