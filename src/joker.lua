@@ -564,6 +564,10 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
+    inject = not SMODS.Attribute and function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.retrigger_jokers.j_Roland_arctic = true
+    end or nil,
     loc_vars = function(_, info_queue)
         table.insert(info_queue, G.P_CENTERS.e_Roland_frozen)
     end,
@@ -976,6 +980,11 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
+    inject = not SMODS.Attribute and function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.usable_jokers.j_Roland_nilly = true
+        Bakery_API.double_sided_jokers.j_Roland_nilly = true
+    end or nil,
     loc_vars = function(_, _, card)
         local key = card.ability.extra.flipped and "b_Roland_enabled" or "b_Roland_disabled"
         return {vars = {localize {type = "variable", key = key}}}
@@ -1077,6 +1086,10 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
+    inject = not SMODS.Attribute and function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.usable_jokers.j_Roland_idle = true
+    end or nil,
     loc_vars = function(self, _, card)
         local extra = card.ability.extra
         local col = {}
@@ -1216,6 +1229,10 @@ joker {
     calc_dollar_bonus = function(_, card)
         return card.ability.extra.dollars
     end,
+    inject = not SMODS.Attribute and function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.double_sided_jokers.j_Roland_artemis = true
+    end or nil,
     loc_vars = function(_, info_queue, card)
         local extra = card.ability.extra
 
@@ -1278,6 +1295,10 @@ joker {
     eternal_compat = true,
     blueprint_compat = true,
     perishable_compat = true,
+    inject = not SMODS.Attribute and function(...)
+        SMODS.Joker.inject(...)
+        Bakery_API.double_sided_jokers.j_Roland_excalibur = true
+    end or nil,
     loc_vars = function(_, info_queue, card)
         local extra = card.ability.extra
         local _ = card.fake_card or table.insert(info_queue, G.P_CENTERS.m_stone)

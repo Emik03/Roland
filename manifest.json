@@ -3,7 +3,7 @@
     "id": "Roland",
     "name": "Roland",
     "prefix": "Roland",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "badge_colour": "8BE9FD",
     "display_name": "Roland",
     "main_file": "src/main.lua",
@@ -15,8 +15,8 @@
         "Emik"
     ],
     "dependencies": [
-        "Steamodded (>=1.0.0~BETA-1606b)",
+        "Steamodded (>=1.0.0~BETA-0711a)",
         "Lovely (>=0.6)",
-        "Bakery (>=3.2.0~*)"
+        "Bakery (>=3.0.0~*)"
     ]
 }
