@@ -129,6 +129,7 @@ local spin_to_win = SMODS.Challenge {
     jokers = f(4):map(f.const {id = "j_joker", eternal = true}):table(),
     restrictions = {banned_cards = {{id = "c_Roland_coolheaded"}}},
     pronouns = "they_them",
+    rotation = 0,
     apply = function(self)
         self.rotation = 0
     end,
@@ -140,7 +141,6 @@ local spin_to_win = SMODS.Challenge {
         context.card.ability.extra.rotation = self.rotation
         self.rotation = self.rotation + 1
     end,
-    rotation = 0,
 }
 
 SMODS.Challenge {
@@ -157,7 +157,7 @@ SMODS.Challenge {
     restrictions = amber,
     pronouns = "they_them",
     unlocked = function()
-        return G.P_CENTERS.j_Roland_amber and G.P_CENTERS.j_Roland_amber.check_for_unlock()
+        return G.P_CENTERS.j_Roland_amber.discovered
     end,
     calculate = function(_, context)
         local function slide(pitch)
@@ -199,7 +199,7 @@ SMODS.Challenge {
     restrictions = cerulean,
     pronouns = "she_her",
     unlocked = function()
-        return G.P_CENTERS.j_Roland_cerulean and G.P_CENTERS.j_Roland_cerulean.check_for_unlock()
+        return G.P_CENTERS.j_Roland_cerulean.discovered
     end,
     calculate = function(_, context)
         if not context.hand_drawn then
@@ -229,7 +229,7 @@ SMODS.Challenge {
     restrictions = crimson,
     pronouns = "she_her",
     unlocked = function()
-        return G.P_CENTERS.j_Roland_crimson and G.P_CENTERS.j_Roland_crimson.check_for_unlock()
+        return G.P_CENTERS.j_Roland_crimson.discovered
     end,
     calculate = function(_, context)
         local _ = context.blind_defeated and f(G.jokers.cards):each(function(v)
@@ -292,7 +292,7 @@ SMODS.Challenge {
     restrictions = verdant,
     pronouns = "she_her",
     unlocked = function()
-        return G.P_CENTERS.j_Roland_verdant and G.P_CENTERS.j_Roland_verdant.check_for_unlock()
+        return G.P_CENTERS.j_Roland_verdant.discovered
     end,
     calculate = function(_, context)
         if context.setting_blind then
@@ -318,7 +318,7 @@ SMODS.Challenge {
     restrictions = violet,
     pronouns = "she_they",
     unlocked = function()
-        return G.P_CENTERS.j_Roland_violet and G.P_CENTERS.j_Roland_violet.check_for_unlock()
+        return G.P_CENTERS.j_Roland_violet.discovered
     end,
     calculate = function(_, context)
         if not context.setting_blind then
