@@ -16,7 +16,8 @@ end
 ---@param v SMODS.GameObject
 ---@return boolean
 local function is_banned_from_pastry(v)
-    return not ({Bakery = true, Roland = true})[(v.mod or {}).id]
+    return not ({bl_small = true, bl_big = true})[v.key] and
+        not ({Bakery = true, Roland = true})[(v.mod or {}).id]
 end
 
 ---@param v SMODS.Center
