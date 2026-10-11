@@ -741,7 +741,12 @@ joker {
     crimson = function()
         local _ = G.jokers and f(G.jokers.cards, f.revpairs):where(is_frozen, false):each(function(v)
             local right = G.jokers.cards[v.rank + 1]
+            local orig_calculate_reroll_cost = v.config.center.key == "j_chaos" and calculate_reroll_cost or nil
             local debuffed_by_crimson = right and not right.debuff and right.config.center.key == "j_Roland_crimson"
+
+            if orig_calculate_reroll_cost then
+                calculate_reroll_cost = f.noop
+            end
 
             if debuffed_by_crimson and v.ability.Roland_crimson == nil then
                 local debuff = not not v.debuff
@@ -751,6 +756,10 @@ joker {
                 local debuff = v.ability.Roland_crimson
                 v.ability.Roland_crimson = nil
                 v:set_debuff(debuff)
+            end
+
+            if orig_calculate_reroll_cost then
+                calculate_reroll_cost = orig_calculate_reroll_cost
             end
         end)
     end,

@@ -34,7 +34,7 @@ local function is_center_banned_from_pastry(v)
         p_arcana_mega_2 = true,
     }
 
-    local pastries_targets = {Enhanced = true, Joker = true, Tarot = true, Spectral = true}
+    local pastries_targets = {Enhanced = true, Joker = true, Tarot = true, Spectral = true, Voucher = true}
     return arcana_boosters[v.key] or pastries_targets[v.set] and is_banned_from_pastry(v)
 end
 
@@ -48,7 +48,7 @@ end
 ---@return fun(v: SMODS.Blind, k: string): boolean?
 local function is_showdown_except(key)
     return function(v, k)
-        return v.boss and v.boss.showdown and key ~= k
+        return key ~= k and v.boss and (v.boss.hardcore or v.boss.no_orb or v.boss.showdown)
     end
 end
 
