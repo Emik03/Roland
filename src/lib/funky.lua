@@ -3,7 +3,7 @@
 ---@license MPL-2.0
 ---@version 1.0.0
 ---
----@alias FFrom (fun<K, V>(iter: table<K, V>, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K?, V?)): F | { [K]: V })|(fun(iter: number, fpairs?: number, step?: number): F | { [number]: number })|(fun<V>(iter: string): (fun(table: { [string]: V }): V))|(fun<V>(iter: string): (fun(table: { [string]: V }): V))|(fun<K, V>(iter: fun(): K, V): F | { [K]: V })|(fun(iter: false): fun(): false)|(fun(iter: true): fun(): true)|(fun(iter: nil): F)
+---@alias FFrom (fun<K, V>(iter: { [K]: V }, fpairs?: fun(t: { [K]: V }): (fun(table: { [K]: V }, index?: K): K?, V?)): F | { [K]: V })|(fun(iter: number, fpairs?: number, step?: number): F | { [number]: number })|(fun<V>(iter: string): (fun(table: { [string]: V }): V))|(fun<V>(iter: string): (fun(table: { [string]: V }): V))|(fun<K, V>(iter: fun(): K, V): F | { [K]: V })|(fun(iter: false): fun(): false)|(fun(iter: true): fun(): true)|(fun(iter: nil): F)
 ---@class F
 local f = {}
 
@@ -254,10 +254,10 @@ local function autofunc(func)
 end
 
 ---@generic K, V
----@param tbl table<K, V>
----@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
----@return fun(tbl: table<K, V>, key: K): K, V
----@return table<K, V>
+---@param tbl { [K]: V }
+---@param fpairs? fun(t: { [K]: V }): (fun(table: { [K]: V }, index?: K): K, V)
+---@return fun(tbl: { [K]: V }, key: K): K, V
+---@return { [K]: V }
 ---@return V
 ---@nodiscard
 local function autopairs(tbl, fpairs)
@@ -393,19 +393,44 @@ function f.insert(v, k)
     end
 end
 
+local chairs = function(s, i)
+    local k = i and i + 1 or 1
+    local v = s:sub(k, k)
+
+    if v == nil then
+        return
+    end
+
+    local t = type(v)
+
+    if t ~= "string" and t ~= "table" or #v ~= 0 then
+        return k, v
+    end
+end
+
+---@generic T: string|{sub: fun(self: self, i: integer, j: integer)}
+---@param str T
+---@return fun(t: T, i?: integer): integer, T
+---@return T
+function f.chairs(str)
+    return chairs, str
+end
+
+local revpairs = function(t, i)
+    local k = i and i - 1 or #t
+    local v = t[k]
+
+    if v ~= nil then
+        return k, v
+    end
+end
+
 ---@generic T
 ---@param tbl T[]
 ---@return fun(t: T[], i?: integer): integer, T
 ---@return T[]
 function f.revpairs(tbl)
-    return function(t, i)
-        local k = i and i - 1 or #t
-        local v = t[k]
-
-        if v ~= nil then
-            return k, v
-        end
-    end, tbl
+    return revpairs, tbl
 end
 
 ---@param any any
@@ -471,6 +496,7 @@ function f.new(fnext)
         arg = f.arg,
         call = f.call,
         chain = f.chain,
+        chairs = f.chairs,
         compose = f.compose,
         concat = f.concat,
         const = f.const,
@@ -524,7 +550,16 @@ function f.from(iter, fpairs, step)
     local t = type(iter)
 
     if t == "string" then
-        return f.indices(iter)
+        if not fpairs then
+            return f.indices(iter)
+        end
+
+        local next, tbl, k, v = fpairs(iter --[[@as { sub: fun(self: self, i: integer, j?: integer) }]])
+
+        return f.new(function()
+            k, v = next(tbl, k)
+            return k, v
+        end)
     elseif t == "number" then
         local ik, is, start = 0, step or 1, fpairs and iter or 1
 
@@ -647,9 +682,9 @@ end
 ---@generic K, V, U
 ---@param self F|{ [K]: V }
 ---@param func fun(v: V, k: K): { [any]: U }
----@param fpairs? fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)
+---@param fpairs? fun(t: { [K]: V }): (fun(table: { [K]: V }, index?: K): K, V)
 ---@return F|{ [K]: U }
----@overload fun(self: F|{ [K]: V }, func: string, fpairs?: fun(t: table<K, V>): (fun(table: table<K, V>, index?: K): K, V)): F|{ [K]: U }
+---@overload fun(self: F|{ [K]: V }, func: string, fpairs?: fun(t: { [K]: V }): (fun(table: { [K]: V }, index?: K): K, V)): F|{ [K]: U }
 ---@nodiscard
 function f:flatmap(func, fpairs)
     self = f.isf(self) and self or f.from(self)
