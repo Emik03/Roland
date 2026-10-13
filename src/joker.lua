@@ -1206,7 +1206,8 @@ end
 local orig_get_enhancements = SMODS.get_enhancements
 
 function SMODS.get_enhancements(card, ...)
-    if (G.GAME.modifiers.Roland_suitable or 0) <= 0 or
+    if not card.base or
+        (G.GAME.modifiers.Roland_suitable or 0) <= 0 or
         card.base.suit ~= G.GAME.current_round.Roland_suitable.suit or
         (card.area ~= G.hand and card.area ~= G.play) then
         return orig_get_enhancements(card, ...)
