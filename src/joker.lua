@@ -589,9 +589,7 @@ joker {
         end
 
         return SMODS.merge_effects(
-            f(G)
-            :where(getmetatable, CardArea)
-            :flatmap("cards", ipairs)
+            f(G.I.CARD)
             :where(is_frozen)
             :map(copy(card, context))
             :where(type, "table")
