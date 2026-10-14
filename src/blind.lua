@@ -232,23 +232,20 @@ blind {
     boss = {min = 3},
     boss_colour = HEX "102a41ff",
     pronouns = "it_its",
-    defeat = function(self)
-        self.cards():where "Roland_blizzard":each(set_freeze())
+    defeat = function()
+        f(G.I.CARD):where "Roland_blizzard":each(set_freeze())
         G.GAME.blind.disabled = true
     end,
     disable = function(self)
         self:defeat()
     end,
-    calculate = function(self, b, context)
+    calculate = function(_, b, context)
         return not b.disabled and
             context.hand_drawn and
-            self.cards()
+            f(G.I.CARD)
             :where("Roland_blizzard", false)
             :where("facing", "front")
             :each(set_freeze(true)) or nil
-    end,
-    cards = function()
-        return f(G):where(getmetatable, CardArea):flatmap("cards", ipairs)
     end,
 }
 
