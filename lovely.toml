@@ -212,3 +212,13 @@ match_indent = true
 # position = "at"
 # payload = 'local cmdName = inputText'
 # match_indent = true
+
+# [[patches]]
+# [patches.pattern]
+# target = '=[SMODS DebugPlus "debugplus/util.lua"]'
+# pattern = "function global.stringifyTable(tab, depth, num, dec, indent)"
+# position = "after"
+# payload = """if type(tab) == "table" and type(tab.table) == "function" then
+#     tab = tab:table()
+# end"""
+# match_indent = true
