@@ -3,6 +3,9 @@
 ---@type Card[]
 CardArea.cards = CardArea.cards
 
+---@type Card[]
+CardArea.highlighted = CardArea.highlighted
+
 --- @overload fun(tbl: SMODS.Joker): SMODS.GameObject
 Bakery_API.Charm = Bakery_API.Charm
 
@@ -65,6 +68,18 @@ Talisman = Talisman
 
 --- @type fun(obj: any): number
 to_number = to_number
+
+---Returns `x ^ y` .
+---
+---[View documents](http://www.lua.org/manual/5.4/manual.html#pdf-math.pow)
+---
+---@param x number
+---@param y number
+---@return number
+---@nodiscard
+function math.pow(x, y)
+    error {x, y}
+end
 
 -- This exists to remove the @deprecated warning.
 ---Returns the elements from the given `list`. This function is equivalent to

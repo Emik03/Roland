@@ -1144,7 +1144,7 @@ joker {
             next(new_cards) and
             self.Roland_idle_capacity - #extra.cards - #new_cards >= 0 and
             f(new_cards):all(has_rank_and_suit) and
-            all_cards():all(function(v)
+            not not all_cards():all(function(v)
                 return all_cards():all(ranksuitnq(v))
             end)
     end,
